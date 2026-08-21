@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { SITE_METADATA, SOCIAL_IMAGE } from "@/lib/site-metadata";
 
 import "./globals.css";
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${outfit.variable} h-full antialiased`}>
       <body className="min-h-screen text-on-surface" suppressHydrationWarning>
+        <GoogleAnalytics />
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
