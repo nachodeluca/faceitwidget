@@ -138,16 +138,14 @@ export function EloSummary({ data, visibility }: { data: WidgetData; visibility:
   }
 
   const eloChange = data.rank.eloChange
-  const changeLabel =
-    eloChange === undefined
-      ? null
-      : `(${eloChange > 0 ? "+" : ""}${formatNumber(eloChange)})`
   const changeTone =
     eloChange === undefined
       ? "text-[color:var(--widget-muted)]"
       : eloChange > 0
         ? "text-[#83dba5]"
-        : "text-[#b7b7bd]"
+        : eloChange < 0
+          ? "text-[#ff7884]"
+          : "text-[color:var(--widget-muted)]"
 
   return (
     <span className="inline-flex min-w-0 items-baseline gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">
@@ -155,7 +153,11 @@ export function EloSummary({ data, visibility }: { data: WidgetData; visibility:
         <AnimatedNumber value={data.rank.elo} />
       </strong>
       <span>ELO</span>
-      {changeLabel ? <span className={cn("tabular-nums", changeTone)}>{changeLabel}</span> : null}
+      {eloChange !== undefined ? (
+        <span className={cn("tabular-nums", changeTone)}>
+          (<AnimatedNumber value={eloChange} signed />)
+        </span>
+      ) : null}
     </span>
   )
 }
@@ -333,7 +335,7 @@ function Stat({
   tone = "default",
 }: {
   label: string
-  value: string
+  value: ReactNode
   tone?: keyof typeof statValueStyles
 }) {
   return (
@@ -350,6 +352,24 @@ function Stat({
         {label}
       </small>
     </span>
+  )
+}
+
+function AnimatedMetricPair({
+  first,
+  second,
+  secondFractionDigits = 1,
+}: {
+  first?: number
+  second?: number
+  secondFractionDigits?: number
+}) {
+  return (
+    <>
+      <AnimatedNumber value={first} />
+      <span aria-hidden="true"> / </span>
+      <AnimatedNumber value={second} maximumFractionDigits={secondFractionDigits} />
+    </>
   )
 }
 
@@ -382,7 +402,9 @@ export function RecordStat({
         toneStyles,
       )}
     >
-      <strong className="text-[12px] font-extrabold leading-none tabular-nums">{formatNumber(value)}</strong>
+      <strong className="text-[12px] font-extrabold leading-none tabular-nums">
+        <AnimatedNumber value={value} />
+      </strong>
       <small className="text-[7px] font-bold lowercase leading-none text-[color:var(--widget-muted)]">
         {label}
       </small>
@@ -394,14 +416,14 @@ export function TodayStats({ data }: { data: WidgetData }) {
   return (
     <StatGrid>
       <span className="grid min-w-16 grid-cols-2 gap-[10px]">
-        <Stat label="Wins" value={formatNumber(data.today?.wins)} tone="positive" />
-        <Stat label="Losses" value={formatNumber(data.today?.losses)} tone="negative" />
+        <Stat label="Wins" value={<AnimatedNumber value={data.today?.wins} />} tone="positive" />
+        <Stat label="Losses" value={<AnimatedNumber value={data.today?.losses} />} tone="negative" />
       </span>
       <Stat
         label="Avg. Kills / ADR"
-        value={`${formatNumber(data.today?.avgKills)} / ${formatNumber(data.today?.adr, 1)}`}
+        value={<AnimatedMetricPair first={data.today?.avgKills} second={data.today?.adr} />}
       />
-      <Stat label="K/D" value={formatNumber(data.today?.avgKD, 2)} />
+      <Stat label="K/D" value={<AnimatedNumber value={data.today?.avgKD} maximumFractionDigits={2} />} />
     </StatGrid>
   )
 }
@@ -409,14 +431,18 @@ export function TodayStats({ data }: { data: WidgetData }) {
 export function Last30Stats({ data }: { data: WidgetData }) {
   return (
     <StatGrid>
-      <Stat label="Win rate" value={`${formatNumber(data.last30?.winRate)}%`} tone="positive" />
+      <Stat
+        label="Win rate"
+        value={<><AnimatedNumber value={data.last30?.winRate} />%</>}
+        tone="positive"
+      />
       <Stat
         label="Avg. Kills / ADR"
-        value={`${formatNumber(data.last30?.avgKills)} / ${formatNumber(data.last30?.adr, 1)}`}
+        value={<AnimatedMetricPair first={data.last30?.avgKills} second={data.last30?.adr} />}
       />
       <Stat
         label="K/D"
-        value={formatNumber(data.last30?.avgKD, 2)}
+        value={<AnimatedNumber value={data.last30?.avgKD} maximumFractionDigits={2} />}
       />
     </StatGrid>
   )
@@ -425,10 +451,13 @@ export function Last30Stats({ data }: { data: WidgetData }) {
 export function PerformanceStats({ data }: { data: WidgetData }) {
   return (
     <StatGrid className="grid-cols-[repeat(4,minmax(0,1fr))]">
-      <Stat label="AVG" value={formatNumber(data.lifetime?.avgKills, 2)} />
-      <Stat label="HS" value={`${formatNumber(data.lifetime?.headshotRate, 1)}%`} />
-      <Stat label="K/D" value={formatNumber(data.lifetime?.kdr, 2)} />
-      <Stat label="K/R" value={formatNumber(data.lifetime?.kr, 2)} />
+      <Stat label="AVG" value={<AnimatedNumber value={data.lifetime?.avgKills} maximumFractionDigits={2} />} />
+      <Stat
+        label="HS"
+        value={<><AnimatedNumber value={data.lifetime?.headshotRate} maximumFractionDigits={1} />%</>}
+      />
+      <Stat label="K/D" value={<AnimatedNumber value={data.lifetime?.kdr} maximumFractionDigits={2} />} />
+      <Stat label="K/R" value={<AnimatedNumber value={data.lifetime?.kr} maximumFractionDigits={2} />} />
     </StatGrid>
   )
 }
