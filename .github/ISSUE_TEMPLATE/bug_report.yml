@@ -1,0 +1,60 @@
+name: Bug report
+description: Report something that is not working as expected.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please include enough detail to reproduce it.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Tell us what you expected and what happened instead.
+      placeholder: Describe the issue...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the smallest set of steps that reproduces the issue.
+      placeholder: |
+        1. Open...
+        2. Select...
+        3. See...
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 130, Firefox 132, Safari 18...
+
+  - type: input
+    id: streaming-software
+    attributes:
+      label: Streaming software and version
+      description: What version of OBS or another streaming application are you using?
+      placeholder: OBS Studio 32.2.2
+    validations:
+      required: true
+
+  - type: input
+    id: widget-url
+    attributes:
+      label: Widget URL
+      description: If the issue occurs in the overlay, paste the generated widget URL here. Optional.
+      placeholder: https://faceitwidget.com/widget/?...
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add screenshots, widget configuration, or anything else that may help.
+      placeholder: Anything else we should know?

@@ -1,0 +1,38 @@
+name: Feedback and ideas
+description: Share an idea, UX feedback, or a suggestion for the project.
+title: "[Feedback]: "
+labels:
+  - feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve FACEIT Widget. Keep feedback focused on one idea when possible.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Feature idea
+        - UX or design feedback
+        - Widget designs
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Tell us more
+      description: Explain what you would like to see changed or improved.
+      placeholder: Share your idea or feedback...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, examples, or a use case if they help explain the idea.
+      placeholder: Anything else we should know?

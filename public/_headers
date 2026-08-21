@@ -1,0 +1,17 @@
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/maps/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/flags/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/levels/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/logo.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/favicon.ico*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

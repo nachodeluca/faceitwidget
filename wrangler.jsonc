@@ -1,0 +1,74 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "faceitwidget",
+  "main": "backend/index.ts",
+  "compatibility_date": "2026-08-21",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "faceitwidget.com",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*",
+      "/s/*",
+      "/builder*",
+      "/guides/*",
+      "/faceit-widget-obs*",
+      "/live-faceit-stats*",
+      "/widget*"
+    ],
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PLAYER_SNAPSHOTS",
+        "class_name": "PlayerSnapshotCoordinator"
+      },
+      {
+        "name": "SHARED_WIDGETS",
+        "class_name": "SharedWidgetCard"
+      }
+    ]
+  },
+  "exports": {
+    "PlayerSnapshotCoordinator": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "SharedWidgetCard": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
+  "ratelimits": [
+    {
+      "name": "API_RATE_LIMIT",
+      "namespace_id": "1001",
+      "simple": { "limit": 120, "period": 60 }
+    },
+    {
+      "name": "PLAYER_RATE_LIMIT",
+      "namespace_id": "1002",
+      "simple": { "limit": 30, "period": 60 }
+    },
+    {
+      "name": "SHARE_RATE_LIMIT",
+      "namespace_id": "1003",
+      "simple": { "limit": 10, "period": 60 }
+    }
+  ],
+  "vars": {
+    "LIVE_POLL_INTERVAL_MS": "30000"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

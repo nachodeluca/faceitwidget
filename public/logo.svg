@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1248" height="1248" viewBox="0 0 1248 1248" fill="none">
+  <defs>
+    <linearGradient id="mainBase" x1="40" y1="500" x2="1210" y2="1030" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7b00"/>
+      <stop offset="0.55" stop-color="#ff8f00"/>
+      <stop offset="1" stop-color="#ff5a00"/>
+    </linearGradient>
+    <linearGradient id="mainShade" x1="180" y1="560" x2="1160" y2="1060" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e94c00" stop-opacity="0.15"/>
+      <stop offset="0.45" stop-color="#cf2d00" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ab1700" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="mainHighlight" x1="40" y1="495" x2="930" y2="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd34f" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#ffbe1b" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#ff9a00" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="finBase" x1="770" y1="500" x2="1228" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff5d00"/>
+      <stop offset="0.6" stop-color="#ff8400"/>
+      <stop offset="1" stop-color="#ffb000"/>
+    </linearGradient>
+    <linearGradient id="finShade" x1="890" y1="290" x2="1170" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff6b00" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#a30e00" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="finHighlight" x1="770" y1="500" x2="1120" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe45f" stop-opacity="0.95"/>
+      <stop offset="0.6" stop-color="#ffc426" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#ffb200" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="tailBase" x1="770" y1="560" x2="1170" y2="980" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb200"/>
+      <stop offset="0.45" stop-color="#ff8d00"/>
+      <stop offset="1" stop-color="#ff5a00"/>
+    </linearGradient>
+    <linearGradient id="tailShade" x1="960" y1="620" x2="1150" y2="980" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8c00" stop-opacity="0"/>
+      <stop offset="1" stop-color="#c12a00" stop-opacity="0.75"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Main swept wing -->
+  <path d="M 22 484 L 283 596 L 551 728 L 844 886 L 1216 1103 L 1118 645 L 804 537 L 1018 749 L 1020 775 L 1004 786 L 986 786 L 431 591 L 912 667 L 755 522 Z" fill="url(#mainBase)"/>
+  <polygon points="22,484 755,522 912,667 431,591" fill="url(#mainHighlight)"/>
+  <polygon points="22,484 431,591 844,886 1216,1103" fill="url(#mainShade)"/>
+  <polygon points="349,567 431,591 986,786 1117,883" fill="#ffd046" fill-opacity="0.85"/>
+  <polygon points="431,591 844,886 1117,883 986,786" fill="#ff8f12" fill-opacity="0.92"/>
+  <polygon points="844,886 1216,1103 1117,883" fill="#f45100" fill-opacity="0.9"/>
+
+  <!-- Top rear fin -->
+  <path d="M 1232 84 L 973 320 L 776 491 L 761 507 L 924 535 L 1102 570 Z" fill="url(#finBase)"/>
+  <polygon points="761,507 1232,84 973,320" fill="url(#finHighlight)"/>
+  <polygon points="973,320 1102,570 1232,84" fill="url(#finShade)"/>
+  <polyline points="761,507 973,320 1232,84" fill="none" stroke="#ffe45f" stroke-width="2" stroke-opacity="0.55"/>
+
+  <!-- Lower rear fin / hook -->
+  <path d="M 804 537 L 1118 645 L 1216 1103 L 1004 786 L 986 786 L 1020 775 L 1018 749 Z" fill="url(#tailBase)"/>
+  <polygon points="804,537 1118,645 1018,749" fill="#ffd74f" fill-opacity="0.95"/>
+  <polygon points="1018,749 1216,1103 1118,645" fill="url(#tailShade)"/>
+  <polygon points="1004,786 1216,1103 1020,775" fill="#f86000" fill-opacity="0.92"/>
+</svg>

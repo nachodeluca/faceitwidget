@@ -1,0 +1,38 @@
+import { describe, expect, it } from "vitest"
+
+import {
+  absoluteSiteUrl,
+  createLandingMetadata,
+  INDEXABLE_ROUTES,
+  SITE_PATHS,
+} from "./site-metadata"
+
+describe("indexable routes", () => {
+  it("contains every canonical landing exactly once", () => {
+    const paths = INDEXABLE_ROUTES.map((route) => route.path)
+
+    expect(paths).toEqual(Object.values(SITE_PATHS))
+    expect(new Set(paths).size).toBe(paths.length)
+  })
+
+  it("generates absolute HTTPS URLs for the sitemap", () => {
+    expect(INDEXABLE_ROUTES.map((route) => absoluteSiteUrl(route.path))).toEqual([
+      "https://faceitwidget.com/",
+      "https://faceitwidget.com/faceit-widget-obs/",
+      "https://faceitwidget.com/live-faceit-stats/",
+    ])
+  })
+
+  it("keeps canonical and social URLs aligned for a landing page", () => {
+    const metadata = createLandingMetadata({
+      title: "Example guide",
+      description: "Example description",
+      path: SITE_PATHS.faceitWidgetObsGuide,
+    })
+
+    const canonical = "https://faceitwidget.com/faceit-widget-obs/"
+    expect(metadata.alternates?.canonical).toBe(canonical)
+    expect(metadata.openGraph?.url).toBe(canonical)
+    expect(metadata.openGraph?.title).toBe("Example guide | FACEIT Widget")
+  })
+})
