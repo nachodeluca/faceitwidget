@@ -1,5 +1,5 @@
 import { CountryRank, KdrValue, RegionRank, WorldRank } from "../parts"
-import { CoreLine, showsChallengerFocusRank, showsChallengerWorldRank } from "./shared/core-line"
+import { CoreLine, showsChallengerWorldRank } from "./shared/core-line"
 import type { PresetViewProps } from "./types"
 
 export function RankEloPreset({ data, config }: PresetViewProps) {
@@ -16,7 +16,6 @@ export function RankEloPreset({ data, config }: PresetViewProps) {
         data={data}
         config={config}
         hideChallengerMark={showsChallengerWorldRank(data, config)}
-        showFocusRank={showsChallengerFocusRank(data, config)}
       />
       {config.visibility.kdr ? (
         <KdrValue

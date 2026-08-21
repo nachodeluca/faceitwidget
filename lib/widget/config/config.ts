@@ -10,6 +10,7 @@ import {
   type WidgetRotationField,
   type WidgetStyle,
   type WidgetVisibility,
+  type WidgetVisibilityKey,
 } from "../types"
 
 const DEFAULT_COLORS = {
@@ -73,6 +74,11 @@ const VISIBILITY_KEYS = [
   "last30Stats",
   "last5Results",
 ] as const satisfies readonly (keyof WidgetVisibility)[]
+const ROTATION_VISIBILITY_FIELDS: Partial<Record<WidgetVisibilityKey, WidgetRotationField>> = {
+  todayStats: "today",
+  last30Stats: "last30",
+  kdr: "lifetime",
+}
 const COLOR_PATTERN = /^#[0-9a-f]{3,8}$/i
 
 function clamp(value: unknown, min: number, max: number, fallback: number) {
@@ -111,6 +117,18 @@ function normalizeVisibility(
   defaults: WidgetVisibility,
 ): WidgetVisibility {
   return normalizeBooleanFields(value, defaults, VISIBILITY_KEYS)
+}
+
+function toggleRotationField(
+  fields: WidgetRotationField[],
+  field: WidgetRotationField,
+  enabled: boolean,
+) {
+  if (enabled) {
+    return fields.includes(field) ? fields : [...fields, field]
+  }
+
+  return fields.filter((current) => current !== field)
 }
 
 function normalizeStyle(value: Record<string, unknown>, defaults: WidgetStyle): WidgetStyle {
@@ -178,6 +196,26 @@ export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill")
       ],
     },
   }
+}
+
+export function updateVisibilityConfig(
+  config: WidgetConfig,
+  key: WidgetVisibilityKey,
+  value: boolean,
+) {
+  const rotationField = ROTATION_VISIBILITY_FIELDS[key]
+  const rotation = rotationField && supportsWidgetRotation(config.preset)
+    ? {
+        ...config.rotation,
+        fields: toggleRotationField(config.rotation.fields, rotationField, value),
+      }
+    : config.rotation
+
+  return normalizeConfig({
+    ...config,
+    visibility: { ...config.visibility, [key]: value },
+    rotation,
+  })
 }
 
 export function normalizeConfig(input: unknown): WidgetConfig {
