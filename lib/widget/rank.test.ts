@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 
+import { createDefaultConfig } from "./config/config"
 import { getEditableFields } from "./config/presets"
 import { isChallengerRank } from "./rank"
 import type { WidgetData } from "./types"
@@ -32,5 +33,15 @@ describe("isChallengerRank", () => {
 
     expect(fields).not.toContain("challenger")
     expect(fields).not.toContain("challengerRank")
+  })
+})
+
+describe("rank preset defaults", () => {
+  it("starts Rank + ELO without the global rank", () => {
+    expect(createDefaultConfig("rank-elo").visibility.worldRank).toBe(false)
+  })
+
+  it("starts Rank + Country without the global rank", () => {
+    expect(createDefaultConfig("rank-country").visibility.worldRank).toBe(false)
   })
 })
