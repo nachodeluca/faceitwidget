@@ -7,6 +7,7 @@ import {
 
 import {
   getEditableFields,
+  getRotationFields,
   WIDGET_PRESETS,
   type WidgetConfig,
   type WidgetData,
@@ -47,7 +48,7 @@ const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
 const rotationFields: Array<[WidgetRotationField, string]> = [
   ["today", "Today"],
   ["last30", "Last 30"],
-  ["lifetime", "K/D"],
+  ["lifetime", "Performance"],
 ]
 
 const styleColors = [
@@ -348,11 +349,13 @@ function RotationToggle({ config, onRotationChange }: MotionTabProps) {
 }
 
 function RotationFields({ config, onRotationChange }: MotionTabProps) {
+  const availableFields = getRotationFields(config.preset)
+
   return (
     <div className="flex flex-col gap-3">
       <Label className={controlLabelClass}>Rotating fields</Label>
       <div className="grid grid-cols-2 gap-1.5">
-        {rotationFields.map(([field, label]) => (
+        {rotationFields.filter(([field]) => availableFields.includes(field)).map(([field, label]) => (
           <FieldSwitch
             key={field}
             label={label}

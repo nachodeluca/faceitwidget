@@ -353,8 +353,12 @@ function Stat({
   )
 }
 
-function StatGrid({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-[repeat(3,minmax(0,1fr))] gap-[6px]">{children}</div>
+function StatGrid({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cn("grid grid-cols-[repeat(3,minmax(0,1fr))] gap-[6px]", className)}>
+      {children}
+    </div>
+  )
 }
 
 export function RecordStat({
@@ -418,6 +422,17 @@ export function Last30Stats({ data }: { data: WidgetData }) {
   )
 }
 
+export function PerformanceStats({ data }: { data: WidgetData }) {
+  return (
+    <StatGrid className="grid-cols-[repeat(4,minmax(0,1fr))]">
+      <Stat label="AVG" value={formatNumber(data.lifetime?.avgKills, 2)} />
+      <Stat label="HS" value={`${formatNumber(data.lifetime?.headshotRate, 1)}%`} />
+      <Stat label="K/D" value={formatNumber(data.lifetime?.kdr, 2)} />
+      <Stat label="K/R" value={formatNumber(data.lifetime?.kr, 2)} />
+    </StatGrid>
+  )
+}
+
 const matchResultStyles = {
   win: "text-[#39d98a]",
   loss: "text-[#ef5265]",
@@ -449,7 +464,7 @@ export function StatsPanel({
   className,
   labelClassName,
 }: {
-  title: string
+  title?: string
   children: ReactNode
   className?: string
   labelClassName?: string
@@ -462,14 +477,16 @@ export function StatsPanel({
       )}
       aria-label={title}
     >
-      <span
-        className={cn(
-          "text-[9px] font-bold uppercase leading-none tracking-[0.08em] text-[color:var(--widget-muted)]",
-          labelClassName,
-        )}
-      >
-        {title}
-      </span>
+      {title ? (
+        <span
+          className={cn(
+            "text-[9px] font-bold uppercase leading-none tracking-[0.08em] text-[color:var(--widget-muted)]",
+            labelClassName,
+          )}
+        >
+          {title}
+        </span>
+      ) : null}
       {children}
     </section>
   )

@@ -4,6 +4,7 @@ import { isValidTimezone, parsePlayerLookup } from "../lib/widget/data/player-lo
 import type { PlayerLookup, WidgetLiveMessage } from "../lib/widget/types"
 import { ApiError, errorResponse } from "./errors"
 import { FaceitGateway } from "./faceit/gateway"
+import { rememberElo, type EloObservation } from "./faceit/elo"
 import {
   createWidgetSnapshot,
   fetchLatestMatchId,
@@ -12,7 +13,7 @@ import {
 } from "./faceit/normalize"
 import type { WorkerEnv } from "./env"
 
-const STATE_VERSION = 2
+const STATE_VERSION = 3
 const STATE_KEY = `player-state-v${STATE_VERSION}`
 const SNAPSHOT_TTL_MS = 5 * 60_000
 const RETRY_DELAYS_MS = [15_000, 30_000, 60_000, 120_000] as const
@@ -29,6 +30,7 @@ type CoordinatorState = {
   fullFetchedAt: number
   historyCheckedAt: number
   stale: boolean
+  eloHistory: EloObservation[]
   pendingMatch?: PendingMatch
 }
 
@@ -90,6 +92,7 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
     return this.runOnce(async () => {
       try {
         const facts = await fetchPlayerFacts(this.gateway(), lookup)
+        const observedAt = Date.now()
         return this.saveState({
           version: STATE_VERSION,
           lookup,
@@ -97,6 +100,10 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
           fullFetchedAt: Date.now(),
           historyCheckedAt: Date.now(),
           stale: false,
+          eloHistory: rememberElo(previous?.eloHistory, {
+            observedAt,
+            elo: facts.baseData.rank.elo,
+          }),
         })
       } catch (error) {
         if (!previous) throw error
@@ -145,6 +152,7 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
     return createWidgetSnapshot(state.facts, timezone, {
       stale: state.stale,
       refreshAfterMs: this.pollInterval(),
+      eloHistory: state.eloHistory,
     })
   }
 

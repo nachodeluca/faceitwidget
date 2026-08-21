@@ -36,11 +36,25 @@ describe("normalizeLifetime", () => {
     expect(normalizeLifetime({
       "K/D Ratio": "10437.84",
       "Average K/D Ratio": "1.45",
-    })).toEqual({ kdr: 1.45 })
+    })).toMatchObject({ kdr: 1.45 })
   })
 
   it("rejects impossible cumulative values when the average is unavailable", () => {
-    expect(normalizeLifetime({ "K/D Ratio": "10437.84" })).toEqual({ kdr: undefined })
+    expect(normalizeLifetime({ "K/D Ratio": "10437.84" })).toMatchObject({ kdr: undefined })
+  })
+
+  it("normalizes the lifetime performance fields", () => {
+    expect(normalizeLifetime({
+      "Average Kills": "18.4",
+      "Average Headshots %": "47.5",
+      "Average K/D Ratio": "1.45",
+      "Average K/R Ratio": "0.84",
+    })).toEqual({
+      avgKills: 18.4,
+      headshotRate: 47.5,
+      kdr: 1.45,
+      kr: 0.84,
+    })
   })
 })
 
@@ -91,5 +105,28 @@ describe("createWidgetSnapshot", () => {
       latestMatchId: "new",
       stale: false,
     })
+  })
+
+  it("includes the observed daily ELO difference", () => {
+    const now = Date.parse("2026-08-21T15:00:00Z")
+    const facts: PlayerFacts = {
+      playerId: "player-1",
+      baseData: {
+        profile: { nickname: "donk666" },
+        rank: { level: 10, elo: 4_030 },
+      },
+      matches: [],
+      generatedAt: now,
+      revision: "revision-2",
+    }
+
+    const snapshot = createWidgetSnapshot(facts, "UTC", {
+      stale: false,
+      refreshAfterMs: 30_000,
+      now,
+      eloHistory: [{ observedAt: Date.parse("2026-08-20T23:00:00Z"), elo: 4_000 }],
+    })
+
+    expect(snapshot.data.rank.eloChange).toBe(30)
   })
 })

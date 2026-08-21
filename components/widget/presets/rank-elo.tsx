@@ -21,8 +21,9 @@ export function RankEloPreset({ data, config }: PresetViewProps) {
         <KdrValue
           data={data}
           visibility={config.visibility}
-          className="ml-auto shrink-0 items-end"
+          className="shrink-0 flex-row items-baseline gap-1 whitespace-nowrap"
           valueClassName="text-[16px]"
+          labelClassName="text-[9px] tracking-[0.04em]"
         />
       ) : null}
       <div className="ml-auto flex shrink-0 items-center justify-end">

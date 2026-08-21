@@ -84,7 +84,10 @@ export type WidgetData = {
     isChallenger?: boolean
   }
   lifetime?: {
+    avgKills?: number
+    headshotRate?: number
     kdr?: number
+    kr?: number
   }
   last30?: {
     winRate?: number

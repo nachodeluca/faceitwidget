@@ -1,15 +1,11 @@
 import {
   WIDGET_PRESET_MAP,
+  getRotationFields,
   type WidgetConfig,
   type WidgetData,
 } from "@/lib/widget"
 
-import {
-  KdrValue,
-  Last30Stats,
-  StatsPanel,
-  TodayStats,
-} from "../../parts"
+import { Last30Stats, PerformanceStats, StatsPanel, TodayStats } from "../../parts"
 import { Rotation, type RotationItem } from "../../rotation"
 import type { PresetViewProps } from "../types"
 
@@ -46,14 +42,12 @@ function rotationItems(data: WidgetData, config: WidgetConfig): RotationItem[] {
     })
   }
 
-  if (config.visibility.kdr) {
+  if (config.visibility.kdr && getRotationFields(config.preset).includes("lifetime")) {
     items.push({
       id: "lifetime",
       content: (
-        <StatsPanel title="Lifetime">
-          <div className="flex min-h-7 items-center">
-            <KdrValue data={data} visibility={config.visibility} />
-          </div>
+        <StatsPanel>
+          <PerformanceStats data={data} />
         </StatsPanel>
       ),
     })

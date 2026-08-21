@@ -6,7 +6,13 @@ export {
   updateVisibilityConfig,
 } from "./config/config"
 export { WIDGET_MAPS } from "./maps"
-export { getEditableFields, supportsWidgetRotation, WIDGET_PRESETS, WIDGET_PRESET_MAP } from "./config/presets"
+export {
+  getEditableFields,
+  getRotationFields,
+  supportsWidgetRotation,
+  WIDGET_PRESETS,
+  WIDGET_PRESET_MAP,
+} from "./config/presets"
 export type { WidgetPreset } from "./config/presets"
 export { CHALLENGER_RANK_LIMIT, isChallengerRank } from "./rank"
 export { buildWidgetUrl, deserializeConfig, serializeConfig } from "./config/serialization"
