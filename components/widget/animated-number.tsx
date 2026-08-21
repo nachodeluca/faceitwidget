@@ -8,12 +8,14 @@ type AnimatedNumberProps = {
   value?: number
   maximumFractionDigits?: number
   duration?: number
+  signed?: boolean
 }
 
 export function AnimatedNumber({
   value,
   maximumFractionDigits = 0,
   duration = 360,
+  signed = false,
 }: AnimatedNumberProps) {
   const target = typeof value === "number" && Number.isFinite(value) ? value : undefined
   const [displayValue, setDisplayValue] = useState(0)
@@ -78,6 +80,10 @@ export function AnimatedNumber({
   }, [duration, reduceMotion, target])
 
   const renderedValue = reduceMotion && target !== undefined ? target : displayValue
+  const formattedValue = formatNumber(target === undefined ? undefined : renderedValue, maximumFractionDigits)
+  const signedValue = signed && target !== undefined && renderedValue > 0
+    ? `+${formattedValue}`
+    : formattedValue
 
-  return <>{formatNumber(target === undefined ? undefined : renderedValue, maximumFractionDigits)}</>
+  return <>{signedValue}</>
 }

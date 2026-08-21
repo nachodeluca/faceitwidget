@@ -18,7 +18,12 @@ const widgetDataSchema = z.object({
     countryRank: z.number().optional(),
     isChallenger: z.boolean().optional(),
   }),
-  lifetime: z.object({ kdr: z.number().optional() }).optional(),
+  lifetime: z.object({
+    avgKills: z.number().optional(),
+    headshotRate: z.number().optional(),
+    kdr: z.number().optional(),
+    kr: z.number().optional(),
+  }).optional(),
   last30: z.object({
     winRate: z.number().optional(),
     avgKills: z.number().optional(),

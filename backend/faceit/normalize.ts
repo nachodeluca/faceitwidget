@@ -2,6 +2,7 @@ import type { PlayerLookup, WidgetData, WidgetSnapshot } from "../../lib/widget/
 import { isChallengerRank } from "../../lib/widget/rank"
 import { ApiError } from "../errors"
 import { FaceitGateway } from "./gateway"
+import { calendarDay, dailyEloChange, type EloObservation } from "./elo"
 import type { FaceitPlayer, FaceitRanking } from "./schemas"
 
 type StatRecord = Record<string, unknown>
@@ -35,7 +36,10 @@ const STAT_ALIASES = {
   kd: ["K/D Ratio", "K/D", "KD Ratio"],
   kr: ["K/R Ratio", "K/R", "KR Ratio"],
   adr: ["ADR", "Average Damage per Round"],
+  lifetimeAvgKills: ["Average Kills", "Avg Kills"],
+  lifetimeHeadshots: ["Average Headshots %", "Headshots %"],
   lifetimeKd: ["Average K/D Ratio", "K/D Ratio", "K/D"],
+  lifetimeKr: ["Average K/R Ratio", "K/R Ratio", "K/R"],
 } as const
 
 function normalizedKey(value: string) {
@@ -104,7 +108,10 @@ export function normalizeMatch(record: StatRecord): NormalizedMatch {
 
 export function normalizeLifetime(record: StatRecord) {
   return {
+    avgKills: boundedNumberValue(statValue(record, STAT_ALIASES.lifetimeAvgKills), 0, 100),
+    headshotRate: boundedNumberValue(statValue(record, STAT_ALIASES.lifetimeHeadshots), 0, 100),
     kdr: boundedNumberValue(statValue(record, STAT_ALIASES.lifetimeKd), 0, 100),
+    kr: boundedNumberValue(statValue(record, STAT_ALIASES.lifetimeKr), 0, 100),
   }
 }
 
@@ -136,20 +143,17 @@ function aggregateMatches(matches: NormalizedMatch[]) {
   }
 }
 
-function dayKey(timestamp: number, timezone: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(timestamp)
-}
-
 export function createWidgetSnapshot(
   facts: PlayerFacts,
   timezone: string,
-  options: { stale: boolean; refreshAfterMs: number },
+  options: {
+    stale: boolean
+    refreshAfterMs: number
+    eloHistory?: readonly EloObservation[]
+    now?: number
+  },
 ): WidgetSnapshot {
+  const now = options.now ?? Date.now()
   const sortedMatches = [...facts.matches].sort(
     (left, right) => (right.finishedAt ?? 0) - (left.finishedAt ?? 0),
   )
@@ -158,16 +162,21 @@ export function createWidgetSnapshot(
     .filter((match): match is NormalizedMatch & { won: boolean } => match.won !== undefined)
     .slice(0, 5)
     .map((match) => (match.won ? ("win" as const) : ("loss" as const)))
-  const todayKey = dayKey(Date.now(), timezone)
+  const todayKey = calendarDay(now, timezone)
   const today = aggregateMatches(
     sortedMatches.filter(
-      (match) => match.finishedAt !== undefined && dayKey(match.finishedAt, timezone) === todayKey,
+      (match) => match.finishedAt !== undefined && calendarDay(match.finishedAt, timezone) === todayKey,
     ),
   )
+  const eloChange = dailyEloChange(options.eloHistory, facts.baseData.rank.elo, now, timezone)
 
   return {
     data: {
       ...facts.baseData,
+      rank: {
+        ...facts.baseData.rank,
+        ...(eloChange === undefined ? {} : { eloChange }),
+      },
       last30: {
         winRate: last30.winRate,
         avgKills: last30.avgKills,

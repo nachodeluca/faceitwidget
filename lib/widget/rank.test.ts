@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
-import { createDefaultConfig, updateVisibilityConfig } from "./config/config"
-import { getEditableFields } from "./config/presets"
+import { createDefaultConfig, normalizeConfig, updateVisibilityConfig } from "./config/config"
+import { getEditableFields, getRotationFields } from "./config/presets"
 import { isChallengerRank } from "./rank"
 import type { WidgetData } from "./types"
 
@@ -49,6 +49,22 @@ describe("rank preset defaults", () => {
     expect(createDefaultConfig("today-stats").visibility.nickname).toBe(true)
   })
 
+  it("exposes Challenger rank without exposing the unused K/D switch", () => {
+    const fields = getEditableFields("today-stats", rank())
+
+    expect(fields).toContain("challengerRank")
+    expect(fields).not.toContain("kdr")
+    expect(getRotationFields("today-stats")).not.toContain("lifetime")
+    expect(createDefaultConfig("today-stats").visibility.challengerRank).toBe(false)
+
+    const legacyConfig = normalizeConfig({
+      preset: "today-stats",
+      visibility: { kdr: true },
+      rotation: { fields: ["lifetime"] },
+    })
+    expect(legacyConfig.rotation.fields).not.toContain("lifetime")
+  })
+
   it("keeps the Challenger badge behind the World rank switch", () => {
     const config = createDefaultConfig("rank-country")
     const enabled = updateVisibilityConfig(config, "worldRank", true)
@@ -57,7 +73,7 @@ describe("rank preset defaults", () => {
   })
 
   it("adds K/D to the selected rotating fields", () => {
-    const config = createDefaultConfig("today-stats")
+    const config = createDefaultConfig("rich-profile")
     const updated = updateVisibilityConfig(config, "kdr", true)
 
     expect(updated.visibility.kdr).toBe(true)

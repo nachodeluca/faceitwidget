@@ -16,11 +16,30 @@ const previewSrc = `data:image/png;base64,${previewData}`
 
 export default function OpenGraphImage() {
   return new ImageResponse(
-    <div style={{ display: "flex", height: "100%", width: "100%" }}>
+    <div
+      style={{
+        background: "#121212",
+        display: "flex",
+        height: "100%",
+        overflow: "hidden",
+        position: "relative",
+        width: "100%",
+      }}
+    >
+      <div
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 25% 15%, rgba(255,255,255,0.1), transparent 30%), radial-gradient(circle at 78% 58%, rgba(255,255,255,0.03), transparent 34%)",
+          display: "flex",
+          height: "100%",
+          position: "absolute",
+          width: "100%",
+        }}
+      />
       <img
         alt=""
         src={previewSrc}
-        style={{ height: "100%", objectFit: "contain", width: "100%" }}
+        style={{ height: "100%", objectFit: "contain", position: "relative", width: "100%" }}
       />
     </div>,
     size,

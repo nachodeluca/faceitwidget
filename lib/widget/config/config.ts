@@ -1,5 +1,5 @@
 import { isRecord } from "../../utils"
-import { supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
+import { getRotationFields, supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
 import {
   isWidgetPresetId,
   type WidgetBackground,
@@ -164,10 +164,14 @@ function normalizeRotation(
   defaults: WidgetRotation,
   preset: WidgetConfig["preset"],
 ): WidgetRotation {
+  const allowedFields = getRotationFields(preset)
+
   return {
     enabled: supportsWidgetRotation(preset) && safeBoolean(value.enabled, defaults.enabled),
     intervalMs: clamp(value.intervalMs, 1800, 12000, defaults.intervalMs),
-    fields: normalizeRotationFields(value.fields, defaults.fields),
+    fields: normalizeRotationFields(value.fields, defaults.fields).filter((field) =>
+      allowedFields.includes(field),
+    ),
   }
 }
 

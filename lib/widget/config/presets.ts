@@ -14,6 +14,7 @@ export type WidgetPreset = {
   description: string
   supportsRotation: boolean
   defaultRotationFields?: WidgetRotationField[]
+  rotationFields?: WidgetRotationField[]
   defaultVisibility: WidgetVisibility
   editableFields: WidgetVisibilityKey[]
   defaultStyle?: Partial<WidgetStyle>
@@ -34,6 +35,7 @@ const hiddenStats: WidgetVisibility = {
   last30Stats: false,
   last5Results: false,
 }
+const allRotationFields: WidgetRotationField[] = ["today", "last30", "lifetime"]
 
 export const WIDGET_PRESETS: WidgetPreset[] = [
   {
@@ -69,13 +71,23 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Current session stats",
     supportsRotation: true,
     defaultRotationFields: ["today", "last30"],
+    rotationFields: ["today", "last30"],
     defaultVisibility: {
       ...hiddenStats,
       nickname: true,
+      challengerRank: false,
       todayStats: true,
       last30Stats: true,
     },
-    editableFields: ["nickname", "level", "challenger", "elo", "todayStats", "last30Stats", "kdr"],
+    editableFields: [
+      "nickname",
+      "level",
+      "challenger",
+      "challengerRank",
+      "elo",
+      "todayStats",
+      "last30Stats",
+    ],
     defaultStyle: { density: "comfortable", radius: 10 },
   },
   {
@@ -153,6 +165,10 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
 export const WIDGET_PRESET_MAP = Object.fromEntries(
   WIDGET_PRESETS.map((preset) => [preset.id, preset]),
 ) as Record<WidgetPresetId, WidgetPreset>
+
+export function getRotationFields(presetId: WidgetPresetId) {
+  return WIDGET_PRESET_MAP[presetId].rotationFields ?? allRotationFields
+}
 
 export function supportsWidgetRotation(preset: WidgetPresetId) {
   return WIDGET_PRESET_MAP[preset]?.supportsRotation === true
