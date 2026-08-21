@@ -19,6 +19,13 @@ export function showsChallengerWorldRank(data: WidgetData, config: WidgetConfig)
     && isChallengerRank(data.rank)
 }
 
+export function showsChallengerFocusRank(data: WidgetData, config: WidgetConfig) {
+  return !config.visibility.worldRank
+    && config.visibility.challenger
+    && config.visibility.challengerRank
+    && isChallengerRank(data.rank)
+}
+
 type CoreLineProps = PresetViewProps & {
   className?: string
   levelClassName?: string

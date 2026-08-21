@@ -49,7 +49,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     label: "Rank + ELO",
     description: "Rank, KDR, level, ELO",
     supportsRotation: false,
-    defaultVisibility: { ...hiddenStats, worldRank: true, countryRank: true, kdr: true },
+    defaultVisibility: { ...hiddenStats, countryRank: true, kdr: true },
     editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo", "kdr"],
   },
   {
@@ -59,7 +59,6 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     supportsRotation: false,
     defaultVisibility: {
       ...hiddenStats,
-      worldRank: true,
       countryRank: true,
     },
     editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo"],
