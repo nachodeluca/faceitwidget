@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils"
 
 import { PlayerDataBoundary } from "./player-data-boundary"
 import type { ShareStatus } from "./builder-types"
+import { MapIconPreloads } from "./map-icon-preloads"
 import { Widget } from "./widget"
 import { WidgetDataStatus, WidgetSkeleton } from "./widget-placeholder"
 
@@ -391,6 +392,7 @@ export function BuilderPreview({
 
   return (
     <section className="min-w-0 flex-1 bg-background">
+      <MapIconPreloads />
       <div className="mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         <PreviewHeader
           selectedMap={selectedMap}
