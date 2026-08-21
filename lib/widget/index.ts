@@ -3,6 +3,7 @@ export {
   createDefaultConfig,
   DEFAULT_WIDGET_CONFIG,
   normalizeConfig,
+  updateVisibilityConfig,
 } from "./config/config"
 export { WIDGET_MAPS } from "./maps"
 export { getEditableFields, supportsWidgetRotation, WIDGET_PRESETS, WIDGET_PRESET_MAP } from "./config/presets"

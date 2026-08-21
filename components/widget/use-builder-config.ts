@@ -6,6 +6,7 @@ import {
   createDefaultConfig,
   normalizeConfig,
   supportsWidgetRotation,
+  updateVisibilityConfig,
   type WidgetConfig,
   type WidgetMapId,
   type WidgetPresetId,
@@ -25,10 +26,7 @@ export function useBuilderConfig(initialConfig: WidgetConfig, initialNickname: s
   }
 
   function updateVisibility(key: WidgetVisibilityKey, value: boolean) {
-    setConfig((current) => normalizeConfig({
-      ...current,
-      visibility: { ...current.visibility, [key]: value },
-    }))
+    setConfig((current) => updateVisibilityConfig(current, key, value))
   }
 
   function updateStyle(patch: Partial<WidgetStyle>) {

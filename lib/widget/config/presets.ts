@@ -69,8 +69,13 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Current session stats",
     supportsRotation: true,
     defaultRotationFields: ["today", "last30"],
-    defaultVisibility: { ...hiddenStats, todayStats: true, last30Stats: true },
-    editableFields: ["level", "challenger", "elo", "todayStats", "last30Stats", "kdr"],
+    defaultVisibility: {
+      ...hiddenStats,
+      nickname: true,
+      todayStats: true,
+      last30Stats: true,
+    },
+    editableFields: ["nickname", "level", "challenger", "elo", "todayStats", "last30Stats", "kdr"],
     defaultStyle: { density: "comfortable", radius: 10 },
   },
   {

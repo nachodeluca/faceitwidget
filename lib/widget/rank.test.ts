@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { createDefaultConfig } from "./config/config"
+import { createDefaultConfig, updateVisibilityConfig } from "./config/config"
 import { getEditableFields } from "./config/presets"
 import { isChallengerRank } from "./rank"
 import type { WidgetData } from "./types"
@@ -43,5 +43,24 @@ describe("rank preset defaults", () => {
 
   it("starts Rank + Country without the global rank", () => {
     expect(createDefaultConfig("rank-country").visibility.worldRank).toBe(false)
+  })
+
+  it("shows the nickname in Today Stats by default", () => {
+    expect(createDefaultConfig("today-stats").visibility.nickname).toBe(true)
+  })
+
+  it("keeps the Challenger badge behind the World rank switch", () => {
+    const config = createDefaultConfig("rank-country")
+    const enabled = updateVisibilityConfig(config, "worldRank", true)
+
+    expect(enabled.visibility.worldRank).toBe(true)
+  })
+
+  it("adds K/D to the selected rotating fields", () => {
+    const config = createDefaultConfig("today-stats")
+    const updated = updateVisibilityConfig(config, "kdr", true)
+
+    expect(updated.visibility.kdr).toBe(true)
+    expect(updated.rotation.fields).toContain("lifetime")
   })
 })
