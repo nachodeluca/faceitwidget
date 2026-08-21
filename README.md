@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://faceitwidget.com/">
+  <a href="https://faceitwidget.com/?utm_source=github&utm_medium=referral">
     <img src=".github/assets/preview.png" alt="FACEIT Widget preview" width="920">
   </a>
 
@@ -8,15 +8,15 @@
   <p>Live FACEIT CS2 stats for OBS browser sources.</p>
 
   <p>
-    <a href="https://faceitwidget.com/">Create your widget</a>
+    <a href="https://faceitwidget.com/?utm_source=github&utm_medium=referral">Create your widget</a>
     &middot;
-    <a href="https://faceitwidget.com/faceit-widget-obs/">OBS setup</a>
+    <a href="https://faceitwidget.com/faceit-widget-obs/?utm_source=github&utm_medium=referral">OBS setup</a>
     &middot;
     <a href="https://github.com/nachodeluca/faceitwidget">Source code</a>
   </p>
 
   <p>
-    <a href="https://faceitwidget.com/"><img src="https://img.shields.io/badge/website-faceitwidget.com-111111?style=flat-square" alt="Website"></a>
+    <a href="https://faceitwidget.com/?utm_source=github&utm_medium=referral"><img src="https://img.shields.io/badge/website-faceitwidget.com-111111?style=flat-square" alt="Website"></a>
     <a href="https://github.com/nachodeluca/faceitwidget"><img src="https://img.shields.io/badge/open%20source-GitHub-111111?style=flat-square&logo=github&logoColor=white" alt="Open source on GitHub"></a>
     <a href="https://github.com/nachodeluca/faceitwidget/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license"></a>
   </p>
@@ -26,7 +26,7 @@ An unofficial community project for streamers. Build an overlay, choose the stat
 
 ## Use it
 
-1. Open the [widget builder](https://faceitwidget.com/builder/).
+1. Open the [widget builder](https://faceitwidget.com/builder/?utm_source=github&utm_medium=referral).
 2. Enter your FACEIT nickname and choose a preset.
 3. Adjust the content, style, map, and motion settings.
 4. Copy the generated URL.
@@ -34,7 +34,7 @@ An unofficial community project for streamers. Build an overlay, choose the stat
 
 The widget page is transparent and starts at the top-left corner. Position and crop it in OBS without changing the URL.
 
-Read the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/) for the browser-source settings. The [live stats guide](https://faceitwidget.com/live-faceit-stats/) explains caching and match refreshes.
+Read the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/?utm_source=github&utm_medium=referral) for the browser-source settings. The [live stats guide](https://faceitwidget.com/live-faceit-stats/?utm_source=github&utm_medium=referral) explains caching and match refreshes.
 
 ## What you can configure
 
