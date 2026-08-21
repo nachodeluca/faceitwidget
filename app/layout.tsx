@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import type { ReactNode } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     : undefined,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" className={`${outfit.variable} h-full antialiased`}>
       <body className="min-h-screen text-on-surface" suppressHydrationWarning>

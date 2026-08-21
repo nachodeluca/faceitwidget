@@ -23,6 +23,9 @@
     "live-stats"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "packageManager": "pnpm@11.22.0",
   "private": true,
   "scripts": {

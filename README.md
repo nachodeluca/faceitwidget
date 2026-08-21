@@ -46,7 +46,7 @@ Read the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/?utm_sourc
 
 ### Requirements
 
-- Node.js 20 or newer
+- Node.js 22 or newer
 - [pnpm 11](https://pnpm.io/)
 - A Cloudflare account with Workers and Durable Objects.
 - A server-side key from the [FACEIT for Developers](https://developers.faceit.com/apps) portal
