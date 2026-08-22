@@ -2,6 +2,7 @@ import { errorResponse, ApiError } from "./errors"
 import { isValidTimezone, parsePlayerLookup, playerLookupKey } from "../lib/widget/data/player-lookup"
 import type { WorkerEnv } from "./env"
 import { canonicalPageRedirect, staticRscAssetRequest } from "./page-routing"
+import { serveAgentDocument, serveNotFound } from "./markdown"
 import { createSharedWidget, sharedWidgetPage } from "./share-routes"
 
 export { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
@@ -64,6 +65,9 @@ export default {
       const rscAssetRequest = staticRscAssetRequest(request)
       if (rscAssetRequest) return env.ASSETS.fetch(rscAssetRequest)
 
+      const agentDocument = await serveAgentDocument(request, env.ASSETS)
+      if (agentDocument) return agentDocument
+
       const playerMatch = url.pathname.match(PLAYER_ROUTE)
       if (playerMatch) return await playerRequest(request, env, playerMatch)
       if (url.pathname === "/api/v1/shares") return await sharedWidgetRequest(request, env)
@@ -75,7 +79,8 @@ export default {
         throw new ApiError(404, "Unknown API route.")
       }
 
-      return env.ASSETS.fetch(request)
+      const assetResponse = await env.ASSETS.fetch(request)
+      return assetResponse.status === 404 ? serveNotFound(request, assetResponse) : assetResponse
     } catch (error) {
       return errorResponse(error)
     }

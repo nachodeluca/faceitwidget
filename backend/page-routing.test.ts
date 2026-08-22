@@ -8,6 +8,8 @@ describe("canonical page routing", () => {
     "/widget",
     "/faceit-widget-obs",
     "/live-faceit-stats",
+    "/contact",
+    "/privacy",
   ])("permanently redirects %s to its trailing-slash URL", (pathname) => {
     const response = canonicalPageRedirect(
       new Request(`https://faceitwidget.com${pathname}?source=test`),

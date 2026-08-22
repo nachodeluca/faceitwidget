@@ -34,8 +34,8 @@ export default function FaceitWidgetObsGuide() {
         <li>Position and scale the source without stretching it.</li>
       </ol>
       <p>
-        Keep the browser source active if you want it to receive match updates while it is outside the current scene.
-        Read <Link href={SITE_PATHS.liveFaceitStatsGuide}>how live FACEIT stats update</Link> for details about refresh timing and cached data.
+        Keep the browser source active if you want its values to update while it is outside the current scene. Read the{" "}
+        <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> if you want to know what appears after a match.
       </p>
 
       <h2>Transparent overlays</h2>
@@ -47,7 +47,7 @@ export default function FaceitWidgetObsGuide() {
       <ul>
         <li>Check that the nickname matches the FACEIT profile.</li>
         <li>Refresh the browser source after replacing its URL.</li>
-        <li>Wait for FACEIT to publish the finished match. The widget checks for updates every 30 seconds.</li>
+        <li>Wait for FACEIT to publish the finished match.</li>
       </ul>
     </GuidePage>
   )
