@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_METADATA.title,
     description: SITE_METADATA.description,
-    images: ["/opengraph-image"],
+    images: [SOCIAL_IMAGE.url],
   },
   verification: process.env.GOOGLE_SITE_VERIFICATION
     ? { google: process.env.GOOGLE_SITE_VERIFICATION }

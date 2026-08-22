@@ -16,6 +16,11 @@
 /favicon.ico*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
+/opengraph-image*
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  X-Content-Type-Options: nosniff
+
 /llms.txt
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate

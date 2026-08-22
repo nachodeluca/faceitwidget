@@ -4,6 +4,7 @@ import {
   absoluteSiteUrl,
   createLandingMetadata,
   INDEXABLE_ROUTES,
+  SOCIAL_IMAGE,
   SITE_PATHS,
 } from "./site-metadata"
 
@@ -36,5 +37,7 @@ describe("indexable routes", () => {
     expect(metadata.alternates?.canonical).toBe(canonical)
     expect(metadata.openGraph?.url).toBe(canonical)
     expect(metadata.openGraph?.title).toBe("Example guide | FACEIT Widget")
+    expect(metadata.openGraph?.images).toEqual([SOCIAL_IMAGE])
+    expect(metadata.twitter?.images).toEqual([SOCIAL_IMAGE.url])
   })
 })
