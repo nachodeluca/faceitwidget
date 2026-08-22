@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 export const SITE_METADATA = {
   name: "FACEIT Widget",
   url: "https://faceitwidget.com",
-  title: "FACEIT Widget for OBS | Live CS2 Stats Overlay",
+  title: "FACEIT Widget for OBS – Live CS2 ELO & Stats",
   description:
-    "Create a free FACEIT widget for OBS with live CS2 ELO, level, ranking, and match stats.",
+    "Create a free FACEIT widget for OBS or Streamlabs. Show live CS2 ELO, level, ranking, K/D, and recent matches with one browser-source URL.",
 } as const
 
 export const SOCIAL_IMAGE = {
