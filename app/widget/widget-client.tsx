@@ -4,7 +4,12 @@ import { useSearchParams } from "next/navigation"
 
 import { Widget } from "@/components/widget/widget"
 import { PlayerDataBoundary } from "@/components/widget/player-data-boundary"
-import { deserializeConfig, getBrowserTimezone, usePlayerSnapshot } from "@/lib/widget"
+import {
+  deserializeConfig,
+  getBrowserTimezone,
+  OBS_OUTPUT_SCALE,
+  usePlayerSnapshot,
+} from "@/lib/widget"
 
 export function WidgetClient() {
   const searchParams = useSearchParams()
@@ -18,7 +23,7 @@ export function WidgetClient() {
 
   return (
     <PlayerDataBoundary state={snapshot} pending={null}>
-      {(data) => <Widget data={data} config={config} />}
+      {(data) => <Widget data={data} config={config} outputScale={OBS_OUTPUT_SCALE} />}
     </PlayerDataBoundary>
   )
 }
