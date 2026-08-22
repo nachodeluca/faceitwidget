@@ -2,7 +2,7 @@
 
 import type { CSSProperties, Ref } from "react"
 
-import { normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
+import { getWidgetZoom, normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
 import { cn } from "@/lib/utils"
 
 import { PresetView } from "./preset-view"
@@ -18,12 +18,20 @@ type WidgetProps = {
   config?: WidgetConfig
   className?: string
   shadow?: WidgetShadow
+  outputScale?: number
   ref?: Ref<HTMLDivElement>
 }
 
 export type WidgetShadow = "default" | "subtle" | "none"
 
-export function Widget({ data, config: rawConfig, className, shadow = "default", ref }: WidgetProps) {
+export function Widget({
+  data,
+  config: rawConfig,
+  className,
+  shadow = "default",
+  outputScale = 1,
+  ref,
+}: WidgetProps) {
   const config = normalizeConfig(rawConfig)
   const style = {
     "--widget-accent": config.style.accent,
@@ -33,7 +41,7 @@ export function Widget({ data, config: rawConfig, className, shadow = "default",
     "--widget-surface-muted": config.style.surfaceMuted,
     "--widget-border": config.style.border,
     "--widget-radius": `${config.style.radius}px`,
-    "--widget-scale": config.style.scale,
+    "--widget-zoom": getWidgetZoom(config.style.scale, outputScale),
     "--widget-opacity": config.style.opacity,
     "--widget-font": fontStacks[config.style.font],
     "--widget-layout-gap": config.style.density === "comfortable" ? "12px" : "6px",
@@ -58,7 +66,7 @@ export function Widget({ data, config: rawConfig, className, shadow = "default",
     <div
       ref={ref}
       className={cn(
-        "inline-block max-w-full origin-top-left text-[12px] font-normal leading-none text-[color:var(--widget-text)] opacity-[var(--widget-opacity)] [font-family:var(--widget-font)] [transform:scale(var(--widget-scale))]",
+        "inline-block max-w-full text-[12px] font-normal leading-none text-[color:var(--widget-text)] opacity-[var(--widget-opacity)] [font-family:var(--widget-font)] [zoom:var(--widget-zoom)]",
         transparentTextClass,
         className,
       )}
