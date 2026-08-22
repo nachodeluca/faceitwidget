@@ -3,21 +3,21 @@ import { describe, expect, it } from "vitest"
 import {
   absoluteSiteUrl,
   createLandingMetadata,
-  INDEXABLE_ROUTES,
+  INDEXABLE_PATHS,
   SOCIAL_IMAGE,
   SITE_PATHS,
 } from "./site-metadata"
 
 describe("indexable routes", () => {
   it("contains every canonical landing exactly once", () => {
-    const paths = INDEXABLE_ROUTES.map((route) => route.path)
+    const paths = [...INDEXABLE_PATHS]
 
     expect(paths).toEqual(Object.values(SITE_PATHS))
     expect(new Set(paths).size).toBe(paths.length)
   })
 
   it("generates absolute HTTPS URLs for the sitemap", () => {
-    expect(INDEXABLE_ROUTES.map((route) => absoluteSiteUrl(route.path))).toEqual([
+    expect(INDEXABLE_PATHS.map(absoluteSiteUrl)).toEqual([
       "https://faceitwidget.com/",
       "https://faceitwidget.com/faceit-widget-obs/",
       "https://faceitwidget.com/live-faceit-stats/",

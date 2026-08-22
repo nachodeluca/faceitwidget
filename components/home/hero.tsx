@@ -33,7 +33,7 @@ function LiveBadge() {
 function HeroTitle() {
   return (
     <h1 id="hero-title" className="mt-6 max-w-[620px] text-[clamp(3rem,6.5vw,6.5rem)] font-semibold leading-[0.96] tracking-[-0.075em] text-foreground">
-      <span className="block whitespace-nowrap">FACEIT stats</span>
+      <span className="block whitespace-nowrap">FACEIT Widget</span>
       <span className="mt-1 flex items-center whitespace-nowrap text-[0.78em] leading-[0.92] text-muted-foreground">
         <span>in the</span>
         <span className="group/frame relative isolate ml-[0.1em] inline-block overflow-visible rounded-[0.14em] border border-border-strong bg-surface-raised/60 px-[0.14em] py-[0.02em] leading-[0.86] text-muted-foreground shadow-[inset_0_1px_rgb(255_255_255_/_4%)] motion-safe:transition-[background-color,border-color,box-shadow,color,transform] motion-safe:duration-[220ms] motion-safe:ease-[var(--ease-out)] [@media(hover:hover)_and_(pointer:fine)]:hover:scale-[1.015] [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-foreground/45 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-surface-hover/85 [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_8px_24px_rgb(0_0_0_/_16%),inset_0_1px_rgb(255_255_255_/_7%)] motion-reduce:transition-none">
@@ -65,15 +65,15 @@ export function Hero({ player }: HeroProps) {
           <LiveBadge />
           <HeroTitle />
           <p className="mt-6 max-w-[350px] text-[14px] leading-6 text-muted-foreground sm:text-[15px]">
-            Choose a preset, tune the details, and follow the{" "}
+            Build a free{" "}
             <Link
               href={SITE_PATHS.faceitWidgetObsGuide}
               prefetch={false}
               className="text-text-secondary underline decoration-white/25 underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-foreground hover:decoration-white/70"
             >
-              FACEIT Widget setup for OBS
+              FACEIT widget for OBS
             </Link>
-            .
+            . Show live ELO, rank, K/D, and recent matches with one browser-source URL.
           </p>
           <Button
             render={<Link href={{ pathname: "/builder", query: { nickname: player } }} prefetch={false} />}
