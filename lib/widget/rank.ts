@@ -2,11 +2,15 @@ import type { WidgetData } from "./types"
 
 export const CHALLENGER_RANK_LIMIT = 1000
 
+export function hasEloChange(value: number | undefined): value is number {
+  return value !== undefined && Number.isFinite(value) && value !== 0
+}
+
 export function isChallengerRank(rank: WidgetData["rank"]) {
-  const regionalRank = rank.regionRank ?? rank.worldRank
+  const rankPosition = rank.worldRank ?? rank.regionRank
 
   return rank.level === 10
-    && regionalRank !== undefined
-    && regionalRank >= 1
-    && regionalRank <= CHALLENGER_RANK_LIMIT
+    && rankPosition !== undefined
+    && rankPosition >= 1
+    && rankPosition <= CHALLENGER_RANK_LIMIT
 }

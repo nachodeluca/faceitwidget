@@ -19,6 +19,7 @@ function shouldShowTodayStats(data: WidgetData, config: WidgetConfig) {
 
 function rotationItems(data: WidgetData, config: WidgetConfig): RotationItem[] {
   const items: RotationItem[] = []
+  const rotationFields = getRotationFields(config.preset)
 
   if (shouldShowTodayStats(data, config)) {
     items.push({
@@ -42,7 +43,7 @@ function rotationItems(data: WidgetData, config: WidgetConfig): RotationItem[] {
     })
   }
 
-  if (config.visibility.kdr && getRotationFields(config.preset).includes("lifetime")) {
+  if (config.visibility.kdr && rotationFields.includes("lifetime")) {
     items.push({
       id: "lifetime",
       content: (

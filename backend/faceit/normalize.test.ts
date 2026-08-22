@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest"
 
 import {
   createWidgetSnapshot,
+  fetchPlayerFacts,
   normalizeLifetime,
   normalizeMatch,
   type PlayerFacts,
 } from "./normalize"
+import type { FaceitGateway } from "./gateway"
 
 describe("normalizeMatch", () => {
   it("normalizes FACEIT's dynamic stat names", () => {
@@ -28,6 +30,30 @@ describe("normalizeMatch", () => {
       kr: 0.84,
       adr: 104.3,
     })
+  })
+})
+
+describe("fetchPlayerFacts", () => {
+  it("keeps one canonical ranking when FACEIT returns one ranking response", async () => {
+    const gateway = {
+      getPlayerByNickname: async () => ({
+        player_id: "player-1",
+        nickname: "nachete",
+        country: "uy",
+        games: { cs2: { region: "SA", skill_level: 10, faceit_elo: 2_173 } },
+      }),
+      getLifetime: async () => ({ lifetime: {} }),
+      getMatchStats: async () => ({ items: [] }),
+      getHistory: async () => ({ items: [] }),
+      getRanking: async (_playerId: string, _region: string, country?: string) => ({
+        position: country ? 38 : 2_350,
+      }),
+    } as unknown as FaceitGateway
+
+    const facts = await fetchPlayerFacts(gateway, { kind: "nickname", value: "nachete" })
+
+    expect(facts.baseData.rank.worldRank).toBe(2_350)
+    expect(facts.baseData.rank.regionRank).toBeUndefined()
   })
 })
 

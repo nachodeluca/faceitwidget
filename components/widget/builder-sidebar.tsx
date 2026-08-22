@@ -25,9 +25,12 @@ import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 const controlLabelClass = "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+const sectionHeadingClass = "text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80"
+const fieldLabelClass = "text-[12px] font-medium text-muted-foreground"
 const fieldRowClass = "flex items-center justify-between gap-2 rounded-md border border-transparent px-2 py-2 text-xs text-muted-foreground transition-[border-color,background-color,color] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-surface-2 hover:text-foreground"
 
 const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
@@ -35,7 +38,6 @@ const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
   ["level", "Level"],
   ["elo", "ELO"],
   ["worldRank", "World rank"],
-  ["regionRank", "Region rank"],
   ["countryRank", "Country rank"],
   ["challenger", "Challenger"],
   ["challengerRank", "Rank number"],
@@ -58,8 +60,34 @@ const styleColors = [
   ["mutedText", "Muted"],
 ] as const
 
+type VisibilityGroup = "Player" | "Rank" | "Stats"
+
+const visibilityGroupOrder: VisibilityGroup[] = ["Player", "Rank", "Stats"]
+const visibilityGroupByKey: Partial<Record<WidgetVisibilityKey, VisibilityGroup>> = {
+  nickname: "Player",
+  level: "Player",
+  elo: "Rank",
+  worldRank: "Rank",
+  countryRank: "Rank",
+  challenger: "Rank",
+  challengerRank: "Rank",
+  kdr: "Stats",
+  todayStats: "Stats",
+  last30Stats: "Stats",
+  last5Results: "Stats",
+}
+
 function firstSliderValue(value: number | readonly number[]) {
   return typeof value === "number" ? value : value[0]
+}
+
+function SettingsSectionHeading({ label, detail }: { label: string; detail?: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className={sectionHeadingClass}>{label}</span>
+      {detail ? <span className="text-[11px] tabular-nums text-muted-foreground">{detail}</span> : null}
+    </div>
+  )
 }
 
 function FieldSwitch({
@@ -99,12 +127,19 @@ type ContentTabProps = {
 function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: ContentTabProps) {
   const editableFields = getEditableFields(config.preset, rank)
   const fields = visibilityLabels.filter(([key]) => editableFields.includes(key))
+  const activeCount = fields.filter(([key]) => config.visibility[key]).length
+  const groupedFields = visibilityGroupOrder
+    .map((group) => ({
+      group,
+      fields: fields.filter(([key]) => visibilityGroupByKey[key] === group),
+    }))
+    .filter(({ fields: groupFields }) => groupFields.length > 0)
 
   return (
     <TabsContent value="content" className="mt-4">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <Label className={controlLabelClass}>Preset</Label>
+          <SettingsSectionHeading label="Preset" />
           <Select
             items={WIDGET_PRESETS.map((preset) => ({ value: preset.id, label: preset.label }))}
             value={config.preset}
@@ -112,7 +147,7 @@ function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: Conten
               if (value) onPresetChange(value as WidgetPresetId)
             }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="h-10 w-full rounded-lg px-3 font-semibold">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -127,17 +162,26 @@ function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: Conten
 
         <Separator />
 
-        <div className="flex flex-col gap-3">
-          <Label className={controlLabelClass}>Configuration</Label>
-          <div className="grid grid-cols-2 gap-1.5">
-            {fields.map(([key, label]) => (
-              <FieldSwitch
-                key={key}
-                label={label}
-                checked={config.visibility[key] ?? false}
-                onCheckedChange={(checked) => onVisibilityChange(key, checked)}
-                ariaLabel={`Show ${label}`}
-              />
+        <div className="flex flex-col gap-4">
+          <SettingsSectionHeading label="Visible fields" detail={`${activeCount} active`} />
+          <div className="flex flex-col gap-4">
+            {groupedFields.map(({ group, fields: groupFields }) => (
+              <div className="flex flex-col gap-2" key={group}>
+                <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/70">
+                  {group}
+                </span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {groupFields.map(([key, label]) => (
+                    <FieldSwitch
+                      key={key}
+                      label={label}
+                      checked={config.visibility[key] ?? false}
+                      onCheckedChange={(checked) => onVisibilityChange(key, checked)}
+                      ariaLabel={`Show ${label}`}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -161,7 +205,7 @@ function BackgroundControl({
 }: StyleChangeProps & { value: WidgetConfig["style"]["background"] }) {
   return (
     <div className="flex flex-col gap-2">
-      <Label className={controlLabelClass}>Background</Label>
+      <Label className={fieldLabelClass}>Background</Label>
       <Select
         items={[
           { value: "solid", label: "Solid" },
@@ -200,7 +244,7 @@ function FontControl({
 }: StyleChangeProps & { value: WidgetConfig["style"]["font"] }) {
   return (
     <div className="flex flex-col gap-2">
-      <Label className={controlLabelClass}>Font</Label>
+      <Label className={fieldLabelClass}>Font</Label>
       <Select
         items={[
           { value: "outfit", label: "Outfit" },
@@ -256,35 +300,52 @@ function StyleRanges({ config, onStyleChange }: StyleTabProps) {
 
 function ColorControls({ config, onStyleChange }: StyleTabProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2">
       {styleColors.map(([key, label]) => (
-        <div className="flex flex-col gap-2" key={key}>
-          <Label className={controlLabelClass} htmlFor={`color-${key}`}>
-            {label}
-          </Label>
+        <label
+          className="relative flex h-11 items-center gap-2 overflow-hidden rounded-md border border-border/70 bg-surface/30 px-2 transition-[border-color,background-color] duration-150 ease-[var(--ease-out)] hover:border-foreground/35 hover:bg-surface-2"
+          htmlFor={`color-${key}`}
+          key={key}
+        >
+          <span
+            aria-hidden="true"
+            className="size-6 shrink-0 rounded-sm border border-white/15 shadow-[inset_0_0_0_1px_rgb(0_0_0_/_20%)]"
+            style={{ backgroundColor: config.style[key] }}
+          />
+          <span className="min-w-0 truncate text-xs font-medium text-foreground">{label}</span>
+          <code className="ml-auto text-[9px] uppercase tabular-nums text-muted-foreground">{config.style[key]}</code>
           <Input
             id={`color-${key}`}
             type="color"
-            className="h-9 cursor-pointer p-1"
+            aria-label={`Change ${label} color`}
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
             value={config.style[key]}
             onChange={(event) => onStyleChange({ [key]: event.target.value })}
           />
-        </div>
+        </label>
       ))}
     </div>
   )
 }
 
 function StyleTab({ config, onStyleChange }: StyleTabProps) {
-
   return (
     <TabsContent value="style" className="mt-4">
-      <div className="flex flex-col gap-5">
-        <BackgroundControl value={config.style.background} onChange={onStyleChange} />
-        <BorderControl enabled={config.style.borderEnabled} onChange={onStyleChange} />
-        <FontControl value={config.style.font} onChange={onStyleChange} />
-        <StyleRanges config={config} onStyleChange={onStyleChange} />
-        <ColorControls config={config} onStyleChange={onStyleChange} />
+      <div className="flex flex-col gap-6">
+        <section className="flex flex-col gap-3">
+          <SettingsSectionHeading label="Surface" />
+          <BackgroundControl value={config.style.background} onChange={onStyleChange} />
+          <BorderControl enabled={config.style.borderEnabled} onChange={onStyleChange} />
+        </section>
+        <section className="flex flex-col gap-3 border-t border-border/70 pt-5">
+          <SettingsSectionHeading label="Type" />
+          <FontControl value={config.style.font} onChange={onStyleChange} />
+          <StyleRanges config={config} onStyleChange={onStyleChange} />
+        </section>
+        <section className="flex flex-col gap-3 border-t border-border/70 pt-5">
+          <SettingsSectionHeading label="Colors" />
+          <ColorControls config={config} onStyleChange={onStyleChange} />
+        </section>
       </div>
     </TabsContent>
   )
@@ -312,7 +373,7 @@ function RangeControl({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
-        <Label className={controlLabelClass}>{label}</Label>
+        <Label className={fieldLabelClass}>{label}</Label>
         <span className="text-[12px] tabular-nums text-muted-foreground">{value}</span>
       </div>
       <Slider
@@ -336,8 +397,8 @@ function RotationToggle({ config, onRotationChange }: MotionTabProps) {
   return (
     <label className="flex items-center justify-between gap-3 rounded-md border border-border/70 px-2.5 py-2.5 text-xs text-muted-foreground">
       <span>
-        <strong className="block text-sm text-foreground">Rotate content</strong>
-        <small className="mt-1 block text-xs leading-4 text-muted-foreground">Cycle through selected fields.</small>
+        <strong className="block text-sm text-foreground">Auto rotate</strong>
+        <small className="mt-1 block text-xs leading-4 text-muted-foreground">Cycle through selected stats.</small>
       </span>
       <Switch
         checked={config.rotation.enabled}
@@ -350,10 +411,11 @@ function RotationToggle({ config, onRotationChange }: MotionTabProps) {
 
 function RotationFields({ config, onRotationChange }: MotionTabProps) {
   const availableFields = getRotationFields(config.preset)
+  const selectedCount = config.rotation.fields.filter((field) => availableFields.includes(field)).length
 
   return (
     <div className="flex flex-col gap-3">
-      <Label className={controlLabelClass}>Rotating fields</Label>
+      <SettingsSectionHeading label="Fields" detail={`${selectedCount} selected`} />
       <div className="grid grid-cols-2 gap-1.5">
         {rotationFields.filter(([field]) => availableFields.includes(field)).map(([field, label]) => (
           <FieldSwitch
@@ -378,23 +440,24 @@ function RotationFields({ config, onRotationChange }: MotionTabProps) {
 function MotionTab({ config, onRotationChange }: MotionTabProps) {
   return (
     <TabsContent value="motion" className="mt-4">
-      <div className="flex flex-col gap-5">
-        <RotationToggle config={config} onRotationChange={onRotationChange} />
-
-        <RangeControl
-          label="Interval"
-          value={`${(config.rotation.intervalMs / 1000).toFixed(1)}s`}
-          min={1800}
-          max={12000}
-          step={200}
-          sliderValue={config.rotation.intervalMs}
-          onValueChange={(intervalMs) => onRotationChange({ intervalMs })}
-          ariaLabel="Rotation interval"
-        />
-
-        <Separator />
-
-        <RotationFields config={config} onRotationChange={onRotationChange} />
+      <div className="flex flex-col gap-6">
+        <section className="flex flex-col gap-4">
+          <SettingsSectionHeading label="Rotation" />
+          <RotationToggle config={config} onRotationChange={onRotationChange} />
+          <RangeControl
+            label="Interval"
+            value={`${(config.rotation.intervalMs / 1000).toFixed(1)}s`}
+            min={1800}
+            max={12000}
+            step={200}
+            sliderValue={config.rotation.intervalMs}
+            onValueChange={(intervalMs) => onRotationChange({ intervalMs })}
+            ariaLabel="Rotation interval"
+          />
+        </section>
+        <section className="flex flex-col gap-3 border-t border-border/70 pt-5">
+          <RotationFields config={config} onRotationChange={onRotationChange} />
+        </section>
       </div>
     </TabsContent>
   )
@@ -471,27 +534,34 @@ function SidebarActions({
   onFeedback,
 }: Pick<BuilderSidebarProps, "copied" | "resetAnimationKey" | "onReset" | "onCopy" | "onFeedback">) {
   return (
-    <div className="mt-auto pt-8">
-      <div className="grid grid-cols-2 gap-2">
-        <Button
-          className="w-full"
-          variant="outline"
-          size="sm"
-          icon={<RotateCcw key={resetAnimationKey} className={cn(resetAnimationKey > 0 && "animate-[spin_500ms_ease-out]")} />}
-          onClick={onReset}
-        >
-          Reset
-        </Button>
-        <Button
-          className="w-full"
-          size="sm"
-          icon={copied ? <Check className="text-emerald-500" /> : <Copy />}
-          iconPosition="end"
-          onClick={onCopy}
-        >
-          {copied ? "Copied" : "Copy URL"}
-        </Button>
+    <div className="mt-auto border-t border-border/70 pt-4">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Actions</span>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                icon={<RotateCcw key={resetAnimationKey} className={cn(resetAnimationKey > 0 && "animate-[spin_500ms_ease-out]")} />}
+                onClick={onReset}
+                aria-label="Reset widget"
+                className="text-muted-foreground hover:text-foreground"
+              />
+            }
+          />
+          <TooltipContent>Reset widget</TooltipContent>
+        </Tooltip>
       </div>
+      <Button
+        className="h-10 w-full justify-center rounded-lg font-semibold shadow-[0_1px_0_rgb(0_0_0_/_18%)]"
+        size="default"
+        icon={copied ? <Check className="text-emerald-500" /> : <Copy />}
+        iconPosition="end"
+        onClick={onCopy}
+      >
+        {copied ? "Copied" : "Copy URL"}
+      </Button>
       <Button
         className="mt-2 w-full justify-center text-muted-foreground hover:text-foreground"
         variant="ghost"
@@ -522,7 +592,7 @@ export function BuilderSidebar({
   onFeedback,
 }: BuilderSidebarProps) {
   return (
-    <aside className="border-b border-border/70 bg-surface/55 lg:sticky lg:top-0 lg:h-screen lg:w-[360px] lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r">
+    <aside className="scrollbar-hidden border-b border-border/70 bg-surface/55 lg:sticky lg:top-0 lg:h-screen lg:w-[360px] lg:shrink-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r">
       <div className="flex min-h-full flex-col px-4 py-5 sm:px-6 lg:px-7 lg:py-6">
         <header>
           <h1 className="text-2xl font-semibold tracking-[-0.03em] text-on-surface">Settings</h1>

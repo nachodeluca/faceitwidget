@@ -4,6 +4,7 @@ import { Globe2 } from "lucide-react"
 
 import {
   CHALLENGER_RANK_COLORS,
+  hasEloChange,
   isChallengerRank,
   type WidgetData,
   type WidgetVisibility,
@@ -21,7 +22,6 @@ const levelAsset = (data: WidgetData) => {
   const level = Math.min(10, Math.max(1, Math.round(data.rank.level || 1)))
   return `/levels/${String(level).padStart(2, "0")}.svg`
 }
-
 export function PlayerNickname({
   data,
   className,
@@ -41,7 +41,6 @@ export function PlayerNickname({
     </strong>
   )
 }
-
 export function LevelMark({
   data,
   visibility,
@@ -82,7 +81,6 @@ export function LevelMark({
     </span>
   )
 }
-
 export function Identity({
   data,
   visibility,
@@ -139,14 +137,6 @@ export function EloSummary({ data, visibility }: { data: WidgetData; visibility:
   }
 
   const eloChange = data.rank.eloChange
-  const changeTone =
-    eloChange === undefined
-      ? "text-[color:var(--widget-muted)]"
-      : eloChange > 0
-        ? "text-[#83dba5]"
-        : eloChange < 0
-          ? "text-[#ff7884]"
-          : "text-[color:var(--widget-muted)]"
 
   return (
     <span className="inline-flex min-w-0 items-baseline gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">
@@ -154,8 +144,8 @@ export function EloSummary({ data, visibility }: { data: WidgetData; visibility:
         <AnimatedNumber value={data.rank.elo} />
       </strong>
       <span>ELO</span>
-      {eloChange !== undefined ? (
-        <span className={cn("tabular-nums", changeTone)}>
+      {hasEloChange(eloChange) ? (
+        <span className={cn("tabular-nums", eloChange > 0 ? "text-[#83dba5]" : "text-[#ff7884]")}>
           (<AnimatedNumber value={eloChange} signed />)
         </span>
       ) : null}
@@ -226,7 +216,7 @@ export function ChallengerRankBadge({
       className={cn(
         showRankNumber
           ? "inline-flex min-h-7 shrink-0 items-center gap-[5px] rounded-full border border-[color:var(--challenger-rank-color)] bg-[color:var(--challenger-rank-color)] px-2 py-1 leading-none text-[#090909] shadow-[0_1px_0_rgb(0_0_0_/_28%)]"
-          : "inline-flex size-5 shrink-0 items-center justify-center",
+          : "inline-flex size-7 shrink-0 items-center justify-center",
       )}
       style={style}
       title={`World rank ${label}`}
@@ -236,7 +226,7 @@ export function ChallengerRankBadge({
         <strong className="font-system text-[13px] font-extrabold text-[#090909] tabular-nums">{label}</strong>
       ) : null}
       <ChallengerMark
-        className="block size-5 shrink-0 object-contain"
+        className={cn("block shrink-0 object-contain", showRankNumber ? "size-5" : "size-7")}
         accentColor={CHALLENGER_RANK_COLORS[tier]}
       />
     </span>
@@ -284,7 +274,6 @@ export function CountryFlag({
     />
   )
 }
-
 export function KdrValue({
   data,
   visibility,
@@ -531,16 +520,18 @@ function RankItem({
   value,
   icon,
   className,
+  valueClassName,
 }: {
   label: string
   value?: number
   icon: ReactNode
   className?: string
+  valueClassName?: string
 }) {
   return (
     <span className={cn("inline-flex items-center gap-1", className)} title={label}>
       {icon}
-      <RankValue className="gap-0" value={value} />
+      <RankValue className="gap-0" value={value} valueClassName={valueClassName} />
     </span>
   )
 }
@@ -549,10 +540,14 @@ export function WorldRank({
   data,
   visibility,
   showChallengerBadge = true,
+  className,
+  valueClassName,
 }: {
   data: WidgetData
   visibility: WidgetVisibility
   showChallengerBadge?: boolean
+  className?: string
+  valueClassName?: string
 }) {
   if (!visibility.worldRank) {
     return null
@@ -562,10 +557,29 @@ export function WorldRank({
     return <ChallengerRankBadge value={data.rank.worldRank} showRankNumber={visibility.challengerRank} />
   }
 
-  return <RankItem label="World rank" value={data.rank.worldRank} icon={<GlobeIcon />} />
+  return (
+    <RankItem
+      label="World rank"
+      value={data.rank.worldRank}
+      icon={<GlobeIcon />}
+      className={className}
+      valueClassName={valueClassName}
+    />
+  )
 }
-
-export function CountryRank({ data, visibility }: { data: WidgetData; visibility: WidgetVisibility }) {
+export function CountryRank({
+  data,
+  visibility,
+  className,
+  flagClassName,
+  valueClassName,
+}: {
+  data: WidgetData
+  visibility: WidgetVisibility
+  className?: string
+  flagClassName?: string
+  valueClassName?: string
+}) {
   if (!visibility.countryRank) {
     return null
   }
@@ -574,16 +588,9 @@ export function CountryRank({ data, visibility }: { data: WidgetData; visibility
     <RankItem
       label="Country rank"
       value={data.rank.countryRank}
-      icon={<CountryFlag data={data} />}
-      className="gap-[5px]"
+      icon={<CountryFlag data={data} className={flagClassName} />}
+      className={cn("gap-[5px]", className)}
+      valueClassName={valueClassName}
     />
   )
-}
-
-export function RegionRank({ data, visibility }: { data: WidgetData; visibility: WidgetVisibility }) {
-  if (!visibility.regionRank) {
-    return null
-  }
-
-  return <RankItem label="Region rank" value={data.rank.regionRank} icon={<GlobeIcon />} />
 }

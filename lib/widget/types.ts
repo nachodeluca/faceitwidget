@@ -5,7 +5,6 @@ export const WIDGET_PRESET_IDS = [
   "today-stats",
   "rich-profile",
   "rich-history",
-  "stream-card",
   "profile-card",
 ] as const
 

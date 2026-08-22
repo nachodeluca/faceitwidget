@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils"
 import { PlayerDataBoundary } from "./player-data-boundary"
 import type { ShareStatus } from "./builder-types"
 import { MapIconPreloads } from "./map-icon-preloads"
+import { PresetSuggestionCard } from "./preset-suggestion-card"
 import { Widget } from "./widget"
 import { WidgetDataStatus, WidgetSkeleton } from "./widget-placeholder"
 
@@ -44,7 +45,6 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
   "today-stats": 0.63,
   "rich-profile": 0.64,
   "rich-history": 0.64,
-  "stream-card": 0.68,
   "profile-card": 0.68,
 }
 
@@ -300,6 +300,7 @@ function LayoutGrid({ state, selectedPreset, onPresetChange }: LayoutGridProps) 
           </div>
         )
       })}
+      <PresetSuggestionCard />
     </div>
   )
 }

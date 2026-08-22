@@ -1,5 +1,6 @@
 import { ArrowUpRight, Bug, Check, Copy, Heart, Lightbulb } from "lucide-react"
-import type { ReactNode } from "react"
+import Link from "next/link"
+import type { ReactNode, SyntheticEvent } from "react"
 
 import { GithubMark } from "@/components/icons/github-mark"
 import { Button } from "@/components/ui/button"
@@ -13,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SITE_LINKS } from "@/lib/site-links"
+import { SITE_PATHS } from "@/lib/site-metadata"
 
 type CopyDialogProps = {
   open: boolean
@@ -20,6 +22,10 @@ type CopyDialogProps = {
   copied: boolean
   onOpenChange: (open: boolean) => void
   onCopy: () => void
+}
+
+function showUrlStart(event: SyntheticEvent<HTMLInputElement>) {
+  event.currentTarget.scrollLeft = 0
 }
 
 function CopyDialog({ open, widgetUrl, copied, onOpenChange, onCopy }: CopyDialogProps) {
@@ -31,6 +37,15 @@ function CopyDialog({ open, widgetUrl, copied, onOpenChange, onCopy }: CopyDialo
           <DialogDescription>
             Copy this URL to use the widget in OBS, a browser source, or anywhere else.
           </DialogDescription>
+          <p className="text-xs text-muted-foreground">
+            Need help adding it to OBS?{" "}
+            <Link
+              href={SITE_PATHS.faceitWidgetObsGuide}
+              className="text-foreground underline decoration-border-strong underline-offset-4 transition-colors hover:decoration-foreground"
+            >
+              Read the setup guide
+            </Link>
+          </p>
         </DialogHeader>
 
         <div className="flex flex-col gap-2">
@@ -42,10 +57,19 @@ function CopyDialog({ open, widgetUrl, copied, onOpenChange, onCopy }: CopyDialo
               id="widget-url"
               readOnly
               value={widgetUrl}
-              className="h-9 min-w-0 flex-1 truncate bg-background/60 text-xs focus-visible:border-input focus-visible:ring-0"
+              dir="ltr"
+              onClick={showUrlStart}
+              onFocus={showUrlStart}
+              className="h-10 min-w-0 flex-1 truncate bg-background/60 text-left text-xs [direction:ltr] focus-visible:border-input focus-visible:ring-0"
             />
-            <Button size="sm" icon={copied ? <Check className="text-emerald-500" /> : <Copy />} onClick={onCopy}>
-              {copied ? "Copied" : "Copy"}
+            <Button
+              className="h-10 rounded-lg font-semibold shadow-[0_1px_0_rgb(0_0_0_/_18%)]"
+              size="default"
+              icon={copied ? <Check className="text-emerald-500" /> : <Copy />}
+              iconPosition="end"
+              onClick={onCopy}
+            >
+              {copied ? "Copied" : "Copy URL"}
             </Button>
           </div>
         </div>

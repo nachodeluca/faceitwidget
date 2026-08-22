@@ -1,22 +1,25 @@
 import {
   CountryRank,
   KdrValue,
-  RegionRank,
   WorldRank,
 } from "../parts"
-import { CoreLine, showsChallengerWorldRank } from "./shared/core-line"
+import { isChallengerRank } from "@/lib/widget"
+
+import { CoreLine } from "./shared/core-line"
 import { RotatingDetails } from "./shared/rotation-details"
 import type { PresetViewProps } from "./types"
 
 function RichHeader({ data, config }: PresetViewProps) {
+  const challenger = isChallengerRank(data.rank)
+  const showWorldRank = config.visibility.worldRank && !challenger
+
   return (
     <div className="flex min-w-0 items-center gap-2">
       <div className="flex min-w-0 shrink-0 items-center gap-2">
-        <WorldRank data={data} visibility={config.visibility} />
         <CoreLine
           data={data}
           config={config}
-          hideChallengerMark={showsChallengerWorldRank(data, config)}
+          showFocusRank={challenger && config.visibility.challengerRank}
           className="gap-[6px]"
           levelClassName="size-6"
           eloValueClassName="text-[18px] tracking-[-0.03em]"
@@ -31,7 +34,9 @@ function RichHeader({ data, config }: PresetViewProps) {
       />
       <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
         <CountryRank data={data} visibility={config.visibility} />
-        <RegionRank data={data} visibility={config.visibility} />
+        {showWorldRank ? (
+          <WorldRank data={data} visibility={config.visibility} showChallengerBadge={false} />
+        ) : null}
       </div>
     </div>
   )
