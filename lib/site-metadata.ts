@@ -9,7 +9,7 @@ export const SITE_METADATA = {
 } as const
 
 export const SOCIAL_IMAGE = {
-  url: "/opengraph-image",
+  url: "/opengraph-image?v=2",
   width: 1200,
   height: 630,
   alt: "FACEIT Widget for OBS",
