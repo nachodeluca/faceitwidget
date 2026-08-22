@@ -227,6 +227,11 @@
     line-height: 20px;
   }
 
+  html:has([data-widget-page]),
+  html:has([data-widget-page]) body {
+    background: transparent;
+  }
+
   h1,
   h2,
   h3,

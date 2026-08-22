@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function WidgetPage() {
   return (
-    <main className="flex min-h-screen items-start justify-start bg-transparent">
+    <main data-widget-page className="flex min-h-screen items-start justify-start bg-transparent">
       <Suspense fallback={null}>
         <WidgetClient />
       </Suspense>
