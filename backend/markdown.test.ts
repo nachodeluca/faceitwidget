@@ -76,4 +76,13 @@ describe("markdown negotiation", () => {
     expect(getMarkdownDocument("/contact/")?.length).toBeGreaterThan(500)
     expect(getMarkdownDocument("/privacy/")?.length).toBeGreaterThan(500)
   })
+
+  it("includes guide images in negotiated Markdown", () => {
+    expect(getMarkdownDocument("/faceit-widget-obs/")).toContain(
+      "https://faceitwidget.com/guides/obs-widget-overlay.png",
+    )
+    expect(getMarkdownDocument("/live-faceit-stats/")).toContain(
+      "https://faceitwidget.com/guides/live-stats-rich-profile.png",
+    )
+  })
 })
