@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { GuideImage, GUIDE_IMAGES } from "@/components/guides/guide-image"
 import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 
@@ -15,30 +16,30 @@ export default function LiveFaceitStatsGuide() {
   return (
     <GuidePage
       title={title}
-      description="The overlay watches for completed CS2 matches and refreshes the displayed stats without reloading the OBS browser source."
+      description="The overlay keeps your selected FACEIT statistics visible while your OBS browser source is open."
       path={path}
     >
       <h2>What updates</h2>
       <p>
         The widget can show FACEIT ELO, skill level, leaderboard position, country rank, lifetime K/D, today&apos;s record, and averages from the latest 30 completed matches.
       </p>
+      <GuideImage
+        image={GUIDE_IMAGES.liveStats}
+        alt="Rich Profile preset showing FACEIT ELO, country rank, K/D, and statistics from the latest 30 matches"
+        caption="Rich Profile combines rank data with recent match averages in one overlay."
+      />
 
       <h2>When a match finishes</h2>
       <p>
-        An open widget checks the latest FACEIT match every 30 seconds. When a new match appears, it reloads the player statistics and animates changed values. If FACEIT has not finished processing the match, the service retries with increasing delays.
+        When FACEIT publishes a finished match, the widget updates the relevant values and animates the change while the browser source stays open.
       </p>
       <p>
-        The usual target is an update within 30 seconds after FACEIT publishes the result. Processing time inside FACEIT can add extra delay.
-      </p>
-
-      <h2>Shared cache</h2>
-      <p>
-        Viewers displaying the same player share one cached snapshot and one update check. This reduces traffic to FACEIT and keeps the free service usable during streams.
+        A match may take a little time to appear after you leave the server. This depends on when FACEIT makes the result available.
       </p>
 
-      <h2>Failures and old data</h2>
+      <h2>If the widget does not update</h2>
       <p>
-        If FACEIT is unavailable or rate limited, the overlay keeps the last valid snapshot instead of disappearing. It reconnects automatically and replaces the old values when the service recovers.
+        Check the nickname, make sure the result is visible on FACEIT, and refresh the OBS browser source if you recently replaced the widget URL. The last available values remain visible until newer values are ready.
       </p>
 
       <h2>Privacy</h2>

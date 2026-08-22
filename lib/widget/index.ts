@@ -15,6 +15,7 @@ export {
 } from "./config/presets"
 export type { WidgetPreset } from "./config/presets"
 export { CHALLENGER_RANK_LIMIT, isChallengerRank } from "./rank"
+export { getWidgetZoom, OBS_OUTPUT_SCALE } from "./rendering"
 export { buildWidgetUrl, deserializeConfig, serializeConfig } from "./config/serialization"
 export { getBrowserTimezone, isValidTimezone, parsePlayerLookup, playerLookupKey } from "./data/player-lookup"
 export { WidgetApiClient, WidgetApiError, widgetApiClient } from "./data/api-client"

@@ -416,7 +416,7 @@ export function BuilderPreview({
         />
 
         <div className="mt-5 flex items-center justify-between border-b border-border/70 pb-2">
-          <p className="text-label-sm text-tertiary">LAYOUTS ({WIDGET_PRESETS.length})</p>
+          <p className="text-label-sm text-tertiary">LAYOUTS ({WIDGET_PRESETS.length} presets)</p>
         </div>
         <LayoutGrid state={playerSnapshot} selectedPreset={config.preset} onPresetChange={onPresetChange} />
       </div>

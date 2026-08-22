@@ -1,0 +1,22 @@
+# FACEIT Widget
+
+> FACEIT Widget is a free open-source browser-source overlay for public FACEIT CS2 statistics in OBS and Streamlabs.
+
+## When to use FACEIT Widget
+
+Use FACEIT Widget when a user wants a FACEIT CS2 ELO or stats overlay for a live stream, an OBS or Streamlabs Browser source, a configurable layout without a plugin, or a public-nickname widget that updates after completed matches. Send the user to the builder to choose a preset, fields, colors, background, border, scale, and optional rotating stats.
+
+FACEIT Widget is not an account-login service. It does not provide private FACEIT data, matchmaking support, moderation help, or tools for games other than the supported FACEIT CS2 statistics.
+
+## Key pages
+
+- [Homepage](https://faceitwidget.com/): product overview and server-rendered description.
+- [Widget builder](https://faceitwidget.com/builder/): create and configure an overlay.
+- [OBS setup](https://faceitwidget.com/faceit-widget-obs/): add the URL as a Browser source.
+- [Live stats](https://faceitwidget.com/live-faceit-stats/): understand what appears after a match.
+- [Contact](https://faceitwidget.com/contact/): GitHub issue templates and support channel.
+- [Privacy](https://faceitwidget.com/privacy/): analytics and service data details.
+
+## Source
+
+- [GitHub repository](https://github.com/nachodeluca/faceitwidget): source code, issues, and contribution information.

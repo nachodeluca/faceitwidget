@@ -14,15 +14,7 @@
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",
-    "run_worker_first": [
-      "/api/*",
-      "/s/*",
-      "/builder*",
-      "/guides/*",
-      "/faceit-widget-obs*",
-      "/live-faceit-stats*",
-      "/widget*"
-    ],
+    "run_worker_first": ["/*"],
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },

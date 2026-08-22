@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { SITE_METADATA, SOCIAL_IMAGE } from "@/lib/site-metadata";
 
@@ -24,6 +23,10 @@ export const metadata: Metadata = {
   description: SITE_METADATA.description,
   applicationName: SITE_METADATA.name,
   category: "gaming",
+  keywords: ["FACEIT Widget", "FACEIT widget for OBS", "FACEIT CS2 overlay", "live FACEIT stats"],
+  authors: [{ name: "Nacho", url: "https://github.com/nachodeluca" }],
+  creator: "Nacho",
+  publisher: SITE_METADATA.name,
   openGraph: {
     type: "website",
     siteName: SITE_METADATA.name,
@@ -36,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_METADATA.title,
     description: SITE_METADATA.description,
-    images: ["/opengraph-image"],
+    images: [SOCIAL_IMAGE.url],
   },
   verification: process.env.GOOGLE_SITE_VERIFICATION
     ? { google: process.env.GOOGLE_SITE_VERIFICATION }
@@ -48,7 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en" className={`${outfit.variable} h-full antialiased`}>
       <body className="min-h-screen text-on-surface" suppressHydrationWarning>
         <GoogleAnalytics />
-        <TooltipProvider>{children}</TooltipProvider>
+        {children}
       </body>
     </html>
   );

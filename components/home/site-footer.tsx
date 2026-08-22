@@ -1,7 +1,10 @@
 import type { ReactNode } from "react"
 import { Heart } from "lucide-react"
+import Link from "next/link"
 
 import { GithubMark } from "@/components/icons/github-mark"
+import { SITE_NAV_LINK_CLASS } from "@/components/site/link-styles"
+import { SITE_PATHS } from "@/lib/site-metadata"
 import { SITE_LINKS } from "@/lib/site-links"
 
 function FooterLink({
@@ -44,6 +47,10 @@ export function SiteFooter() {
             Support us
           </FooterLink>
         </div>
+        <nav aria-label="Site information" className="flex items-center gap-3 text-[10px] text-text-muted">
+          <Link href={SITE_PATHS.contact} className={SITE_NAV_LINK_CLASS}>Contact</Link>
+          <Link href={SITE_PATHS.privacy} className={SITE_NAV_LINK_CLASS}>Privacy</Link>
+        </nav>
         <p className="text-center text-[10px] text-text-muted">Unofficial community project. Not affiliated with FACEIT.</p>
       </div>
     </footer>

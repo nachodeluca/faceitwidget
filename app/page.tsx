@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { Hero } from "@/components/home/hero"
 import { SiteFooter } from "@/components/home/site-footer"
+import { SITE_LINKS } from "@/lib/site-links"
 import { SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
 const examplePlayer = "donk666"
@@ -18,9 +19,26 @@ const structuredData = {
       "@id": `${SITE_METADATA.url}/#website`,
       url: `${SITE_METADATA.url}/`,
       name: SITE_METADATA.name,
-      alternateName: "faceitwidget.com",
+      alternateName: ["faceitwidget.com", "FACEIT Widget for OBS"],
       description: SITE_METADATA.description,
       inLanguage: "en",
+      publisher: { "@id": `${SITE_METADATA.url}/#organization` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE_METADATA.url}/#organization`,
+      name: SITE_METADATA.name,
+      url: `${SITE_METADATA.url}/`,
+      logo: `${SITE_METADATA.url}/logo.svg`,
+      description: SITE_METADATA.description,
+      alternateName: "FACEIT Widget for OBS",
+      sameAs: [SITE_LINKS.github],
+      knowsAbout: ["FACEIT CS2 statistics", "OBS browser-source overlays"],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Technical support",
+        url: `${SITE_LINKS.github}/issues`,
+      },
     },
     {
       "@type": "WebApplication",
@@ -31,7 +49,9 @@ const structuredData = {
       applicationCategory: "GameApplication",
       operatingSystem: "Any",
       isAccessibleForFree: true,
+      brand: { "@id": `${SITE_METADATA.url}/#organization` },
       isPartOf: { "@id": `${SITE_METADATA.url}/#website` },
+      publisher: { "@id": `${SITE_METADATA.url}/#organization` },
       offers: {
         "@type": "Offer",
         price: "0",
