@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
 import { Builder } from "@/components/widget/builder"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { trackEvent } from "@/lib/analytics"
 import {
   createDefaultConfig,
@@ -29,10 +30,12 @@ export function BuilderClient() {
   }, [config.preset])
 
   return (
-    <Builder
-      key={`${nickname}:${serializedConfig ?? searchParams.get("preset") ?? "elo-pill"}`}
-      initialConfig={config}
-      initialNickname={nickname}
-    />
+    <TooltipProvider>
+      <Builder
+        key={`${nickname}:${serializedConfig ?? searchParams.get("preset") ?? "elo-pill"}`}
+        initialConfig={config}
+        initialNickname={nickname}
+      />
+    </TooltipProvider>
   )
 }

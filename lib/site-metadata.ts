@@ -19,12 +19,16 @@ export const SITE_PATHS = {
   home: "/",
   faceitWidgetObsGuide: "/faceit-widget-obs/",
   liveFaceitStatsGuide: "/live-faceit-stats/",
+  contact: "/contact/",
+  privacy: "/privacy/",
 } as const
 
 export const INDEXABLE_ROUTES = [
   { path: SITE_PATHS.home, changeFrequency: "monthly", priority: 1 },
   { path: SITE_PATHS.faceitWidgetObsGuide, changeFrequency: "monthly", priority: 0.8 },
   { path: SITE_PATHS.liveFaceitStatsGuide, changeFrequency: "monthly", priority: 0.8 },
+  { path: SITE_PATHS.contact, changeFrequency: "yearly", priority: 0.3 },
+  { path: SITE_PATHS.privacy, changeFrequency: "yearly", priority: 0.3 },
 ] as const
 
 export function absoluteSiteUrl(path: string) {

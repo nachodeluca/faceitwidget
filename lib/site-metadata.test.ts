@@ -20,6 +20,8 @@ describe("indexable routes", () => {
       "https://faceitwidget.com/",
       "https://faceitwidget.com/faceit-widget-obs/",
       "https://faceitwidget.com/live-faceit-stats/",
+      "https://faceitwidget.com/contact/",
+      "https://faceitwidget.com/privacy/",
     ])
   })
 
