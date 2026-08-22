@@ -30,9 +30,19 @@ FACEIT Widget creates a public URL that OBS can display as a Browser source. No 
 
 Open the [widget builder](https://faceitwidget.com/builder/) and enter the exact FACEIT nickname. Choose a preset, keep the fields that belong on stream, and use the preview to check the size. Select No background when the game should remain visible behind the text. Copy the URL when the layout is ready.
 
+![FACEIT Widget builder settings](https://faceitwidget.com/guides/faceit-widget-builder-settings.png)
+
+![Generated Browser source URL](https://faceitwidget.com/guides/faceit-widget-copy-url.png)
+
 ## Add it to OBS
 
 Create a Browser source in the OBS scene and paste the generated URL. Start with a width of 800 and a height of 300, then adjust the source to the selected layout. Do not stretch the source. Keep the Browser source active if it should receive updated values outside the current scene.
+
+![Add a Browser source in OBS](https://faceitwidget.com/guides/obs-add-browser-source.png)
+
+![FACEIT Widget Browser source settings](https://faceitwidget.com/guides/obs-browser-source-settings.png)
+
+![FACEIT Widget displayed over Counter-Strike 2](https://faceitwidget.com/guides/obs-widget-overlay.png)
 
 ## If it does not update
 
@@ -50,6 +60,8 @@ An open FACEIT Widget can update public CS2 data without reloading the OBS Brows
 ## What updates
 
 Depending on the selected preset and fields, the overlay can show FACEIT ELO, skill level, Challenger rank, leaderboard position, country rank, lifetime K/D, today's record, and averages from the latest 30 completed matches.
+
+![Rich Profile preset with recent FACEIT statistics](https://faceitwidget.com/guides/live-stats-rich-profile.png)
 
 ## When a match finishes
 

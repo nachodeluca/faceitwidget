@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { GuideImage, GUIDE_IMAGES } from "@/components/guides/guide-image"
 import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 
@@ -22,6 +23,11 @@ export default function LiveFaceitStatsGuide() {
       <p>
         The widget can show FACEIT ELO, skill level, leaderboard position, country rank, lifetime K/D, today&apos;s record, and averages from the latest 30 completed matches.
       </p>
+      <GuideImage
+        image={GUIDE_IMAGES.liveStats}
+        alt="Rich Profile preset showing FACEIT ELO, country rank, K/D, and statistics from the latest 30 matches"
+        caption="Rich Profile combines rank data with recent match averages in one overlay."
+      />
 
       <h2>When a match finishes</h2>
       <p>
