@@ -23,12 +23,12 @@ export const SITE_PATHS = {
   privacy: "/privacy/",
 } as const
 
-export const INDEXABLE_ROUTES = [
-  { path: SITE_PATHS.home, changeFrequency: "monthly", priority: 1 },
-  { path: SITE_PATHS.faceitWidgetObsGuide, changeFrequency: "monthly", priority: 0.8 },
-  { path: SITE_PATHS.liveFaceitStatsGuide, changeFrequency: "monthly", priority: 0.8 },
-  { path: SITE_PATHS.contact, changeFrequency: "yearly", priority: 0.3 },
-  { path: SITE_PATHS.privacy, changeFrequency: "yearly", priority: 0.3 },
+export const INDEXABLE_PATHS = [
+  SITE_PATHS.home,
+  SITE_PATHS.faceitWidgetObsGuide,
+  SITE_PATHS.liveFaceitStatsGuide,
+  SITE_PATHS.contact,
+  SITE_PATHS.privacy,
 ] as const
 
 export function absoluteSiteUrl(path: string) {

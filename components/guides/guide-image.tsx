@@ -3,12 +3,12 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 export const GUIDE_IMAGES = {
-  builderSettings: { src: "/guides/faceit-widget-builder-settings.png", width: 351, height: 910 },
-  copyUrl: { src: "/guides/faceit-widget-copy-url.png", width: 1538, height: 913 },
-  liveStats: { src: "/guides/live-stats-rich-profile.png", width: 1892, height: 915 },
-  addBrowserSource: { src: "/guides/obs-add-browser-source.png", width: 1039, height: 649 },
-  browserSettings: { src: "/guides/obs-browser-source-settings.png", width: 1273, height: 991 },
-  widgetOverlay: { src: "/guides/obs-widget-overlay.png", width: 1278, height: 991 },
+  builderSettings: { src: "/guides/faceit-widget-builder-settings.webp", width: 351, height: 910 },
+  copyUrl: { src: "/guides/faceit-widget-copy-url.webp", width: 1538, height: 913 },
+  liveStats: { src: "/guides/live-stats-rich-profile.webp", width: 1892, height: 915 },
+  addBrowserSource: { src: "/guides/obs-add-browser-source.webp", width: 1039, height: 649 },
+  browserSettings: { src: "/guides/obs-browser-source-settings.webp", width: 1273, height: 991 },
+  widgetOverlay: { src: "/guides/obs-widget-overlay.webp", width: 1278, height: 991 },
 } as const
 
 type GuideImageProps = {
