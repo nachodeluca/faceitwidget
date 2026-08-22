@@ -40,7 +40,7 @@ export function Rotation({ items, enabled, intervalMs }: RotationProps) {
 
   return (
     <div
-      className="overflow-hidden"
+      className="-m-px overflow-hidden p-px"
       aria-live="polite"
       aria-atomic="true"
     >

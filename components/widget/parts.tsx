@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 
 import { AnimatedNumber } from "./animated-number"
 import { ChallengerMark } from "./challenger-mark"
+import { getWinRateTone } from "./stat-tone"
 
 export { ChallengerMark } from "./challenger-mark"
 
@@ -434,7 +435,7 @@ export function Last30Stats({ data }: { data: WidgetData }) {
       <Stat
         label="Win rate"
         value={<><AnimatedNumber value={data.last30?.winRate} />%</>}
-        tone="positive"
+        tone={getWinRateTone(data.last30?.winRate)}
       />
       <Stat
         label="Avg. Kills / ADR"
