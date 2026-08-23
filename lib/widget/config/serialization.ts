@@ -222,12 +222,12 @@ export function deserializeConfig(value?: string | string[]) {
 
 export function buildWidgetUrl(
   origin: string,
-  nickname: string,
+  playerId: string,
   config: WidgetConfig,
   timezone?: string,
 ) {
   const params = new URLSearchParams()
-  params.set("nickname", nickname.trim() || "player")
+  params.set("playerId", playerId.trim())
   params.set("config", serializeConfig(config))
   if (timezone) params.set("tz", timezone)
   return `${origin}/widget/?${params.toString()}`
