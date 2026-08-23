@@ -5,6 +5,7 @@ import type { CSSProperties, Ref } from "react"
 import { getWidgetZoom, normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
 import { cn } from "@/lib/utils"
 
+import { BackdropLayer } from "./background"
 import { PresetView } from "./preset-view"
 
 const fontStacks = {
@@ -19,6 +20,9 @@ type WidgetProps = {
   className?: string
   shadow?: WidgetShadow
   outputScale?: number
+  backdropInteraction?: {
+    onPositionChange: (position: WidgetConfig["backdrop"]["position"]) => void
+  }
   ref?: Ref<HTMLDivElement>
 }
 
@@ -30,6 +34,7 @@ export function Widget({
   className,
   shadow = "default",
   outputScale = 1,
+  backdropInteraction,
   ref,
 }: WidgetProps) {
   const config = normalizeConfig(rawConfig)
@@ -77,14 +82,17 @@ export function Widget({
       <div
         data-widget-surface
         className={cn(
-          "block w-max max-w-full rounded-[var(--widget-radius)] border",
+          "relative isolate block w-max max-w-full overflow-hidden rounded-[var(--widget-radius)] border",
           surfacePaddingClass,
           surfaceBorderClass,
           surfaceBackgroundClass,
           surfaceShadowClass,
         )}
       >
-        <PresetView data={data} config={config} />
+        <BackdropLayer config={config.backdrop} interaction={backdropInteraction} />
+        <div className="relative z-[1]">
+          <PresetView data={data} config={config} />
+        </div>
       </div>
     </div>
   )

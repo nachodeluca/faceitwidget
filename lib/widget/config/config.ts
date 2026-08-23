@@ -1,8 +1,10 @@
 import { isRecord } from "../../utils"
+import { WIDGET_BACKDROP_IDS } from "../backgrounds/types"
 import { getRotationFields, supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
 import {
   isWidgetPresetId,
   type WidgetBackground,
+  type WidgetBackdropConfig,
   type WidgetConfig,
   type WidgetDensity,
   type WidgetFontId,
@@ -47,6 +49,10 @@ export const DEFAULT_WIDGET_CONFIG: WidgetConfig = {
     enabled: false,
     intervalMs: 4000,
     fields: ["today", "last30"],
+  },
+  backdrop: {
+    id: "none",
+    position: { x: 50, y: 50 },
   },
 }
 
@@ -149,6 +155,21 @@ function normalizeStyle(value: Record<string, unknown>, defaults: WidgetStyle): 
   }
 }
 
+function normalizeBackdrop(
+  value: Record<string, unknown>,
+  defaults: WidgetBackdropConfig,
+): WidgetBackdropConfig {
+  const position = asRecord(value.position)
+
+  return {
+    id: safeEnum(value.id, WIDGET_BACKDROP_IDS, defaults.id),
+    position: {
+      x: clamp(position.x, 0, 100, defaults.position.x),
+      y: clamp(position.y, 0, 100, defaults.position.y),
+    },
+  }
+}
+
 function isRotationField(value: unknown): value is WidgetRotationField {
   return typeof value === "string" && ROTATION_FIELDS.includes(value as WidgetRotationField)
 }
@@ -199,6 +220,10 @@ export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill")
         ...(selectedPreset.defaultRotationFields ?? DEFAULT_WIDGET_CONFIG.rotation.fields),
       ],
     },
+    backdrop: {
+      ...DEFAULT_WIDGET_CONFIG.backdrop,
+      position: { ...DEFAULT_WIDGET_CONFIG.backdrop.position },
+    },
   }
 }
 
@@ -233,5 +258,6 @@ export function normalizeConfig(input: unknown): WidgetConfig {
     visibility: normalizeVisibility(asRecord(value.visibility), defaults.visibility),
     style: normalizeStyle(asRecord(value.style), defaults.style),
     rotation: normalizeRotation(asRecord(value.rotation), defaults.rotation, preset),
+    backdrop: normalizeBackdrop(asRecord(value.backdrop), defaults.backdrop),
   }
 }

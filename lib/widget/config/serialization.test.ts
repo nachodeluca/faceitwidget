@@ -35,6 +35,17 @@ describe("widget config serialization", () => {
     expect(deserializeConfig(legacyToken(config))).toEqual(config)
   })
 
+  it("round-trips a selected backdrop and focal point", () => {
+    const config = normalizeConfig({
+      preset: "rank-elo",
+      backdrop: { id: "ambient-03", position: { x: 24, y: 76 } },
+    })
+    const serialized = serializeConfig(config)
+
+    expect(serialized).not.toBe("v2.rank-elo")
+    expect(deserializeConfig(serialized).backdrop).toEqual(config.backdrop)
+  })
+
   it("builds short widget URLs", () => {
     const url = buildWidgetUrl(
       "https://faceitwidget.com",
