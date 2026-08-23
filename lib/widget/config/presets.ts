@@ -109,23 +109,6 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     defaultStyle: { density: "comfortable", radius: 12 },
   },
   {
-    id: "rich-history",
-    label: "Last 30",
-    description: "Recent form stats",
-    supportsRotation: true,
-    defaultRotationFields: ["last30", "today"],
-    rotationFields: ["last30", "today"],
-    defaultVisibility: {
-      ...hiddenStats,
-      countryRank: true,
-      kdr: true,
-      todayStats: true,
-      last30Stats: true,
-    },
-    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
-    defaultStyle: { density: "comfortable", radius: 12 },
-  },
-  {
     id: "profile-card",
     label: "Profile Card",
     description: "Rank and win/loss stats",
@@ -162,7 +145,6 @@ const challengerWorldRankRedundantPresets = new Set<WidgetPresetId>([
   "rank-elo",
   "rank-country",
   "rich-profile",
-  "rich-history",
   "profile-card",
 ])
 const rankDependentFields = new Set<WidgetVisibilityKey>([

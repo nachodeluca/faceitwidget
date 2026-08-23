@@ -30,6 +30,13 @@
       }
     ]
   },
+  "r2_buckets": [
+    {
+      "binding": "USER_BACKGROUNDS",
+      "bucket_name": "faceitwidget-user-backgrounds",
+      "remote": true
+    }
+  ],
   "exports": {
     "PlayerSnapshotCoordinator": {
       "type": "durable-object",
@@ -55,10 +62,17 @@
       "name": "SHARE_RATE_LIMIT",
       "namespace_id": "1003",
       "simple": { "limit": 10, "period": 60 }
+    },
+    {
+      "name": "BACKGROUND_RATE_LIMIT",
+      "namespace_id": "1004",
+      "simple": { "limit": 20, "period": 60 }
     }
   ],
   "vars": {
-    "LIVE_POLL_INTERVAL_MS": "30000"
+    "LIVE_POLL_INTERVAL_MS": "30000",
+    "R2_BUCKET_NAME": "faceitwidget-user-backgrounds",
+    "R2_PUBLIC_BASE_URL": "https://assets.faceitwidget.com"
   },
   "observability": {
     "enabled": true

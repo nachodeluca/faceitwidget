@@ -7,6 +7,31 @@ export {
 } from "./config/config"
 export { WIDGET_MAPS } from "./maps"
 export {
+  getWidgetBackdrop,
+  isWidgetBackdropId,
+  WIDGET_BACKDROPS,
+  WIDGET_BACKDROP_IDS,
+  addCustomBackdrop,
+  createCustomBackdropAsset,
+  isCustomBackdropId,
+  isCustomBackdropMedia,
+  parseCustomBackdrops,
+  readCustomBackdrops,
+  saveCustomBackdrops,
+  CUSTOM_BACKDROP_LIMIT,
+  CUSTOM_BACKDROP_STORAGE_KEY,
+} from "./backgrounds"
+export { CUSTOM_UPLOAD_LIMITS, CUSTOM_UPLOAD_TYPES, uploadMediaForType } from "./backgrounds"
+export type {
+  CustomBackdropRecord,
+  CustomWidgetBackdropId,
+  WidgetBackdropAsset,
+  WidgetBackdropConfig,
+  WidgetBackdropId,
+  WidgetBackdropMedia,
+  WidgetBackdropPosition,
+} from "./backgrounds"
+export {
   getEditableFields,
   getRotationFields,
   supportsWidgetRotation,

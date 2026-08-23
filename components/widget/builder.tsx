@@ -49,6 +49,7 @@ export function Builder({ initialConfig, initialNickname }: BuilderProps) {
           onVisibilityChange={settings.updateVisibility}
           onStyleChange={settings.updateStyle}
           onRotationChange={settings.updateRotation}
+          onBackdropChange={settings.updateBackdrop}
           onReset={settings.resetConfig}
           onCopy={() => void actions.copyWidgetUrl()}
           onFeedback={() => actions.setFeedbackDialogOpen(true)}
@@ -74,6 +75,7 @@ export function Builder({ initialConfig, initialNickname }: BuilderProps) {
           exportingImage={actions.exportingImage}
           shareStatus={actions.shareStatus}
           onMapChange={settings.setSelectedMap}
+          onBackdropPositionChange={(position) => settings.updateBackdrop({ position })}
           onPreviewScaleChange={settings.updatePreviewScale}
           onDownload={() => void actions.downloadPreview()}
           onShare={() => void actions.shareOnX()}

@@ -5,6 +5,7 @@ import type { CSSProperties, Ref } from "react"
 import { getWidgetZoom, normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
 import { cn } from "@/lib/utils"
 
+import { BackdropLayer } from "./background"
 import { PresetView } from "./preset-view"
 
 const fontStacks = {
@@ -12,6 +13,7 @@ const fontStacks = {
   system: "Inter, ui-sans-serif, system-ui, sans-serif",
   mono: "ui-monospace, SFMono-Regular, Menlo, monospace",
 } as const
+const transparentSurfaceClass = "bg-[rgb(12_12_12_/_72%)]"
 
 type WidgetProps = {
   data: WidgetData
@@ -19,6 +21,9 @@ type WidgetProps = {
   className?: string
   shadow?: WidgetShadow
   outputScale?: number
+  backdropInteraction?: {
+    onPositionChange: (position: WidgetConfig["backdrop"]["position"]) => void
+  }
   ref?: Ref<HTMLDivElement>
 }
 
@@ -30,6 +35,7 @@ export function Widget({
   className,
   shadow = "default",
   outputScale = 1,
+  backdropInteraction,
   ref,
 }: WidgetProps) {
   const config = normalizeConfig(rawConfig)
@@ -51,7 +57,9 @@ export function Widget({
       ? "border-transparent"
       : "border-[color:var(--widget-border)]"
   const surfaceBackgroundClass =
-    config.style.background === "none" ? "bg-transparent" : "bg-[color:var(--widget-surface)]"
+    config.style.background === "none"
+      ? transparentSurfaceClass
+      : "bg-[color:var(--widget-surface)]"
   const surfaceShadowClass =
     config.style.background === "none" || shadow === "none"
       ? "shadow-none"
@@ -59,15 +67,12 @@ export function Widget({
         ? "shadow-[0_6px_18px_rgb(0_0_0_/_14%)]"
         : "shadow-[0_12px_32px_rgb(0_0_0_/_22%)]"
   const surfacePaddingClass = config.style.density === "comfortable" ? "px-4 py-3" : "px-3 py-2"
-  const transparentTextClass =
-    config.style.background === "none" ? "[text-shadow:0_1px_2px_rgb(0_0_0_/_90%)]" : null
 
   return (
     <div
       ref={ref}
       className={cn(
         "inline-block max-w-full text-[12px] font-normal leading-none text-[color:var(--widget-text)] opacity-[var(--widget-opacity)] [font-family:var(--widget-font)] [zoom:var(--widget-zoom)]",
-        transparentTextClass,
         className,
       )}
       style={style}
@@ -77,14 +82,17 @@ export function Widget({
       <div
         data-widget-surface
         className={cn(
-          "block w-max max-w-full rounded-[var(--widget-radius)] border",
+          "relative isolate block w-max max-w-full overflow-hidden rounded-[var(--widget-radius)] border",
           surfacePaddingClass,
           surfaceBorderClass,
           surfaceBackgroundClass,
           surfaceShadowClass,
         )}
       >
-        <PresetView data={data} config={config} />
+        <BackdropLayer config={config.backdrop} interaction={backdropInteraction} />
+        <div className="relative z-[1]">
+          <PresetView data={data} config={config} />
+        </div>
       </div>
     </div>
   )

@@ -1,10 +1,21 @@
+import type {
+  WidgetBackdropConfig,
+} from "./backgrounds/types"
+
+export type {
+  CustomWidgetBackdropId,
+  WidgetBackdropConfig,
+  WidgetBackdropId,
+  WidgetBackdropMedia,
+  WidgetBackdropPosition,
+} from "./backgrounds/types"
+
 export const WIDGET_PRESET_IDS = [
   "elo-pill",
   "rank-elo",
   "rank-country",
   "today-stats",
   "rich-profile",
-  "rich-history",
   "profile-card",
 ] as const
 
@@ -65,6 +76,7 @@ export type WidgetConfig = {
   visibility: WidgetVisibility
   style: WidgetStyle
   rotation: WidgetRotation
+  backdrop: WidgetBackdropConfig
 }
 
 export type WidgetData = {

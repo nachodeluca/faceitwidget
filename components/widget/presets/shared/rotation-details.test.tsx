@@ -13,8 +13,8 @@ const data = {
 }
 
 describe("RotatingDetails", () => {
-  it("does not show lifetime performance in Last 30 when Today is disabled", () => {
-    const config = createDefaultConfig("rich-history")
+  it("does not show lifetime performance when K/D is not selected", () => {
+    const config = createDefaultConfig("rich-profile")
     config.visibility.todayStats = false
     config.visibility.last30Stats = true
     config.visibility.kdr = true

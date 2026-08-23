@@ -47,8 +47,8 @@ describe("isChallengerRank", () => {
     expect(fields).not.toContain("worldRank")
   })
 
-  it("hides the unused World rank control for Challenger Last 30", () => {
-    const fields = getEditableFields("rich-history", rank())
+  it("hides the unused World rank control for Challenger Rich Profile", () => {
+    const fields = getEditableFields("rich-profile", rank())
 
     expect(fields).not.toContain("worldRank")
   })
@@ -83,9 +83,9 @@ describe("rank preset defaults", () => {
     expect(createDefaultConfig("rank-country").visibility.worldRank).toBe(false)
   })
 
-  it("starts Last 30 without the global rank", () => {
-    expect(createDefaultConfig("rich-history").visibility.worldRank).toBe(false)
-    expect(getRotationFields("rich-history")).not.toContain("lifetime")
+  it("keeps Rich Profile rotation available for lifetime performance", () => {
+    expect(createDefaultConfig("rich-profile").visibility.worldRank).toBe(true)
+    expect(getRotationFields("rich-profile")).toContain("lifetime")
   })
 
   it("starts Profile Card without the global rank", () => {

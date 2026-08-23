@@ -9,14 +9,14 @@ function legacyToken(value: unknown) {
 
 describe("widget config serialization", () => {
   it("uses a preset-only token when the config matches its defaults", () => {
-    const config = createDefaultConfig("rich-history")
+    const config = createDefaultConfig("rich-profile")
 
-    expect(serializeConfig(config)).toBe("v2.rich-history")
-    expect(deserializeConfig("v2.rich-history")).toEqual(config)
+    expect(serializeConfig(config)).toBe("v2.rich-profile")
+    expect(deserializeConfig("v2.rich-profile")).toEqual(config)
   })
 
   it("round-trips custom visibility, style, and motion settings", () => {
-    const defaults = createDefaultConfig("rich-history")
+    const defaults = createDefaultConfig("rich-profile")
     const config = normalizeConfig({
       ...defaults,
       visibility: { ...defaults.visibility, nickname: true, todayStats: false, last5Results: true },
@@ -30,27 +30,61 @@ describe("widget config serialization", () => {
   })
 
   it("keeps reading the previous full JSON format", () => {
-    const config = createDefaultConfig("rich-history")
+    const config = createDefaultConfig("rich-profile")
 
     expect(deserializeConfig(legacyToken(config))).toEqual(config)
+  })
+
+  it("round-trips a selected backdrop and focal point", () => {
+    const config = normalizeConfig({
+      preset: "rank-elo",
+      backdrop: { id: "ambient-03", position: { x: 24, y: 76 } },
+    })
+    const serialized = serializeConfig(config)
+
+    expect(serialized).not.toBe("v2.rank-elo")
+    expect(deserializeConfig(serialized).backdrop).toEqual(config.backdrop)
+  })
+
+  it("round-trips a custom image backdrop without embedding its URL", () => {
+    const config = normalizeConfig({
+      preset: "elo-pill",
+      backdrop: {
+        id: "00000000-0000-4000-8000-000000000001",
+        media: "image",
+        position: { x: 18, y: 82 },
+      },
+    })
+    const serialized = serializeConfig(config)
+
+    expect(serialized).not.toContain("assets.faceitwidget.com")
+    expect(deserializeConfig(serialized).backdrop).toEqual(config.backdrop)
   })
 
   it("builds short widget URLs", () => {
     const url = buildWidgetUrl(
       "https://faceitwidget.com",
       "fee75936-fca2-41fb-899e-b2e09263de50",
-      createDefaultConfig("rich-history"),
+      createDefaultConfig("rich-profile"),
       "America/Montevideo",
     )
 
     expect(url).toContain("playerId=fee75936-fca2-41fb-899e-b2e09263de50")
     expect(url).not.toContain("nickname=")
-    expect(url).toContain("config=v2.rich-history")
+    expect(url).toContain("config=v2.rich-profile")
     expect(url).not.toContain("eyJ2ZXJzaW9u")
   })
 
   it("falls back when an old link references a removed preset", () => {
     expect(deserializeConfig("v2.elo-level").preset).toBe("elo-pill")
     expect(deserializeConfig("v2.stream-card").preset).toBe("elo-pill")
+  })
+
+  it("maps the removed Last 30 preset to Rich Profile", () => {
+    const config = createDefaultConfig("rich-profile")
+
+    expect(deserializeConfig("v2.rich-history")).toEqual(config)
+    expect(deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-history" })}`)).toEqual(config)
+    expect(normalizeConfig({ ...config, preset: "rich-history" }).preset).toBe("rich-profile")
   })
 })

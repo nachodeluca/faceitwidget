@@ -14,7 +14,6 @@ const presetRegistry: Record<WidgetPresetId, PresetRenderer> = {
   "rank-country": (props: PresetViewProps) => <RankCountryPreset {...props} />,
   "today-stats": (props: PresetViewProps) => <TodayStatsPreset {...props} />,
   "rich-profile": (props: PresetViewProps) => <RichStatsPreset {...props} />,
-  "rich-history": (props: PresetViewProps) => <RichStatsPreset {...props} />,
   "profile-card": (props: PresetViewProps) => <ProfileCardPreset {...props} />,
 }
 

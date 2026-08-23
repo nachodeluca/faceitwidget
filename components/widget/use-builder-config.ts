@@ -8,6 +8,7 @@ import {
   supportsWidgetRotation,
   updateVisibilityConfig,
   type WidgetConfig,
+  type WidgetBackdropConfig,
   type WidgetMapId,
   type WidgetPresetId,
   type WidgetStyle,
@@ -40,8 +41,21 @@ export function useBuilderConfig(initialConfig: WidgetConfig, initialNickname: s
     })
   }
 
+  function updateBackdrop(patch: Partial<WidgetBackdropConfig>) {
+    setConfig((current) =>
+      normalizeConfig({
+        ...current,
+        backdrop: {
+          ...current.backdrop,
+          ...patch,
+          position: { ...current.backdrop.position, ...patch.position },
+        },
+      }),
+    )
+  }
+
   function selectPreset(preset: WidgetPresetId) {
-    setConfig(createDefaultConfig(preset))
+    setConfig((current) => normalizeConfig({ ...createDefaultConfig(preset), backdrop: current.backdrop }))
   }
 
   function resetConfig() {
@@ -61,6 +75,7 @@ export function useBuilderConfig(initialConfig: WidgetConfig, initialNickname: s
     updateVisibility,
     updateStyle,
     updateRotation,
+    updateBackdrop,
     selectPreset,
     resetConfig,
   }

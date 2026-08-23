@@ -18,6 +18,7 @@ import {
   type PlayerSnapshotState,
   type WidgetConfig,
   type WidgetData,
+  type WidgetBackdropPosition,
   type WidgetMapId,
   type WidgetPresetId,
 } from "@/lib/widget"
@@ -30,6 +31,7 @@ import { cn } from "@/lib/utils"
 
 import { PlayerDataBoundary } from "./player-data-boundary"
 import type { ShareStatus } from "./builder-types"
+import { BackdropPosterPreloads } from "./background"
 import { MapIconPreloads } from "./map-icon-preloads"
 import { PresetSuggestionCard } from "./preset-suggestion-card"
 import { Widget } from "./widget"
@@ -44,7 +46,6 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
   "rank-country": 0.68,
   "today-stats": 0.63,
   "rich-profile": 0.64,
-  "rich-history": 0.64,
   "profile-card": 0.68,
 }
 
@@ -104,6 +105,7 @@ type PreviewStageProps = {
   exportingImage: boolean
   shareStatus: ShareStatus
   onPreviewScaleChange: (delta: number) => void
+  onBackdropPositionChange: (position: WidgetBackdropPosition) => void
   onDownload: () => void
   onShare: () => void
 }
@@ -118,6 +120,7 @@ function PreviewStage({
   exportingImage,
   shareStatus,
   onPreviewScaleChange,
+  onBackdropPositionChange,
   onDownload,
   onShare,
 }: PreviewStageProps) {
@@ -159,7 +162,19 @@ function PreviewStage({
           pending={<WidgetDataStatus loading message="Loading FACEIT stats..." />}
           failed={(message) => <WidgetDataStatus message={message} />}
         >
-          {(data) => <Widget ref={previewWidgetRef} data={data} config={config} className="origin-center" />}
+          {(data) => (
+            <Widget
+              ref={previewWidgetRef}
+              data={data}
+              config={config}
+              className="origin-center"
+              backdropInteraction={
+                config.backdrop.id === "none"
+                  ? undefined
+                  : { onPositionChange: onBackdropPositionChange }
+              }
+            />
+          )}
         </PlayerDataBoundary>
       </div>
     </div>
@@ -315,6 +330,7 @@ type BuilderPreviewProps = {
   exportingImage: boolean
   shareStatus: ShareStatus
   onMapChange: (map: WidgetMapId) => void
+  onBackdropPositionChange: (position: WidgetBackdropPosition) => void
   onPreviewScaleChange: (delta: number) => void
   onDownload: () => void
   onShare: () => void
@@ -383,6 +399,7 @@ export function BuilderPreview({
   exportingImage,
   shareStatus,
   onMapChange,
+  onBackdropPositionChange,
   onPreviewScaleChange,
   onDownload,
   onShare,
@@ -394,6 +411,7 @@ export function BuilderPreview({
   return (
     <section className="min-w-0 flex-1 bg-background">
       <MapIconPreloads />
+      <BackdropPosterPreloads />
       <div className="mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         <PreviewHeader
           selectedMap={selectedMap}
@@ -412,6 +430,7 @@ export function BuilderPreview({
           exportingImage={exportingImage}
           shareStatus={shareStatus}
           onPreviewScaleChange={onPreviewScaleChange}
+          onBackdropPositionChange={onBackdropPositionChange}
           onDownload={onDownload}
           onShare={onShare}
         />

@@ -10,6 +10,7 @@ import {
   getRotationFields,
   WIDGET_PRESETS,
   type WidgetConfig,
+  type WidgetBackdropConfig,
   type WidgetData,
   type WidgetPresetId,
   type WidgetRotationField,
@@ -17,6 +18,7 @@ import {
   type WidgetVisibilityKey,
 } from "@/lib/widget"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -27,6 +29,8 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+
+import { BackdropControl } from "./background"
 
 const controlLabelClass = "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
 const sectionHeadingClass = "text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80"
@@ -199,17 +203,19 @@ type StyleChangeProps = {
   onChange: StyleTabProps["onStyleChange"]
 }
 
-function BackgroundControl({
+type StyleControlsProps = Pick<StyleTabProps, "config" | "onStyleChange">
+
+function SurfaceFillControl({
   value,
   onChange,
 }: StyleChangeProps & { value: WidgetConfig["style"]["background"] }) {
   return (
     <div className="flex flex-col gap-2">
-      <Label className={fieldLabelClass}>Background</Label>
+      <Label className={fieldLabelClass}>Surface fill</Label>
       <Select
         items={[
           { value: "solid", label: "Solid" },
-          { value: "none", label: "No background" },
+          { value: "none", label: "Transparent" },
         ]}
         value={value}
         onValueChange={(nextValue) => onChange({ background: nextValue === "none" ? "none" : "solid" })}
@@ -219,7 +225,7 @@ function BackgroundControl({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="solid">Solid</SelectItem>
-          <SelectItem value="none">No background</SelectItem>
+          <SelectItem value="none">Transparent</SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -271,7 +277,7 @@ function FontControl({
   )
 }
 
-function StyleRanges({ config, onStyleChange }: StyleTabProps) {
+function StyleRanges({ config, onStyleChange }: StyleControlsProps) {
   return (
     <>
       <RangeControl
@@ -298,7 +304,7 @@ function StyleRanges({ config, onStyleChange }: StyleTabProps) {
   )
 }
 
-function ColorControls({ config, onStyleChange }: StyleTabProps) {
+function ColorControls({ config, onStyleChange }: StyleControlsProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
       {styleColors.map(([key, label]) => (
@@ -330,11 +336,11 @@ function ColorControls({ config, onStyleChange }: StyleTabProps) {
 
 function StyleTab({ config, onStyleChange }: StyleTabProps) {
   return (
-    <TabsContent value="style" className="mt-4">
+    <TabsContent value="style" className="mt-4 pb-5">
       <div className="flex flex-col gap-6">
         <section className="flex flex-col gap-3">
           <SettingsSectionHeading label="Surface" />
-          <BackgroundControl value={config.style.background} onChange={onStyleChange} />
+          <SurfaceFillControl value={config.style.background} onChange={onStyleChange} />
           <BorderControl enabled={config.style.borderEnabled} onChange={onStyleChange} />
         </section>
         <section className="flex flex-col gap-3 border-t border-border/70 pt-5">
@@ -347,6 +353,17 @@ function StyleTab({ config, onStyleChange }: StyleTabProps) {
           <ColorControls config={config} onStyleChange={onStyleChange} />
         </section>
       </div>
+    </TabsContent>
+  )
+}
+
+function BackgroundsTab({ config, onBackdropChange }: {
+  config: WidgetConfig
+  onBackdropChange: (patch: Partial<WidgetBackdropConfig>) => void
+}) {
+  return (
+    <TabsContent value="backgrounds" className="mt-4 pb-5">
+      <BackdropControl value={config.backdrop} onChange={onBackdropChange} />
     </TabsContent>
   )
 }
@@ -475,6 +492,7 @@ type BuilderSidebarProps = {
   onPresetChange: (preset: WidgetPresetId) => void
   onVisibilityChange: (key: WidgetVisibilityKey, value: boolean) => void
   onStyleChange: (patch: Partial<WidgetStyle>) => void
+  onBackdropChange: (patch: Partial<WidgetBackdropConfig>) => void
   onRotationChange: (patch: Partial<WidgetConfig["rotation"]>) => void
   onReset: () => void
   onCopy: () => void
@@ -505,14 +523,24 @@ function SidebarTabs({
   onPresetChange,
   onVisibilityChange,
   onStyleChange,
+  onBackdropChange,
   onRotationChange,
-}: Pick<BuilderSidebarProps, "config" | "rank" | "rotationAvailable" | "onPresetChange" | "onVisibilityChange" | "onStyleChange" | "onRotationChange">) {
+}: Pick<BuilderSidebarProps, "config" | "rank" | "rotationAvailable" | "onPresetChange" | "onVisibilityChange" | "onStyleChange" | "onBackdropChange" | "onRotationChange">) {
   return (
     <Tabs key={config.preset} className="mt-6" defaultValue="content">
       <TabsList className="w-full justify-between p-0" variant="line">
         <TabsTrigger value="content">Content</TabsTrigger>
         <TabsTrigger value="style">Style</TabsTrigger>
         {rotationAvailable ? <TabsTrigger value="motion">Motion</TabsTrigger> : null}
+        <TabsTrigger value="backgrounds">
+          <span>Backgrounds</span>
+          <Badge
+            variant="secondary"
+            className="h-4 rounded-full px-1.5 text-[9px] font-bold uppercase tracking-[0.08em]"
+          >
+            New
+          </Badge>
+        </TabsTrigger>
       </TabsList>
 
       <ContentTab
@@ -523,6 +551,7 @@ function SidebarTabs({
       />
       <StyleTab config={config} onStyleChange={onStyleChange} />
       {rotationAvailable ? <MotionTab config={config} onRotationChange={onRotationChange} /> : null}
+      <BackgroundsTab config={config} onBackdropChange={onBackdropChange} />
     </Tabs>
   )
 }
@@ -591,6 +620,7 @@ export function BuilderSidebar({
   onPresetChange,
   onVisibilityChange,
   onStyleChange,
+  onBackdropChange,
   onRotationChange,
   onReset,
   onCopy,
@@ -611,6 +641,7 @@ export function BuilderSidebar({
           onPresetChange={onPresetChange}
           onVisibilityChange={onVisibilityChange}
           onStyleChange={onStyleChange}
+          onBackdropChange={onBackdropChange}
           onRotationChange={onRotationChange}
         />
         <SidebarActions

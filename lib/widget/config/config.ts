@@ -1,8 +1,11 @@
 import { isRecord } from "../../utils"
+import { isCustomBackdropId } from "../backgrounds/custom-contract"
+import { isWidgetBackdropId } from "../backgrounds/registry"
 import { getRotationFields, supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
 import {
   isWidgetPresetId,
   type WidgetBackground,
+  type WidgetBackdropConfig,
   type WidgetConfig,
   type WidgetDensity,
   type WidgetFontId,
@@ -48,6 +51,10 @@ export const DEFAULT_WIDGET_CONFIG: WidgetConfig = {
     intervalMs: 4000,
     fields: ["today", "last30"],
   },
+  backdrop: {
+    id: "none",
+    position: { x: 50, y: 50 },
+  },
 }
 
 const FONT_IDS = ["outfit", "system", "mono"] as const satisfies readonly WidgetFontId[]
@@ -80,6 +87,9 @@ const ROTATION_VISIBILITY_FIELDS: Partial<Record<WidgetVisibilityKey, WidgetRota
   kdr: "lifetime",
 }
 const COLOR_PATTERN = /^#[0-9a-f]{3,8}$/i
+const LEGACY_PRESET_ALIASES: Record<string, WidgetConfig["preset"]> = {
+  "rich-history": "rich-profile",
+}
 
 function clamp(value: unknown, min: number, max: number, fallback: number) {
   const number = typeof value === "number" && Number.isFinite(value) ? value : fallback
@@ -149,6 +159,26 @@ function normalizeStyle(value: Record<string, unknown>, defaults: WidgetStyle): 
   }
 }
 
+function normalizeBackdrop(
+  value: Record<string, unknown>,
+  defaults: WidgetBackdropConfig,
+): WidgetBackdropConfig {
+  const position = asRecord(value.position)
+  const id = isWidgetBackdropId(value.id) ? value.id : defaults.id
+  const media = isCustomBackdropId(id) && (value.media === "image" || value.media === "video")
+    ? value.media
+    : undefined
+
+  return {
+    id,
+    position: {
+      x: clamp(position.x, 0, 100, defaults.position.x),
+      y: clamp(position.y, 0, 100, defaults.position.y),
+    },
+    ...(media ? { media } : {}),
+  }
+}
+
 function isRotationField(value: unknown): value is WidgetRotationField {
   return typeof value === "string" && ROTATION_FIELDS.includes(value as WidgetRotationField)
 }
@@ -175,10 +205,13 @@ function normalizeRotation(
   }
 }
 
+export function resolvePresetId(value: unknown): WidgetConfig["preset"] | undefined {
+  if (isWidgetPresetId(value)) return value
+  return typeof value === "string" ? LEGACY_PRESET_ALIASES[value] : undefined
+}
+
 function getPreset(value: unknown): WidgetConfig["preset"] {
-  return isWidgetPresetId(value)
-    ? value
-    : DEFAULT_WIDGET_CONFIG.preset
+  return resolvePresetId(value) ?? DEFAULT_WIDGET_CONFIG.preset
 }
 
 export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill"): WidgetConfig {
@@ -198,6 +231,10 @@ export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill")
       fields: [
         ...(selectedPreset.defaultRotationFields ?? DEFAULT_WIDGET_CONFIG.rotation.fields),
       ],
+    },
+    backdrop: {
+      ...DEFAULT_WIDGET_CONFIG.backdrop,
+      position: { ...DEFAULT_WIDGET_CONFIG.backdrop.position },
     },
   }
 }
@@ -233,5 +270,6 @@ export function normalizeConfig(input: unknown): WidgetConfig {
     visibility: normalizeVisibility(asRecord(value.visibility), defaults.visibility),
     style: normalizeStyle(asRecord(value.style), defaults.style),
     rotation: normalizeRotation(asRecord(value.rotation), defaults.rotation, preset),
+    backdrop: normalizeBackdrop(asRecord(value.backdrop), defaults.backdrop),
   }
 }
