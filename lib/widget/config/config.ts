@@ -86,6 +86,9 @@ const ROTATION_VISIBILITY_FIELDS: Partial<Record<WidgetVisibilityKey, WidgetRota
   kdr: "lifetime",
 }
 const COLOR_PATTERN = /^#[0-9a-f]{3,8}$/i
+const LEGACY_PRESET_ALIASES: Record<string, WidgetConfig["preset"]> = {
+  "rich-history": "rich-profile",
+}
 
 function clamp(value: unknown, min: number, max: number, fallback: number) {
   const number = typeof value === "number" && Number.isFinite(value) ? value : fallback
@@ -196,10 +199,13 @@ function normalizeRotation(
   }
 }
 
+export function resolvePresetId(value: unknown): WidgetConfig["preset"] | undefined {
+  if (isWidgetPresetId(value)) return value
+  return typeof value === "string" ? LEGACY_PRESET_ALIASES[value] : undefined
+}
+
 function getPreset(value: unknown): WidgetConfig["preset"] {
-  return isWidgetPresetId(value)
-    ? value
-    : DEFAULT_WIDGET_CONFIG.preset
+  return resolvePresetId(value) ?? DEFAULT_WIDGET_CONFIG.preset
 }
 
 export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill"): WidgetConfig {

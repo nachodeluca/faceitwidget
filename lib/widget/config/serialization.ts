@@ -1,7 +1,6 @@
 import { isRecord } from "../../utils"
-import { createDefaultConfig, normalizeConfig } from "./config"
+import { createDefaultConfig, normalizeConfig, resolvePresetId } from "./config"
 import {
-  isWidgetPresetId,
   type WidgetBackdropConfig,
   type WidgetConfig,
   type WidgetPresetId,
@@ -206,11 +205,13 @@ function expandBackdropPatch(value: unknown) {
 }
 
 function expandCompactConfig(value: unknown) {
-  if (!isRecord(value) || value.v !== 2 || !isWidgetPresetId(value.p)) {
+  const preset = isRecord(value) && value.v === 2 ? resolvePresetId(value.p) : undefined
+
+  if (!isRecord(value) || value.v !== 2 || !preset) {
     return normalizeConfig(undefined)
   }
 
-  const defaults = createDefaultConfig(value.p)
+  const defaults = createDefaultConfig(preset)
   return normalizeConfig({
     ...defaults,
     visibility: expandVisibilityMask(value.x, defaults.visibility),
@@ -222,9 +223,10 @@ function expandCompactConfig(value: unknown) {
 
 function deserializeCompactValue(value: string) {
   const payload = value.slice(COMPACT_PREFIX.length)
+  const preset = resolvePresetId(payload)
 
-  if (isWidgetPresetId(payload)) {
-    return createDefaultConfig(payload)
+  if (preset) {
+    return createDefaultConfig(preset)
   }
 
   return expandCompactConfig(JSON.parse(decodeBase64Url(payload)))
