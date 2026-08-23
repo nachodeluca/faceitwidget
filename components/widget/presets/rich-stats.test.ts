@@ -18,7 +18,7 @@ const challengerData: WidgetData = {
 
 describe("RichStatsPreset", () => {
   it("places world rank beside country rank for non-Challengers", () => {
-    const config = createDefaultConfig("rich-history")
+    const config = createDefaultConfig("rich-profile")
     config.visibility.worldRank = true
 
     const markup = renderToStaticMarkup(createElement(RichStatsPreset, { data, config }))
@@ -32,7 +32,7 @@ describe("RichStatsPreset", () => {
     [false, true],
     [true, true],
   ])("keeps Challenger rank number independent from World rank (%s, %s)", (worldRank, challengerRank) => {
-    const config = createDefaultConfig("rich-history")
+    const config = createDefaultConfig("rich-profile")
     config.visibility.worldRank = worldRank
     config.visibility.challengerRank = challengerRank
 

@@ -23,7 +23,7 @@ export default function FaceitWidgetObsGuide() {
       <ol>
         <li>Open the builder and enter the exact FACEIT nickname.</li>
         <li>Choose a layout and keep only the stats you want on stream.</li>
-        <li>Select <strong>No background</strong> if the game should remain visible behind the overlay.</li>
+        <li>Select <strong>Transparent</strong> if the game should remain visible behind the overlay.</li>
         <li>Use <strong>Copy URL</strong> when the preview is ready.</li>
       </ol>
       <GuideImage
@@ -62,12 +62,12 @@ export default function FaceitWidgetObsGuide() {
 
       <h2>Transparent overlays</h2>
       <p>
-        The No background option removes the widget surface, border, and shadow. Text and rank marks remain visible over the game. You do not need custom OBS CSS.
+        The Transparent option keeps the game visible through a subtle black layer while preserving contrast for the stats. The border and shadow stay disabled, so you do not need custom OBS CSS.
       </p>
       <GuideImage
         image={GUIDE_IMAGES.widgetOverlay}
         alt="FACEIT rank and ELO widget displayed transparently over Counter-Strike 2 in OBS"
-        caption="The Browser source stays transparent around the widget."
+        caption="The game remains visible through the widget while the stats stay readable."
       />
 
       <h2>If the widget does not update</h2>

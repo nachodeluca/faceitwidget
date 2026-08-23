@@ -10,7 +10,6 @@ export const WIDGET_PRESET_IDS = [
   "rank-country",
   "today-stats",
   "rich-profile",
-  "rich-history",
   "profile-card",
 ] as const
 

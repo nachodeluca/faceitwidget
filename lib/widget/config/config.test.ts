@@ -13,7 +13,7 @@ describe("widget backdrop configuration", () => {
   it("accepts a known backdrop and clamps its focal point", () => {
     expect(
       normalizeConfig({
-        preset: "rich-history",
+        preset: "rich-profile",
         backdrop: { id: "ambient-02", position: { x: 120, y: -20 } },
       }).backdrop,
     ).toEqual({

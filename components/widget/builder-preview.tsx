@@ -46,7 +46,6 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
   "rank-country": 0.68,
   "today-stats": 0.63,
   "rich-profile": 0.64,
-  "rich-history": 0.64,
   "profile-card": 0.68,
 }
 
