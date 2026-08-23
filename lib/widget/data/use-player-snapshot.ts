@@ -10,16 +10,19 @@ type PlayerSnapshotPendingState = {
   data: null
   status: "idle" | "loading"
   error?: undefined
+  playerId?: undefined
 }
 
 type PlayerSnapshotErrorState = {
   data: null
   status: "error"
   error: string
+  playerId?: undefined
 }
 
 export type PlayerSnapshotReadyState = {
   data: WidgetData
+  playerId: string
   status: WidgetLiveStatus
   error?: undefined
 }
@@ -44,18 +47,21 @@ function snapshotReducer(
   action: SnapshotAction,
 ): StoredPlayerSnapshotState {
   if (action.type === "start") {
-    const retainedData = action.preserveData && state.lookupKey === action.lookupKey
+    const sameLookup = action.preserveData && state.lookupKey === action.lookupKey
+    const retainedData = sameLookup
       ? state.data
       : null
+    const retainedPlayerId = sameLookup ? state.playerId : undefined
 
-    return retainedData
-      ? { data: retainedData, status: "stale", lookupKey: action.lookupKey }
+    return retainedData && retainedPlayerId
+      ? { data: retainedData, playerId: retainedPlayerId, status: "stale", lookupKey: action.lookupKey }
       : { data: null, status: "loading", lookupKey: action.lookupKey }
   }
 
   if (action.type === "snapshot") {
     return {
       data: action.snapshot.data,
+      playerId: action.snapshot.meta.playerId,
       status: action.snapshot.meta.stale ? "stale" : "connected",
       lookupKey: action.lookupKey,
     }
@@ -64,11 +70,13 @@ function snapshotReducer(
   if (state.lookupKey !== action.lookupKey) return state
 
   if (action.type === "status") {
-    return state.data ? { data: state.data, status: action.status, lookupKey: action.lookupKey } : state
+    return state.data && state.playerId
+      ? { data: state.data, playerId: state.playerId, status: action.status, lookupKey: action.lookupKey }
+      : state
   }
 
-  return state.data
-    ? { data: state.data, status: "stale", lookupKey: action.lookupKey }
+  return state.data && state.playerId
+    ? { data: state.data, playerId: state.playerId, status: "stale", lookupKey: action.lookupKey }
     : { data: null, status: "error", error: action.message, lookupKey: action.lookupKey }
 }
 

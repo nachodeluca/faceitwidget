@@ -23,6 +23,7 @@ export function Builder({ initialConfig, initialNickname }: BuilderProps) {
   const actions = useBuilderActions({
     config: settings.config,
     nickname: settings.nickname,
+    playerId: playerSnapshot.playerId,
     previewWidgetRef,
   })
 
@@ -41,6 +42,7 @@ export function Builder({ initialConfig, initialNickname }: BuilderProps) {
           rank={playerSnapshot.data?.rank}
           rotationAvailable={supportsWidgetRotation(settings.config.preset)}
           copied={actions.copied}
+          canCopy={actions.canCopy}
           resetAnimationKey={settings.resetAnimationKey}
           onNicknameChange={settings.setNickname}
           onPresetChange={handlePresetChange}

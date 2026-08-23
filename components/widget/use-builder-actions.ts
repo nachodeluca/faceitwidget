@@ -29,6 +29,7 @@ function useClipboard() {
 type PreviewActionOptions = {
   config: WidgetConfig
   nickname: string
+  playerId?: string
   previewWidgetRef: RefObject<HTMLDivElement | null>
 }
 
@@ -85,7 +86,7 @@ function useWidgetShare({ config, nickname, previewWidgetRef }: PreviewActionOpt
   return { shareStatus, shareOnX }
 }
 
-export function useBuilderActions({ config, nickname, previewWidgetRef }: PreviewActionOptions) {
+export function useBuilderActions({ config, nickname, playerId, previewWidgetRef }: PreviewActionOptions) {
   const [copyDialogOpen, setCopyDialogOpen] = useState(false)
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false)
   const [widgetUrl, setWidgetUrl] = useState("")
@@ -94,11 +95,15 @@ export function useBuilderActions({ config, nickname, previewWidgetRef }: Previe
   const widgetShare = useWidgetShare({ config, nickname, previewWidgetRef })
 
   function currentWidgetUrl() {
-    return buildWidgetUrl(window.location.origin, nickname, config, getBrowserTimezone())
+    const normalizedPlayerId = playerId?.trim()
+    return normalizedPlayerId
+      ? buildWidgetUrl(window.location.origin, normalizedPlayerId, config, getBrowserTimezone())
+      : null
   }
 
   async function copyWidgetUrl() {
     const url = currentWidgetUrl()
+    if (!url) return
     setWidgetUrl(url)
     setCopyDialogOpen(true)
     await clipboard.copyUrl(url)
@@ -108,6 +113,7 @@ export function useBuilderActions({ config, nickname, previewWidgetRef }: Previe
     ...clipboard,
     ...widgetExport,
     ...widgetShare,
+    canCopy: Boolean(playerId?.trim()),
     copyDialogOpen,
     feedbackDialogOpen,
     widgetUrl,

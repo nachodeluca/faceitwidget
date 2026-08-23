@@ -64,11 +64,13 @@ describe("widget config serialization", () => {
   it("builds short widget URLs", () => {
     const url = buildWidgetUrl(
       "https://faceitwidget.com",
-      "donk666",
+      "fee75936-fca2-41fb-899e-b2e09263de50",
       createDefaultConfig("rich-profile"),
       "America/Montevideo",
     )
 
+    expect(url).toContain("playerId=fee75936-fca2-41fb-899e-b2e09263de50")
+    expect(url).not.toContain("nickname=")
     expect(url).toContain("config=v2.rich-profile")
     expect(url).not.toContain("eyJ2ZXJzaW9u")
   })

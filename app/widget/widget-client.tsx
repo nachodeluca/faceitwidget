@@ -13,10 +13,10 @@ import {
 
 export function WidgetClient() {
   const searchParams = useSearchParams()
-  const nickname = searchParams.get("nickname")?.trim() ?? ""
+  const lookup = searchParams.get("playerId")?.trim() || searchParams.get("nickname")?.trim() || ""
   const timezone = searchParams.get("tz") || getBrowserTimezone()
   const config = deserializeConfig(searchParams.get("config") ?? undefined)
-  const snapshot = usePlayerSnapshot(nickname, {
+  const snapshot = usePlayerSnapshot(lookup, {
     live: true,
     timezone,
   })

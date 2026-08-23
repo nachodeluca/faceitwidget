@@ -486,6 +486,7 @@ type BuilderSidebarProps = {
   rank?: WidgetData["rank"]
   rotationAvailable: boolean
   copied: boolean
+  canCopy: boolean
   resetAnimationKey: number
   onNicknameChange: (nickname: string) => void
   onPresetChange: (preset: WidgetPresetId) => void
@@ -557,11 +558,12 @@ function SidebarTabs({
 
 function SidebarActions({
   copied,
+  canCopy,
   resetAnimationKey,
   onReset,
   onCopy,
   onFeedback,
-}: Pick<BuilderSidebarProps, "copied" | "resetAnimationKey" | "onReset" | "onCopy" | "onFeedback">) {
+}: Pick<BuilderSidebarProps, "copied" | "canCopy" | "resetAnimationKey" | "onReset" | "onCopy" | "onFeedback">) {
   return (
     <div className="mt-auto border-t border-border/70 pt-4">
       <div className="mb-2 flex items-center justify-between">
@@ -588,6 +590,8 @@ function SidebarActions({
         icon={copied ? <Check className="text-emerald-500" /> : <Copy />}
         iconPosition="end"
         onClick={onCopy}
+        disabled={!canCopy}
+        title={canCopy ? "Copy widget URL" : "Waiting for the FACEIT profile"}
       >
         {copied ? "Copied" : "Copy URL"}
       </Button>
@@ -610,6 +614,7 @@ export function BuilderSidebar({
   rank,
   rotationAvailable,
   copied,
+  canCopy,
   resetAnimationKey,
   onNicknameChange,
   onPresetChange,
@@ -641,6 +646,7 @@ export function BuilderSidebar({
         />
         <SidebarActions
           copied={copied}
+          canCopy={canCopy}
           resetAnimationKey={resetAnimationKey}
           onReset={onReset}
           onCopy={onCopy}
