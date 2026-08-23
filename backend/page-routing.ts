@@ -27,14 +27,14 @@ export function canonicalPageRedirect(request: Request) {
   const legacyPath = LEGACY_PAGE_REDIRECTS.get(url.pathname)
   if (legacyPath) {
     url.pathname = legacyPath
-    return Response.redirect(url, 308)
+    return Response.redirect(url, 301)
   }
 
   const pathname = canonicalPath(url.pathname)
   if (pathname === url.pathname) return null
 
   url.pathname = pathname
-  return Response.redirect(url, 308)
+  return Response.redirect(url, 301)
 }
 
 const RSC_ASSET_PATH = /^(.*)\/__next\.([^.]+(?:\.[^.]+)*)\.__PAGE__\.txt$/
