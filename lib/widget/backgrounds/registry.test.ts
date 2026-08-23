@@ -9,6 +9,6 @@ describe("widget backdrop registry", () => {
   })
 
   it("provides local media for every selectable backdrop", () => {
-    expect(WIDGET_BACKDROPS.slice(1).every(({ videoSrc, posterSrc }) => videoSrc && posterSrc)).toBe(true)
+    expect(WIDGET_BACKDROPS.slice(1).every(({ media, src, posterSrc }) => media === "video" && src && posterSrc)).toBe(true)
   })
 })

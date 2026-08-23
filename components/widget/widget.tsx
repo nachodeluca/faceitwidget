@@ -13,7 +13,7 @@ const fontStacks = {
   system: "Inter, ui-sans-serif, system-ui, sans-serif",
   mono: "ui-monospace, SFMono-Regular, Menlo, monospace",
 } as const
-const transparentSurfaceClass = "bg-[rgb(0_0_0_/_28%)]"
+const transparentSurfaceClass = "bg-[rgb(12_12_12_/_72%)]"
 
 type WidgetProps = {
   data: WidgetData

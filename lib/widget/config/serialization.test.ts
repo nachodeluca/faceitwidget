@@ -46,6 +46,21 @@ describe("widget config serialization", () => {
     expect(deserializeConfig(serialized).backdrop).toEqual(config.backdrop)
   })
 
+  it("round-trips a custom image backdrop without embedding its URL", () => {
+    const config = normalizeConfig({
+      preset: "elo-pill",
+      backdrop: {
+        id: "00000000-0000-4000-8000-000000000001",
+        media: "image",
+        position: { x: 18, y: 82 },
+      },
+    })
+    const serialized = serializeConfig(config)
+
+    expect(serialized).not.toContain("assets.faceitwidget.com")
+    expect(deserializeConfig(serialized).backdrop).toEqual(config.backdrop)
+  })
+
   it("builds short widget URLs", () => {
     const url = buildWidgetUrl(
       "https://faceitwidget.com",

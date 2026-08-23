@@ -1,4 +1,5 @@
 import { errorResponse, ApiError } from "./errors"
+import { backgroundRequest, isBackgroundRoute } from "./background-routes"
 import { isValidTimezone, parsePlayerLookup, playerLookupKey } from "../lib/widget/data/player-lookup"
 import type { WorkerEnv } from "./env"
 import { canonicalPageRedirect, staticRscAssetRequest } from "./page-routing"
@@ -71,6 +72,7 @@ export default {
       const playerMatch = url.pathname.match(PLAYER_ROUTE)
       if (playerMatch) return await playerRequest(request, env, playerMatch)
       if (url.pathname === "/api/v1/shares") return await sharedWidgetRequest(request, env)
+      if (isBackgroundRoute(url.pathname)) return await backgroundRequest(request, env)
 
       const shareResponse = await sharedWidgetPage(request, env)
       if (shareResponse) return shareResponse

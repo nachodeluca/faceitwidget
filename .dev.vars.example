@@ -1,1 +1,6 @@
 FACEIT_DATA_API_KEY=replace-with-a-server-side-faceit-key
+R2_ACCESS_KEY_ID=replace-with-an-r2-access-key
+R2_SECRET_ACCESS_KEY=replace-with-an-r2-secret-key
+R2_ACCOUNT_ID=replace-with-your-cloudflare-account-id
+R2_BUCKET_NAME=faceitwidget-user-backgrounds
+R2_PUBLIC_BASE_URL=https://assets.faceitwidget.com
