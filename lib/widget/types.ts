@@ -2,7 +2,13 @@ import type {
   WidgetBackdropConfig,
 } from "./backgrounds/types"
 
-export type { WidgetBackdropConfig, WidgetBackdropId, WidgetBackdropPosition } from "./backgrounds/types"
+export type {
+  CustomWidgetBackdropId,
+  WidgetBackdropConfig,
+  WidgetBackdropId,
+  WidgetBackdropMedia,
+  WidgetBackdropPosition,
+} from "./backgrounds/types"
 
 export const WIDGET_PRESET_IDS = [
   "elo-pill",

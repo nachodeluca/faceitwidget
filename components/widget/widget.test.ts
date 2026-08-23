@@ -22,7 +22,7 @@ describe("Widget surface", () => {
     const markup = renderToStaticMarkup(createElement(Widget, { data, config }))
 
     expect(markup).toContain('data-background="none"')
-    expect(markup).toContain("bg-[rgb(0_0_0_/_28%)]")
+    expect(markup).toContain("bg-[rgb(12_12_12_/_72%)]")
     expect(markup).not.toContain("data-widget-surface-overlay")
   })
 })
