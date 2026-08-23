@@ -2,6 +2,7 @@ import { isRecord } from "../../utils"
 import { createDefaultConfig, normalizeConfig } from "./config"
 import {
   isWidgetPresetId,
+  type WidgetBackdropConfig,
   type WidgetConfig,
   type WidgetPresetId,
 } from "../types"
@@ -46,12 +47,19 @@ type CompactRotation = {
   f?: string
 }
 
+type CompactBackdrop = {
+  i?: string
+  x?: number
+  y?: number
+}
+
 type CompactConfig = {
   v: 2
   p: WidgetPresetId
   x?: string
   s?: Record<string, unknown>
   r?: CompactRotation
+  b?: CompactBackdrop
 }
 
 function encodeBase64Url(value: string) {
@@ -123,6 +131,17 @@ function compactRotation(
   return Object.keys(rotation).length > 0 ? rotation : undefined
 }
 
+function compactBackdrop(
+  current: WidgetBackdropConfig,
+  defaults: WidgetBackdropConfig,
+): CompactBackdrop | undefined {
+  const backdrop: CompactBackdrop = {}
+  if (current.id !== defaults.id) backdrop.i = current.id
+  if (current.position.x !== defaults.position.x) backdrop.x = current.position.x
+  if (current.position.y !== defaults.position.y) backdrop.y = current.position.y
+  return Object.keys(backdrop).length > 0 ? backdrop : undefined
+}
+
 function compactConfig(config: WidgetConfig): CompactConfig {
   const normalized = normalizeConfig(config)
   const defaults = createDefaultConfig(normalized.preset)
@@ -130,10 +149,12 @@ function compactConfig(config: WidgetConfig): CompactConfig {
   const visibility = compactVisibility(normalized.visibility, defaults.visibility)
   const style = compactStyle(normalized.style, defaults.style)
   const rotation = compactRotation(normalized.rotation, defaults.rotation)
+  const backdrop = compactBackdrop(normalized.backdrop, defaults.backdrop)
 
   if (visibility !== undefined) compact.x = visibility
   if (style) compact.s = style
   if (rotation) compact.r = rotation
+  if (backdrop) compact.b = backdrop
 
   return compact
 }
@@ -170,6 +191,20 @@ function expandRotationPatch(value: unknown) {
   return rotation
 }
 
+function expandBackdropPatch(value: unknown) {
+  const backdrop: Record<string, unknown> = {}
+  if (!isRecord(value)) return backdrop
+
+  if (typeof value.i === "string") backdrop.id = value.i
+  if (typeof value.x === "number" || typeof value.y === "number") {
+    backdrop.position = {
+      ...(typeof value.x === "number" ? { x: value.x } : {}),
+      ...(typeof value.y === "number" ? { y: value.y } : {}),
+    }
+  }
+  return backdrop
+}
+
 function expandCompactConfig(value: unknown) {
   if (!isRecord(value) || value.v !== 2 || !isWidgetPresetId(value.p)) {
     return normalizeConfig(undefined)
@@ -181,6 +216,7 @@ function expandCompactConfig(value: unknown) {
     visibility: expandVisibilityMask(value.x, defaults.visibility),
     style: { ...defaults.style, ...expandStylePatch(value.s) },
     rotation: { ...defaults.rotation, ...expandRotationPatch(value.r) },
+    backdrop: { ...defaults.backdrop, ...expandBackdropPatch(value.b) },
   })
 }
 
@@ -197,7 +233,7 @@ function deserializeCompactValue(value: string) {
 export function serializeConfig(config: WidgetConfig) {
   const compact = compactConfig(config)
 
-  if (!compact.x && !compact.s && !compact.r) {
+  if (!compact.x && !compact.s && !compact.r && !compact.b) {
     return `${COMPACT_PREFIX}${compact.p}`
   }
 

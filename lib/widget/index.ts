@@ -7,6 +7,18 @@ export {
 } from "./config/config"
 export { WIDGET_MAPS } from "./maps"
 export {
+  getWidgetBackdrop,
+  isWidgetBackdropId,
+  WIDGET_BACKDROPS,
+  WIDGET_BACKDROP_IDS,
+} from "./backgrounds"
+export type {
+  WidgetBackdropAsset,
+  WidgetBackdropConfig,
+  WidgetBackdropId,
+  WidgetBackdropPosition,
+} from "./backgrounds"
+export {
   getEditableFields,
   getRotationFields,
   supportsWidgetRotation,

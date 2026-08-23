@@ -87,7 +87,7 @@ function SelectContent({
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
           className={cn(
-            "relative isolate z-50 max-h-[min(22rem,var(--available-height))] w-[var(--anchor-width)] min-w-36 max-w-[calc(100vw-1rem)] overflow-x-hidden overflow-y-auto rounded-lg border border-border-muted bg-surface-raised p-1 text-on-surface shadow-[0_18px_45px_rgb(0_0_0_/_45%),0_2px_8px_rgb(0_0_0_/_30%)] outline-none origin-[var(--transform-origin)] duration-150 data-[side=bottom]:origin-top data-[side=top]:origin-bottom data-[side=left]:origin-right data-[side=right]:origin-left data-[side=inline-end]:origin-left data-[side=inline-start]:origin-right data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "panel-scrollbar relative isolate z-50 max-h-[min(22rem,var(--available-height))] w-[var(--anchor-width)] min-w-36 max-w-[calc(100vw-1rem)] overflow-x-hidden overflow-y-auto rounded-lg border border-border-muted bg-surface-raised p-1 text-on-surface shadow-[0_18px_45px_rgb(0_0_0_/_45%),0_2px_8px_rgb(0_0_0_/_30%)] outline-none origin-[var(--transform-origin)] duration-150 data-[side=bottom]:origin-top data-[side=top]:origin-bottom data-[side=left]:origin-right data-[side=right]:origin-left data-[side=inline-end]:origin-left data-[side=inline-start]:origin-right data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
             className,
           )}
           {...props}

@@ -35,6 +35,46 @@ async function waitForImages(node: HTMLElement) {
   )
 }
 
+async function captureVideoFrame(video: HTMLVideoElement) {
+  if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !video.videoWidth) {
+    return null
+  }
+
+  const canvas = video.ownerDocument.createElement("canvas")
+  canvas.width = video.videoWidth
+  canvas.height = video.videoHeight
+  const context = canvas.getContext("2d")
+
+  if (!context) return null
+
+  try {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height)
+    return canvas.toDataURL("image/png")
+  } catch {
+    return null
+  }
+}
+
+async function replaceVideoFrames(original: HTMLElement, clone: HTMLElement) {
+  const originalVideos = Array.from(original.querySelectorAll("video"))
+  const clonedVideos = Array.from(clone.querySelectorAll("video"))
+
+  await Promise.all(
+    originalVideos.map(async (video, index) => {
+      const clonedVideo = clonedVideos[index]
+      if (!clonedVideo) return
+
+      const image = original.ownerDocument.createElement("img")
+      image.alt = ""
+      image.setAttribute("aria-hidden", "true")
+      image.className = clonedVideo.className
+      image.style.cssText = clonedVideo.style.cssText
+      image.src = (await captureVideoFrame(video)) ?? video.poster
+      clonedVideo.replaceWith(image)
+    }),
+  )
+}
+
 function createExportCapture(node: HTMLElement) {
   const frame = node.ownerDocument.createElement("div")
   const clone = node.cloneNode(true) as HTMLElement
@@ -71,6 +111,7 @@ export async function createWidgetPng(node: HTMLElement) {
 
   try {
     const { snapdom } = await import("@zumer/snapdom")
+    await replaceVideoFrames(node, capture.node)
     await waitForImages(capture.node)
 
     return await snapdom.toBlob(capture.frame, {
