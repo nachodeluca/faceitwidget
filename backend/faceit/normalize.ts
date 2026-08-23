@@ -241,7 +241,7 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
   const playerId = player.player_id
   const region = game.region?.toUpperCase()
   const country = player.country?.toLowerCase()
-  const [lifetime, matchStats, history, worldRanking, countryRanking] = await Promise.all([
+  const [lifetime, matchStats, history, ranking, countryRanking] = await Promise.all([
     gateway.getLifetime(playerId),
     gateway.getMatchStats(playerId),
     gateway.getHistory(playerId),
@@ -249,14 +249,13 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
     region && country ? optionalRanking(gateway.getRanking(playerId, region, country)) : undefined,
   ])
   const matches = matchStats.items.map((item) => normalizeMatch(item.stats))
-  const worldRank = worldRanking?.position
+  const worldRank = ranking?.position
   const latestMatchId = history.items[0]?.match_id ?? matches[0]?.matchId
   const normalizedLifetime = normalizeLifetime(lifetime.lifetime)
   const rank = {
     level: game.skill_level ?? 0,
     elo: game.faceit_elo ?? 0,
     worldRank,
-    regionRank: worldRank,
     countryRank: countryRanking?.position,
   }
 

@@ -52,7 +52,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Rank, KDR, level, ELO",
     supportsRotation: false,
     defaultVisibility: { ...hiddenStats, countryRank: true, kdr: true },
-    editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo", "kdr"],
+    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr"],
   },
   {
     id: "rank-country",
@@ -63,7 +63,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       ...hiddenStats,
       countryRank: true,
     },
-    editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo"],
+    editableFields: ["worldRank", "countryRank", "challengerRank", "elo"],
   },
   {
     id: "today-stats",
@@ -105,7 +105,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       todayStats: true,
       last30Stats: true,
     },
-    editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
+    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
     defaultStyle: { density: "comfortable", radius: 12 },
   },
   {
@@ -114,34 +114,16 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Recent form stats",
     supportsRotation: true,
     defaultRotationFields: ["last30", "today"],
+    rotationFields: ["last30", "today"],
     defaultVisibility: {
       ...hiddenStats,
-      worldRank: true,
       countryRank: true,
       kdr: true,
       todayStats: true,
       last30Stats: true,
     },
-    editableFields: ["worldRank", "regionRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
+    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
     defaultStyle: { density: "comfortable", radius: 12 },
-  },
-  {
-    id: "stream-card",
-    label: "Stream Card",
-    description: "Profile with rotating stats",
-    supportsRotation: true,
-    defaultRotationFields: ["today", "last30"],
-    defaultVisibility: {
-      ...hiddenStats,
-      nickname: true,
-      avatar: true,
-      worldRank: true,
-      countryRank: true,
-      todayStats: true,
-      last30Stats: true,
-    },
-    editableFields: ["nickname", "level", "challenger", "elo", "kdr", "todayStats", "last30Stats"],
-    defaultStyle: { density: "comfortable", radius: 14 },
   },
   {
     id: "profile-card",
@@ -151,9 +133,9 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     defaultVisibility: {
       ...hiddenStats,
       nickname: true,
-      worldRank: true,
       countryRank: true,
       challenger: true,
+      challengerRank: false,
       elo: true,
       todayStats: true,
     },
@@ -176,20 +158,37 @@ export function supportsWidgetRotation(preset: WidgetPresetId) {
 
 const levelOnlyFields = new Set<WidgetVisibilityKey>(["level"])
 const challengerOnlyFields = new Set<WidgetVisibilityKey>(["challenger", "challengerRank"])
+const challengerWorldRankRedundantPresets = new Set<WidgetPresetId>([
+  "rank-elo",
+  "rank-country",
+  "rich-profile",
+  "rich-history",
+  "profile-card",
+])
 const rankDependentFields = new Set<WidgetVisibilityKey>([
   ...levelOnlyFields,
   ...challengerOnlyFields,
 ])
 
+function getUnavailableFields(presetId: WidgetPresetId, rank?: WidgetData["rank"]) {
+  const unavailableFields = !rank
+    ? new Set(rankDependentFields)
+    : isChallengerRank(rank)
+      ? new Set(levelOnlyFields)
+      : new Set(challengerOnlyFields)
+
+  if (challengerWorldRankRedundantPresets.has(presetId) && rank && isChallengerRank(rank)) {
+    unavailableFields.add("worldRank")
+  }
+
+  return unavailableFields
+}
+
 export function getEditableFields(
   presetId: WidgetPresetId,
   rank?: WidgetData["rank"],
 ) {
-  const unavailableFields = !rank
-    ? rankDependentFields
-    : isChallengerRank(rank)
-      ? levelOnlyFields
-      : challengerOnlyFields
+  const unavailableFields = getUnavailableFields(presetId, rank)
 
   return WIDGET_PRESET_MAP[presetId].editableFields.filter(
     (field) => !unavailableFields.has(field),

@@ -1,29 +1,36 @@
 import {
-  ChallengerMark,
-  CountryFlag,
+  ChallengerRankBadge,
+  CountryRank,
   EloSummary,
-  getChallengerRankColor,
+  LevelMark,
   PlayerNickname,
-  RankValue,
   RecordStat,
+  WorldRank,
 } from "../parts"
-import { showsChallengerWorldRank } from "./shared/core-line"
-import type { PresetViewProps } from "./types"
 import { isChallengerRank } from "@/lib/widget"
+import type { PresetViewProps } from "./types"
 
 export function ProfileCardPreset({ data, config }: PresetViewProps) {
-  const showRankMark = showsChallengerWorldRank(data, config)
-  const showWorldRankNumber = !isChallengerRank(data.rank) || config.visibility.challengerRank
+  const challenger = isChallengerRank(data.rank)
+  const showRankMark = challenger && config.visibility.challenger
+  const showChallengerRank = challenger && config.visibility.challengerRank
+  const showWorldRank = config.visibility.worldRank && !challenger
+  const showCountryRank = config.visibility.countryRank
+  const showAnyRank = showCountryRank || showWorldRank
+  const compactRankClass = "gap-1"
+  const compactRankValueClass = "text-[9px] font-bold text-[color:var(--widget-muted)]"
 
   return (
     <div className="flex min-w-[252px] flex-row items-center justify-between gap-3">
       <div className="flex min-w-0 items-center gap-2">
         {showRankMark ? (
-          <ChallengerMark
-            className="block size-[34px] shrink-0 object-contain"
-            accentColor={getChallengerRankColor(data.rank.worldRank)}
+          <ChallengerRankBadge
+            value={data.rank.worldRank}
+            showRankNumber={showChallengerRank}
           />
-        ) : null}
+        ) : (
+          <LevelMark data={data} visibility={config.visibility} className="size-[34px]" />
+        )}
         <div className="flex min-w-0 flex-col gap-[5px]">
           {config.visibility.nickname ? (
             <div className="flex min-w-0 items-center gap-[6px]">
@@ -31,15 +38,26 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
             </div>
           ) : null}
           <div className="flex min-w-0 items-center gap-1 whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">
-            {config.visibility.worldRank && showWorldRankNumber ? (
-              <RankValue
-                className="gap-0"
-                value={data.rank.worldRank}
-                valueClassName="text-[9px] font-bold text-[color:var(--widget-muted)]"
+            {showCountryRank ? (
+              <CountryRank
+                data={data}
+                visibility={config.visibility}
+                className={compactRankClass}
+                flagClassName="h-3 w-[17px]"
+                valueClassName={compactRankValueClass}
               />
             ) : null}
-            {config.visibility.countryRank ? <CountryFlag data={data} className="h-3 w-[17px]" /> : null}
-            {config.visibility.worldRank && showWorldRankNumber && config.visibility.elo ? <span>/</span> : null}
+            {showCountryRank && showWorldRank ? <span>/</span> : null}
+            {showWorldRank ? (
+              <WorldRank
+                data={data}
+                visibility={config.visibility}
+                showChallengerBadge={false}
+                className={compactRankClass}
+                valueClassName={compactRankValueClass}
+              />
+            ) : null}
+            {config.visibility.elo && showAnyRank ? <span>/</span> : null}
             <EloSummary data={data} visibility={config.visibility} />
           </div>
         </div>

@@ -1,0 +1,33 @@
+name: Preset suggestion
+description: Suggest a new widget preset or layout.
+title: "[Preset]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping shape the next widget layout. Please describe one focused preset idea.
+
+  - type: textarea
+    id: concept
+    attributes:
+      label: What should it show?
+      description: Describe the information and visual hierarchy you have in mind.
+      placeholder: The player rank should be prominent, with recent match results below it...
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Add screenshots, links, or existing layouts that communicate the idea.
+      placeholder: Drag screenshots here or paste links...
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Include any other details, constraints, or configuration ideas.
+      placeholder: Anything else we should know?

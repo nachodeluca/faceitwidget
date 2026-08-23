@@ -1,21 +1,19 @@
-import { CountryRank, KdrValue, RegionRank, WorldRank } from "../parts"
-import { CoreLine, showsChallengerWorldRank } from "./shared/core-line"
+import { isChallengerRank } from "@/lib/widget"
+
+import { CountryRank, KdrValue, WorldRank } from "../parts"
+import { CoreLine } from "./shared/core-line"
 import type { PresetViewProps } from "./types"
 
 export function RankEloPreset({ data, config }: PresetViewProps) {
+  const challenger = isChallengerRank(data.rank)
+  const showWorldRank = config.visibility.worldRank && !challenger
+
   return (
     <div className="flex min-w-[232px] flex-row items-center gap-3">
-      <div className="flex min-w-0 shrink-0 items-center gap-3">
-        <WorldRank
-          data={data}
-          visibility={config.visibility}
-        />
-        <RegionRank data={data} visibility={config.visibility} />
-      </div>
       <CoreLine
         data={data}
         config={config}
-        hideChallengerMark={showsChallengerWorldRank(data, config)}
+        showFocusRank={challenger && config.visibility.challengerRank}
       />
       {config.visibility.kdr ? (
         <KdrValue
@@ -26,8 +24,11 @@ export function RankEloPreset({ data, config }: PresetViewProps) {
           labelClassName="text-[9px] tracking-[0.04em]"
         />
       ) : null}
-      <div className="ml-auto flex shrink-0 items-center justify-end">
+      <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
         <CountryRank data={data} visibility={config.visibility} />
+        {showWorldRank ? (
+          <WorldRank data={data} visibility={config.visibility} showChallengerBadge={false} />
+        ) : null}
       </div>
     </div>
   )

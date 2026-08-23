@@ -49,5 +49,6 @@ describe("widget config serialization", () => {
 
   it("falls back when an old link references a removed preset", () => {
     expect(deserializeConfig("v2.elo-level").preset).toBe("elo-pill")
+    expect(deserializeConfig("v2.stream-card").preset).toBe("elo-pill")
   })
 })
