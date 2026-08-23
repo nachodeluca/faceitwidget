@@ -15,7 +15,7 @@ describe("canonical page routing", () => {
       new Request(`https://faceitwidget.com${pathname}?source=test`),
     )
 
-    expect(response?.status).toBe(308)
+    expect(response?.status).toBe(301)
     expect(response?.headers.get("location")).toBe(
       `https://faceitwidget.com${pathname}/?source=test`,
     )
@@ -31,7 +31,7 @@ describe("canonical page routing", () => {
       new Request(`https://faceitwidget.com${source}?source=test`),
     )
 
-    expect(response?.status).toBe(308)
+    expect(response?.status).toBe(301)
     expect(response?.headers.get("location")).toBe(
       `https://faceitwidget.com${target}?source=test`,
     )
