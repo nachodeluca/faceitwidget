@@ -6,6 +6,7 @@ import {
   type WidgetData,
   type WidgetPresetId,
 } from "@/lib/widget"
+import { APP_PATHS } from "@/lib/site-metadata"
 import { cn } from "@/lib/utils"
 
 import { Widget, type WidgetShadow } from "../widget/widget"
@@ -20,7 +21,7 @@ type FloatingWidgetProps = {
 export function FloatingWidget({ className, data, preset, shadow = "none" }: FloatingWidgetProps) {
   return (
     <Link
-      href={{ pathname: "/builder", query: { nickname: data.profile.nickname, preset } }}
+      href={{ pathname: APP_PATHS.builder, query: { nickname: data.profile.nickname, preset } }}
       prefetch={false}
       className={cn(
         "inline-block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/70",

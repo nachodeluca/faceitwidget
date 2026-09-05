@@ -31,7 +31,7 @@ function FooterLink({
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-20 flex justify-center pb-5 sm:pb-6 lg:absolute lg:inset-x-0 lg:bottom-0">
+    <footer className="relative z-20 mt-auto flex justify-center pb-5 sm:pb-6 lg:absolute lg:inset-x-0 lg:bottom-0">
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center justify-center gap-1">
           <FooterLink

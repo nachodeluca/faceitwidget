@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { Hero } from "@/components/home/hero"
+import { HomeStory } from "@/components/home/home-story"
 import { SiteFooter } from "@/components/home/site-footer"
 import { SITE_LINKS } from "@/lib/site-links"
 import { SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
@@ -63,15 +64,18 @@ const structuredData = {
 
 export default function Home() {
   return (
-    <main className="relative min-h-svh overflow-hidden bg-background">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgb(255_255_255_/_10%),transparent_30%),radial-gradient(circle_at_78%_58%,rgb(255_255_255_/_3%),transparent_34%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(to_right,rgb(255_255_255_/_4%)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255_/_4%)_1px,transparent_1px)] [background-size:92px_92px] [mask-image:linear-gradient(to_bottom,black,transparent_72%)]" />
-      <Hero player={examplePlayer} />
-      <SiteFooter />
+    <main data-home-page className="relative min-h-svh overflow-x-clip bg-background">
+      <div className="relative flex min-h-svh flex-col overflow-hidden">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgb(255_255_255_/_10%),transparent_30%),radial-gradient(circle_at_78%_58%,rgb(255_255_255_/_3%),transparent_34%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(to_right,rgb(255_255_255_/_4%)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255_/_4%)_1px,transparent_1px)] [background-size:92px_92px] [mask-image:linear-gradient(to_bottom,black,transparent_72%)]" />
+        <Hero player={examplePlayer} />
+        <SiteFooter />
+      </div>
+      <HomeStory />
     </main>
   )
 }

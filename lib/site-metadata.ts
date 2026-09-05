@@ -23,6 +23,11 @@ export const SITE_PATHS = {
   privacy: "/privacy/",
 } as const
 
+export const APP_PATHS = {
+  builder: "/builder/",
+  widget: "/widget/",
+} as const
+
 export const INDEXABLE_PATHS = [
   SITE_PATHS.home,
   SITE_PATHS.faceitWidgetObsGuide,

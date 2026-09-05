@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import {
   absoluteSiteUrl,
+  APP_PATHS,
   createLandingMetadata,
   INDEXABLE_PATHS,
   SOCIAL_IMAGE,
@@ -14,6 +15,11 @@ describe("indexable routes", () => {
 
     expect(paths).toEqual(Object.values(SITE_PATHS))
     expect(new Set(paths).size).toBe(paths.length)
+  })
+
+  it("keeps application routes outside the indexable sitemap", () => {
+    expect([...INDEXABLE_PATHS]).not.toContain(APP_PATHS.builder)
+    expect([...INDEXABLE_PATHS]).not.toContain(APP_PATHS.widget)
   })
 
   it("generates absolute HTTPS URLs for the sitemap", () => {

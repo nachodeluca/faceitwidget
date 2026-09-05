@@ -26,9 +26,10 @@ export default function PrivacyPage() {
       <h2>Website analytics</h2>
       <p>
         The public website uses Google Analytics 4 to measure aggregate traffic and understand which pages and referral links are
-        useful. The tracked events cover page views, opening the builder, and selecting a preset. The `/widget/` browser-source
-        route is excluded so an OBS source does not look like a new website visit. Campaign parameters such as UTM values are
-        removed from the address bar after they are recorded.
+        useful. The tracked events cover page views, opening the builder, and selecting a preset. The{" "}
+        <code className="rounded bg-surface-hover px-1 py-0.5 font-mono text-[0.9em] text-foreground">/widget/</code>{" "}
+        browser-source route is excluded so an OBS source does not look like a new website visit. Campaign parameters such as
+        UTM values are removed from the address bar after they are recorded.
       </p>
 
       <h2>Technical data</h2>
