@@ -4,7 +4,7 @@ import { ArrowRight, Radio } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { SITE_PATHS } from "@/lib/site-metadata"
+import { APP_PATHS, SITE_PATHS } from "@/lib/site-metadata"
 
 import { MapBackground } from "./map-background"
 import { Showcase } from "./showcase"
@@ -76,7 +76,7 @@ export function Hero({ player }: HeroProps) {
             . Show live ELO, rank, K/D, and recent matches with one browser-source URL.
           </p>
           <Button
-            render={<Link href={{ pathname: "/builder", query: { nickname: player } }} prefetch={false} />}
+            render={<Link href={{ pathname: APP_PATHS.builder, query: { nickname: player } }} prefetch={false} />}
             nativeButton={false}
             size="lg"
             icon={<ArrowRight />}

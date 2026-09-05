@@ -1,11 +1,14 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
+import { APP_PATHS } from "@/lib/site-metadata"
+
 import { WidgetClient } from "./widget-client"
 
 export const metadata: Metadata = {
   title: "FACEIT widget",
-  robots: { index: false, follow: false, nocache: true },
+  alternates: { canonical: APP_PATHS.widget },
+  robots: { index: false, follow: true, nocache: true },
 }
 
 export default function WidgetPage() {

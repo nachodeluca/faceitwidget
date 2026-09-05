@@ -1,4 +1,4 @@
-import { SITE_PATHS } from "../lib/site-metadata"
+import { APP_PATHS, SITE_PATHS } from "../lib/site-metadata"
 
 const LEGACY_PAGE_REDIRECTS = new Map([
   ["/guides/faceit-widget-obs", "/faceit-widget-obs/"],
@@ -7,10 +7,9 @@ const LEGACY_PAGE_REDIRECTS = new Map([
   ["/guides/live-faceit-stats/", "/live-faceit-stats/"],
 ])
 
-const STATIC_PAGE_PATHS = new Set([
+const STATIC_PAGE_PATHS = new Set<string>([
   ...Object.values(SITE_PATHS),
-  "/builder/",
-  "/widget/",
+  ...Object.values(APP_PATHS),
 ])
 
 function canonicalPath(pathname: string) {

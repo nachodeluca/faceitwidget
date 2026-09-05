@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { SITE_NAV_LINK_CLASS } from "@/components/site/link-styles"
-import { SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
+import { APP_PATHS, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
 type SitePageProps = {
   title: string
@@ -72,7 +72,7 @@ export function SitePage({ title, description, path, children, showBuilderCta = 
           </p>
           {showBuilderCta ? (
             <Button
-              render={<Link href="/builder/?nickname=donk666" />}
+              render={<Link href={`${APP_PATHS.builder}?nickname=donk666`} />}
               nativeButton={false}
               className="mt-5"
               icon={<ArrowRight />}

@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { SITE_PATHS } from "@/lib/site-metadata"
+import { APP_PATHS, SITE_PATHS } from "@/lib/site-metadata"
 
 const recoveryLinkClass =
   "relative text-sm text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-200 hover:text-foreground hover:after:scale-x-100 motion-reduce:after:transition-none"
@@ -25,7 +25,7 @@ export default function NotFound() {
         </p>
         <nav aria-label="Recovery links" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3">
           <Link className={recoveryLinkClass} href={SITE_PATHS.home}>Homepage</Link>
-          <Link className={recoveryLinkClass} href="/builder/">Widget builder</Link>
+          <Link className={recoveryLinkClass} href={APP_PATHS.builder}>Widget builder</Link>
           <Link className={recoveryLinkClass} href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup</Link>
           <Link className={recoveryLinkClass} href={SITE_PATHS.liveFaceitStatsGuide}>Live stats</Link>
           <Link className={recoveryLinkClass} href="/sitemap.xml">Sitemap</Link>

@@ -5,11 +5,13 @@ import Script from "next/script"
 import { usePathname } from "next/navigation"
 
 import { cleanCampaignParams, trackEvent } from "@/lib/analytics"
+import { APP_PATHS } from "@/lib/site-metadata"
 
 const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const WIDGET_PATHS = new Set([APP_PATHS.widget, APP_PATHS.widget.slice(0, -1)])
 
 function shouldTrack(pathname: string | null) {
-  return Boolean(measurementId) && pathname !== "/widget" && pathname !== "/widget/"
+  return Boolean(measurementId) && !WIDGET_PATHS.has(pathname ?? "")
 }
 
 export function GoogleAnalytics() {
