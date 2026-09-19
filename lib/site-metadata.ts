@@ -30,6 +30,7 @@ export const APP_PATHS = {
 
 export const INDEXABLE_PATHS = [
   SITE_PATHS.home,
+  APP_PATHS.builder,
   SITE_PATHS.faceitWidgetObsGuide,
   SITE_PATHS.liveFaceitStatsGuide,
   SITE_PATHS.contact,

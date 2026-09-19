@@ -9,7 +9,7 @@ import { createSharedWidget, sharedWidgetPage } from "./share-routes"
 export { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
 export { SharedWidgetCard } from "./shared-widget-card"
 
-const PLAYER_ROUTE = /^\/api\/v1\/players\/([^/]+)\/(snapshot|live)\/?$/
+const PLAYER_ROUTE = /^\/api\/v1\/players\/([^/]+)\/snapshot\/?$/
 
 async function enforceRateLimits(request: Request, env: WorkerEnv, lookupKey?: string) {
   const ip = request.headers.get("CF-Connecting-IP") ?? "local"

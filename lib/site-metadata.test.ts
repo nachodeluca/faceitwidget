@@ -10,21 +10,21 @@ import {
 } from "./site-metadata"
 
 describe("indexable routes", () => {
-  it("contains every canonical landing exactly once", () => {
+  it("contains every canonical public page exactly once", () => {
     const paths = [...INDEXABLE_PATHS]
 
-    expect(paths).toEqual(Object.values(SITE_PATHS))
+    expect(new Set(paths)).toEqual(new Set([...Object.values(SITE_PATHS), APP_PATHS.builder]))
     expect(new Set(paths).size).toBe(paths.length)
   })
 
-  it("keeps application routes outside the indexable sitemap", () => {
-    expect([...INDEXABLE_PATHS]).not.toContain(APP_PATHS.builder)
+  it("keeps the generated widget route outside the indexable sitemap", () => {
     expect([...INDEXABLE_PATHS]).not.toContain(APP_PATHS.widget)
   })
 
   it("generates absolute HTTPS URLs for the sitemap", () => {
     expect(INDEXABLE_PATHS.map(absoluteSiteUrl)).toEqual([
       "https://faceitwidget.com/",
+      "https://faceitwidget.com/builder/",
       "https://faceitwidget.com/faceit-widget-obs/",
       "https://faceitwidget.com/live-faceit-stats/",
       "https://faceitwidget.com/contact/",

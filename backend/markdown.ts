@@ -9,7 +9,7 @@ FACEIT Widget is a free open-source browser-source overlay for public FACEIT CS2
 
 Enter a FACEIT nickname, choose a layout, and copy a URL into an OBS Browser source. The builder can show ELO, FACEIT level or Challenger rank, country and world rankings, K/D, recent form, session results, and profile details. It also supports no-background overlays, colors, scale, borders, map backgrounds, and rotating statistics on larger presets.
 
-The widget reads public FACEIT data. It does not ask for a FACEIT password, OAuth token, or private account permission. When FACEIT publishes a completed match, changed values animate into the open widget.
+The widget reads public FACEIT data. It does not ask for a FACEIT password, OAuth token, or private account permission. When FACEIT publishes a completed match, the open widget checks for changed values about every two minutes and animates them when they are ready.
 
 ## Links
 
@@ -46,16 +46,16 @@ Create a Browser source in the OBS scene and paste the generated URL. Start with
 
 ## If it does not update
 
-Check the nickname, refresh the Browser source after replacing its URL, and wait for FACEIT to publish the finished match. A result may take a little time to become available on FACEIT.
+Check the nickname, allow up to two minutes for the next refresh, and wait for FACEIT to publish the finished match. A result may take a little time to become available on FACEIT.
 
 Read the [live stats guide](https://faceitwidget.com/live-faceit-stats/) to understand what appears after a match.
 `,
   ],
   [
     "/live-faceit-stats/",
-    `# How live FACEIT stats update
+    `# How FACEIT stats update
 
-An open FACEIT Widget can update public CS2 data without reloading the OBS Browser source.
+An open FACEIT Widget checks public CS2 data about every two minutes without reloading the OBS Browser source.
 
 ## What updates
 
@@ -65,11 +65,11 @@ Depending on the selected preset and fields, the overlay can show FACEIT ELO, sk
 
 ## When a match finishes
 
-When FACEIT publishes a finished match, the widget updates the relevant values and animates the change. A result may take a little time to appear after you leave the server.
+When FACEIT publishes a finished match, the widget detects the relevant values during its next refresh and animates the change. A result may take a little time to appear after you leave the server.
 
 ## If an update is missing
 
-Check the nickname, make sure the result is visible on FACEIT, and refresh the Browser source if you recently replaced the widget URL. The last available values remain visible until newer values are ready.
+Check the nickname, make sure the result is visible on FACEIT, and allow up to two minutes for the next refresh. Refresh the Browser source if you recently replaced the widget URL. The last available values remain visible until newer values are ready.
 
 The widget reads public statistics only. It does not request a password, OAuth consent, or access to a player account. See the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/) to add the generated URL.
 `,

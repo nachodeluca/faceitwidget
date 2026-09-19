@@ -6,9 +6,9 @@ import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 
 const path = SITE_PATHS.liveFaceitStatsGuide
-const title = "How live FACEIT stats update"
+const title = "How FACEIT stats update"
 const description =
-  "Learn when the FACEIT overlay updates ELO, ranking, K/D, today stats, and the latest 30 CS2 matches."
+  "Learn how the FACEIT overlay refreshes ELO, ranking, K/D, today stats, and the latest 30 CS2 matches."
 
 export const metadata: Metadata = createLandingMetadata({ title, description, path })
 
@@ -16,7 +16,7 @@ export default function LiveFaceitStatsGuide() {
   return (
     <GuidePage
       title={title}
-      description="The overlay keeps your selected FACEIT statistics visible while your OBS browser source is open."
+      description="The overlay keeps your selected FACEIT statistics visible and checks for updated values about every two minutes while your OBS browser source is open."
       path={path}
     >
       <h2>What updates</h2>
@@ -31,15 +31,15 @@ export default function LiveFaceitStatsGuide() {
 
       <h2>When a match finishes</h2>
       <p>
-        When FACEIT publishes a finished match, the widget updates the relevant values and animates the change while the browser source stays open.
+        When FACEIT publishes a finished match, the widget checks for the relevant values about every two minutes, then animates the change while the browser source stays open.
       </p>
       <p>
-        A match may take a little time to appear after you leave the server. This depends on when FACEIT makes the result available.
+        A match may take a little time to appear after you leave the server. This depends on when FACEIT makes the result available and the next widget refresh.
       </p>
 
       <h2>If the widget does not update</h2>
       <p>
-        Check the nickname, make sure the result is visible on FACEIT, and refresh the OBS browser source if you recently replaced the widget URL. The last available values remain visible until newer values are ready.
+        Check the nickname, make sure the result is visible on FACEIT, and allow up to two minutes for the next refresh. Refresh the OBS browser source if you recently replaced the widget URL. The last available values remain visible until newer values are ready.
       </p>
 
       <h2>Privacy</h2>

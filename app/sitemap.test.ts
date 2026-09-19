@@ -6,6 +6,7 @@ describe("sitemap.xml", () => {
   it("contains only canonical URLs", () => {
     expect(sitemap()).toEqual([
       { url: "https://faceitwidget.com/" },
+      { url: "https://faceitwidget.com/builder/" },
       { url: "https://faceitwidget.com/faceit-widget-obs/" },
       { url: "https://faceitwidget.com/live-faceit-stats/" },
       { url: "https://faceitwidget.com/contact/" },

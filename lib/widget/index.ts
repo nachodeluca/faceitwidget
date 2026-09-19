@@ -47,6 +47,5 @@ export { WidgetApiClient, WidgetApiError, widgetApiClient } from "./data/api-cli
 export { usePlayerSnapshot } from "./data/use-player-snapshot"
 export type { PlayerSnapshotReadyState, PlayerSnapshotState } from "./data/use-player-snapshot"
 export type { WidgetDataSource } from "./data/data-source"
-export type { WidgetLiveSource } from "./data/data-source"
 export type { WidgetMapId } from "./maps"
 export type * from "./types"

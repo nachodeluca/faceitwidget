@@ -133,10 +133,3 @@ export type WidgetSnapshot = {
     refreshAfterMs: number
   }
 }
-
-export type WidgetLiveStatus = "connected" | "syncing" | "stale"
-
-export type WidgetLiveMessage =
-  | { type: "snapshot"; payload: WidgetSnapshot }
-  | { type: "status"; state: WidgetLiveStatus }
-  | { type: "error"; retryAfterMs: number }
