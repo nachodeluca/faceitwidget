@@ -23,7 +23,7 @@ type LiveShowcaseProps = {
 }
 
 export function LiveShowcase({ nickname }: LiveShowcaseProps) {
-  const snapshot = usePlayerSnapshot(nickname, { live: true })
+  const snapshot = usePlayerSnapshot(nickname)
 
   return (
     <PlayerDataBoundary

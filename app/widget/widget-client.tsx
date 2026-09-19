@@ -17,7 +17,6 @@ export function WidgetClient() {
   const timezone = searchParams.get("tz") || getBrowserTimezone()
   const config = deserializeConfig(searchParams.get("config") ?? undefined)
   const snapshot = usePlayerSnapshot(lookup, {
-    live: true,
     timezone,
   })
 

@@ -70,7 +70,7 @@
     }
   ],
   "vars": {
-    "LIVE_POLL_INTERVAL_MS": "30000",
+    "PLAYER_REFRESH_INTERVAL_MS": "120000",
     "R2_BUCKET_NAME": "faceitwidget-user-backgrounds",
     "R2_PUBLIC_BASE_URL": "https://assets.faceitwidget.com"
   },

@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-import type { WidgetLiveSource } from "./data-source"
-import type { WidgetLiveMessage, WidgetSnapshot } from "../types"
+import type { WidgetDataSource } from "./data-source"
+import type { WidgetSnapshot } from "../types"
 
 const widgetDataSchema = z.object({
   profile: z.object({
@@ -54,15 +54,6 @@ const widgetSnapshotSchema = z.object({
   }),
 })
 
-const liveMessageSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("snapshot"), payload: widgetSnapshotSchema }),
-  z.object({
-    type: z.literal("status"),
-    state: z.enum(["connected", "syncing", "stale"]),
-  }),
-  z.object({ type: z.literal("error"), retryAfterMs: z.number() }),
-])
-
 export class WidgetApiError extends Error {
   constructor(
     message: string,
@@ -77,14 +68,15 @@ function apiBaseUrl() {
   return process.env.NEXT_PUBLIC_WIDGET_API_BASE_URL?.replace(/\/$/, "") ?? ""
 }
 
-function apiUrl(lookup: string, route: "snapshot" | "live", timezone = "UTC") {
+function apiUrl(lookup: string, timezone = "UTC") {
+  const route = "snapshot"
   const path = `/api/v1/players/${encodeURIComponent(lookup)}/${route}`
   const url = new URL(`${apiBaseUrl()}${path}`, window.location.origin)
   url.searchParams.set("tz", timezone)
   return url
 }
 
-export class WidgetApiClient implements WidgetLiveSource {
+export class WidgetApiClient implements WidgetDataSource {
   private readonly snapshotCache = new Map<string, { etag: string; snapshot: WidgetSnapshot }>()
 
   async getPlayerSnapshot(
@@ -96,7 +88,7 @@ export class WidgetApiClient implements WidgetLiveSource {
     const cached = this.snapshotCache.get(cacheKey)
     if (cached) headers.set("If-None-Match", cached.etag)
 
-    const response = await fetch(apiUrl(lookup, "snapshot", options.timezone), {
+    const response = await fetch(apiUrl(lookup, options.timezone), {
       headers,
       signal: options.signal,
     })
@@ -126,38 +118,6 @@ export class WidgetApiClient implements WidgetLiveSource {
     return snapshot
   }
 
-  subscribe(
-    lookup: string,
-    options: {
-      timezone?: string
-      onMessage: (message: WidgetLiveMessage) => void
-      onDisconnect?: () => void
-    },
-  ) {
-    const url = apiUrl(lookup, "live", options.timezone)
-    url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
-    const socket = new WebSocket(url)
-    let closedByClient = false
-
-    socket.addEventListener("message", (event) => {
-      if (typeof event.data !== "string") return
-
-      try {
-        options.onMessage(liveMessageSchema.parse(JSON.parse(event.data)))
-      } catch {
-        return
-      }
-    })
-    socket.addEventListener("close", () => {
-      if (!closedByClient) options.onDisconnect?.()
-    })
-    socket.addEventListener("error", () => socket.close())
-
-    return () => {
-      closedByClient = true
-      socket.close(1000, "client closed")
-    }
-  }
 }
 
 export const widgetApiClient = new WidgetApiClient()

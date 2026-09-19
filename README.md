@@ -71,7 +71,7 @@ Run only the frontend while working on the UI:
 pnpm dev
 ```
 
-Run the static export and the Worker together when testing real FACEIT requests, WebSockets, Durable Objects, or share pages:
+Run the static export and the Worker together when testing real FACEIT requests, Durable Objects, or share pages:
 
 ```bash
 pnpm preview
@@ -82,7 +82,7 @@ pnpm preview
 | Variable | Runtime | Required | Purpose |
 | --- | --- | --- | --- |
 | `FACEIT_DATA_API_KEY` | Worker secret | Yes | Authenticates server-side requests to FACEIT. |
-| `LIVE_POLL_INTERVAL_MS` | Worker variable | No | Match-history polling interval. Defaults to `30000` and is clamped between 15 and 60 seconds. |
+| `PLAYER_REFRESH_INTERVAL_MS` | Worker variable | No | Widget refresh interval. Defaults to `120000` and is clamped between 60 and 300 seconds. |
 | `NEXT_PUBLIC_WIDGET_API_BASE_URL` | Next.js build | No | Points the browser client at a separate Worker origin during local development. |
 
 ## Project structure

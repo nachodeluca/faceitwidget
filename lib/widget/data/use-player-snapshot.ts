@@ -4,7 +4,9 @@ import { useEffect, useReducer } from "react"
 
 import { widgetApiClient, WidgetApiError } from "./api-client"
 import { getBrowserTimezone, parsePlayerLookup, playerLookupKey } from "./player-lookup"
-import type { WidgetData, WidgetLiveMessage, WidgetLiveStatus, WidgetSnapshot } from "../types"
+import type { WidgetData, WidgetSnapshot } from "../types"
+
+const DEFAULT_REFRESH_INTERVAL_MS = 120_000
 
 type PlayerSnapshotPendingState = {
   data: null
@@ -23,7 +25,7 @@ type PlayerSnapshotErrorState = {
 export type PlayerSnapshotReadyState = {
   data: WidgetData
   playerId: string
-  status: WidgetLiveStatus
+  status: "connected" | "stale"
   error?: undefined
 }
 
@@ -37,7 +39,6 @@ type StoredPlayerSnapshotState = PlayerSnapshotState & { lookupKey: string | nul
 type SnapshotAction =
   | { type: "start"; lookupKey: string; preserveData: boolean }
   | { type: "snapshot"; lookupKey: string; snapshot: WidgetSnapshot }
-  | { type: "status"; lookupKey: string; status: WidgetLiveStatus }
   | { type: "failure"; lookupKey: string; message: string }
 
 const idleState: PlayerSnapshotPendingState = { data: null, status: "idle" }
@@ -48,9 +49,7 @@ function snapshotReducer(
 ): StoredPlayerSnapshotState {
   if (action.type === "start") {
     const sameLookup = action.preserveData && state.lookupKey === action.lookupKey
-    const retainedData = sameLookup
-      ? state.data
-      : null
+    const retainedData = sameLookup ? state.data : null
     const retainedPlayerId = sameLookup ? state.playerId : undefined
 
     return retainedData && retainedPlayerId
@@ -69,12 +68,6 @@ function snapshotReducer(
 
   if (state.lookupKey !== action.lookupKey) return state
 
-  if (action.type === "status") {
-    return state.data && state.playerId
-      ? { data: state.data, playerId: state.playerId, status: action.status, lookupKey: action.lookupKey }
-      : state
-  }
-
   return state.data && state.playerId
     ? { data: state.data, playerId: state.playerId, status: "stale", lookupKey: action.lookupKey }
     : { data: null, status: "error", error: action.message, lookupKey: action.lookupKey }
@@ -83,20 +76,26 @@ function snapshotReducer(
 function errorMessage(error: unknown) {
   return error instanceof WidgetApiError
     ? error.message
-    : "Unable to connect to the stats service."
+    : "Unable to load FACEIT stats."
 }
 
 function shouldRetry(error: unknown) {
   return !(error instanceof WidgetApiError) || error.status === 429 || error.status >= 500
 }
 
-function reconnectDelay(attempt: number) {
+function retryDelay(attempt: number) {
   return Math.min(30_000, 1_000 * 2 ** attempt)
+}
+
+function refreshDelay(snapshot: WidgetSnapshot) {
+  return Number.isFinite(snapshot.meta.refreshAfterMs) && snapshot.meta.refreshAfterMs > 0
+    ? snapshot.meta.refreshAfterMs
+    : DEFAULT_REFRESH_INTERVAL_MS
 }
 
 export function usePlayerSnapshot(
   lookupValue: string,
-  options: { debounceMs?: number; live?: boolean; timezone?: string } = {},
+  options: { debounceMs?: number; timezone?: string } = {},
 ): PlayerSnapshotState {
   const parsedLookup = parsePlayerLookup(lookupValue)
   const activeLookupKey = parsedLookup ? playerLookupKey(parsedLookup) : null
@@ -113,46 +112,23 @@ export function usePlayerSnapshot(
     const lookupIdentifier = lookup.value
     const timezone = options.timezone ?? getBrowserTimezone()
     const abortController = new AbortController()
-    let unsubscribe: (() => void) | undefined
-    let reconnectTimer: number | undefined
-    let reconnectAttempt = 0
+    let scheduledTimer: number | undefined
+    let retryAttempt = 0
     let disposed = false
 
-    const applyLiveMessage = (message: WidgetLiveMessage) => {
-      switch (message.type) {
-        case "snapshot":
-          reconnectAttempt = 0
-          dispatch({ type: "snapshot", lookupKey, snapshot: message.payload })
-          break
-        case "status":
-          dispatch({ type: "status", lookupKey, status: message.state })
-          break
-        case "error":
-          dispatch({ type: "failure", lookupKey, message: "Unable to load FACEIT stats." })
-          break
-      }
+    const schedule = (delayMs: number, preserveData: boolean) => {
+      if (disposed) return
+      if (scheduledTimer !== undefined) window.clearTimeout(scheduledTimer)
+      scheduledTimer = window.setTimeout(() => {
+        scheduledTimer = undefined
+        void loadSnapshot(preserveData)
+      }, delayMs)
     }
 
-    const scheduleReconnect = () => {
-      if (disposed || options.live === false) return
-
-      const delay = reconnectDelay(reconnectAttempt)
-      reconnectAttempt += 1
-      reconnectTimer = window.setTimeout(() => void loadSnapshot(true), delay)
-    }
-
-    const connect = () => {
-      if (disposed || options.live === false) return
-
-      unsubscribe?.()
-      unsubscribe = widgetApiClient.subscribe(lookupIdentifier, {
-        timezone,
-        onMessage: applyLiveMessage,
-        onDisconnect() {
-          dispatch({ type: "status", lookupKey, status: "stale" })
-          scheduleReconnect()
-        },
-      })
+    const scheduleRetry = () => {
+      const delay = retryDelay(retryAttempt)
+      retryAttempt += 1
+      schedule(delay, true)
     }
 
     async function loadSnapshot(preserveData: boolean) {
@@ -165,27 +141,26 @@ export function usePlayerSnapshot(
         })
         if (disposed) return
 
-        reconnectAttempt = 0
+        retryAttempt = 0
         dispatch({ type: "snapshot", lookupKey, snapshot })
-        connect()
+        schedule(refreshDelay(snapshot), true)
       } catch (error) {
         if (disposed || abortController.signal.aborted) return
 
         dispatch({ type: "failure", lookupKey, message: errorMessage(error) })
-        if (shouldRetry(error)) scheduleReconnect()
+        if (shouldRetry(error)) scheduleRetry()
       }
     }
 
-    const timer = window.setTimeout(() => void loadSnapshot(false), options.debounceMs ?? 0)
+    const initialTimer = window.setTimeout(() => void loadSnapshot(false), options.debounceMs ?? 0)
 
     return () => {
       disposed = true
       abortController.abort()
-      window.clearTimeout(timer)
-      if (reconnectTimer) window.clearTimeout(reconnectTimer)
-      unsubscribe?.()
+      window.clearTimeout(initialTimer)
+      if (scheduledTimer !== undefined) window.clearTimeout(scheduledTimer)
     }
-  }, [lookupValue, options.debounceMs, options.live, options.timezone])
+  }, [lookupValue, options.debounceMs, options.timezone])
 
   if (!activeLookupKey) return idleState
   if (state.lookupKey !== activeLookupKey) return { data: null, status: "loading" }

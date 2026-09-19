@@ -19,7 +19,7 @@ type BuilderProps = {
 export function Builder({ initialConfig, initialNickname }: BuilderProps) {
   const previewWidgetRef = useRef<HTMLDivElement>(null)
   const settings = useBuilderConfig(initialConfig, initialNickname)
-  const playerSnapshot = usePlayerSnapshot(settings.nickname, { debounceMs: 600, live: true })
+  const playerSnapshot = usePlayerSnapshot(settings.nickname, { debounceMs: 600 })
   const actions = useBuilderActions({
     config: settings.config,
     nickname: settings.nickname,
