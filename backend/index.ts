@@ -35,7 +35,7 @@ async function playerRequest(request: Request, env: WorkerEnv, match: RegExpMatc
   }
 
   const rawLookup = decodeURIComponent(match[1])
-  const route = match[2]
+  const route = "snapshot"
   const lookup = parsePlayerLookup(rawLookup)
   const url = new URL(request.url)
   const timezone = url.searchParams.get("tz") ?? "UTC"
