@@ -3,9 +3,16 @@ import type { Metadata } from "next"
 export const SITE_METADATA = {
   name: "FACEIT Widget",
   url: "https://faceitwidget.com",
-  title: "FACEIT Widget for OBS – Live CS2 ELO & Stats",
+  title: "FACEIT Widget | CS2 FACEIT Stats for OBS & Streamers",
   description:
-    "Create a free FACEIT widget for OBS or Streamlabs. Show live CS2 ELO, level, ranking, K/D, and recent matches with one browser-source URL.",
+    "Create a free FACEIT Widget for OBS and Streamlabs. Show live CS2 ELO, level, rank, K/D, and recent matches in a browser source with no plugin or login.",
+} as const
+
+export const SITE_LAST_MODIFIED = "2026-09-20"
+
+export const SITE_AUTHOR = {
+  name: "Nacho",
+  url: "https://github.com/nachodeluca",
 } as const
 
 export const SOCIAL_IMAGE = {
@@ -19,6 +26,7 @@ export const SITE_PATHS = {
   home: "/",
   faceitWidgetObsGuide: "/faceit-widget-obs/",
   liveFaceitStatsGuide: "/live-faceit-stats/",
+  about: "/about/",
   contact: "/contact/",
   privacy: "/privacy/",
 } as const
@@ -33,6 +41,7 @@ export const INDEXABLE_PATHS = [
   APP_PATHS.builder,
   SITE_PATHS.faceitWidgetObsGuide,
   SITE_PATHS.liveFaceitStatsGuide,
+  SITE_PATHS.about,
   SITE_PATHS.contact,
   SITE_PATHS.privacy,
 ] as const

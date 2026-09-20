@@ -6,6 +6,7 @@ import {
   createLandingMetadata,
   INDEXABLE_PATHS,
   SOCIAL_IMAGE,
+  SITE_LAST_MODIFIED,
   SITE_PATHS,
 } from "./site-metadata"
 
@@ -27,6 +28,7 @@ describe("indexable routes", () => {
       "https://faceitwidget.com/builder/",
       "https://faceitwidget.com/faceit-widget-obs/",
       "https://faceitwidget.com/live-faceit-stats/",
+      "https://faceitwidget.com/about/",
       "https://faceitwidget.com/contact/",
       "https://faceitwidget.com/privacy/",
     ])
@@ -45,5 +47,9 @@ describe("indexable routes", () => {
     expect(metadata.openGraph?.title).toBe("Example guide | FACEIT Widget")
     expect(metadata.openGraph?.images).toEqual([SOCIAL_IMAGE])
     expect(metadata.twitter?.images).toEqual([SOCIAL_IMAGE.url])
+  })
+
+  it("keeps structured-data freshness tied to an explicit ISO date", () => {
+    expect(SITE_LAST_MODIFIED).toMatch(/^20\d{2}-\d{2}-\d{2}$/)
   })
 })

@@ -630,8 +630,11 @@ export function BuilderSidebar({
     <aside className="scrollbar-hidden border-b border-border/70 bg-surface/55 lg:sticky lg:top-0 lg:h-screen lg:w-[360px] lg:shrink-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r">
       <div className="flex min-h-full flex-col px-4 py-5 sm:px-6 lg:px-7 lg:py-6">
         <header>
-          <h1 className="text-2xl font-semibold tracking-[-0.03em] text-on-surface">Settings</h1>
-          <p className="mt-2 text-body-sm text-tertiary">Configure the widget as you like!</p>
+          <h1 className="text-2xl font-semibold tracking-[-0.03em] text-on-surface">FACEIT Widget Builder</h1>
+          <p className="mt-2 text-body-sm text-tertiary">
+            Build a free FACEIT overlay for OBS or Streamlabs. Enter a public nickname, choose a preset, and copy the Browser source URL when the preview is ready.
+          </p>
+          <h2 className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80">Settings</h2>
         </header>
         <SidebarPlayer nickname={nickname} onNicknameChange={onNicknameChange} />
         <SidebarTabs

@@ -1,6 +1,9 @@
 # FACEIT Widget
 
 > FACEIT Widget is a free open-source browser-source overlay for public FACEIT CS2 statistics in OBS and Streamlabs.
+>
+> Canonical website: https://faceitwidget.com/
+> Official source repository: https://github.com/nachodeluca/faceitwidget
 
 ## When to use FACEIT Widget
 
@@ -14,6 +17,7 @@ FACEIT Widget is not an account-login service. It does not provide private FACEI
 - [Widget builder](https://faceitwidget.com/builder/): create and configure an overlay.
 - [OBS setup](https://faceitwidget.com/faceit-widget-obs/): add the URL as a Browser source.
 - [Live stats](https://faceitwidget.com/live-faceit-stats/): understand what appears after a match.
+- [About](https://faceitwidget.com/about/): learn how the project works, who maintains it, and its limits.
 - [Contact](https://faceitwidget.com/contact/): GitHub issue templates and support channel.
 - [Privacy](https://faceitwidget.com/privacy/): analytics and service data details.
 

@@ -8,7 +8,7 @@ import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 const path = SITE_PATHS.faceitWidgetObsGuide
 const title = "How to add a FACEIT widget to OBS"
 const description =
-  "Add a free FACEIT stats widget to OBS as a browser source, with transparent backgrounds and live CS2 updates."
+  "Add a free FACEIT stats widget to OBS as a Browser source. Create a transparent CS2 overlay with live ELO, rank, K/D, and recent match stats, without a plugin."
 
 export const metadata: Metadata = createLandingMetadata({ title, description, path })
 

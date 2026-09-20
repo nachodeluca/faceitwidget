@@ -73,6 +73,7 @@ describe("markdown negotiation", () => {
 
   it("keeps the public documents non-empty", () => {
     expect(getMarkdownDocument("/")).toContain("FACEIT Widget")
+    expect(getMarkdownDocument("/about/")?.length).toBeGreaterThan(500)
     expect(getMarkdownDocument("/contact/")?.length).toBeGreaterThan(500)
     expect(getMarkdownDocument("/privacy/")?.length).toBeGreaterThan(500)
   })

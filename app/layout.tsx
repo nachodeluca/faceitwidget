@@ -3,7 +3,7 @@ import { Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
-import { SITE_METADATA, SOCIAL_IMAGE } from "@/lib/site-metadata";
+import { SITE_AUTHOR, SITE_METADATA, SOCIAL_IMAGE } from "@/lib/site-metadata";
 
 import "./globals.css";
 
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   applicationName: SITE_METADATA.name,
   category: "gaming",
   keywords: ["FACEIT Widget", "FACEIT widget for OBS", "FACEIT CS2 overlay", "live FACEIT stats"],
-  authors: [{ name: "Nacho", url: "https://github.com/nachodeluca" }],
-  creator: "Nacho",
+  authors: [SITE_AUTHOR],
+  creator: SITE_AUTHOR.name,
   publisher: SITE_METADATA.name,
   openGraph: {
     type: "website",

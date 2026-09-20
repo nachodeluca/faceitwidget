@@ -15,18 +15,18 @@ export default function ContactPage() {
       <h2>GitHub is the contact channel</h2>
       <p>
         FACEIT Widget is maintained as an open-source community project. The best place to report a problem or ask a technical
-        question is the <a href={SITE_LINKS.github}>GitHub repository</a>. Public issues keep the conversation searchable and let
+        question is the <a href={SITE_LINKS.github} target="_blank" rel="noreferrer">GitHub repository</a>. Public issues keep the conversation searchable and let
         other streamers confirm a problem, add details, or test a fix.
       </p>
       <p>
-        For a broken widget, use the <a href={SITE_LINKS.bugReport}>bug report template</a>. Include the browser or streaming
+        For a broken widget, use the <a href={SITE_LINKS.bugReport} target="_blank" rel="noreferrer">bug report template</a>. Include the browser or streaming
         software version, the widget URL, the preset name, the FACEIT nickname if it is safe to share, and the exact behavior you
         expected. Do not include passwords, API keys, private tokens, or information from someone else&apos;s account.
       </p>
 
       <h2>Suggestions and changes</h2>
       <p>
-        Feature requests belong in the <a href={SITE_LINKS.suggestIdea}>feedback template</a>. A useful request explains the stream
+        Feature requests belong in the <a href={SITE_LINKS.suggestIdea} target="_blank" rel="noreferrer">feedback template</a>. A useful request explains the stream
         setup, the preset being used, and the result you want viewers to see. Screenshots are welcome when they show the widget
         itself. Keep FACEIT account credentials and unrelated personal information out of screenshots.
       </p>

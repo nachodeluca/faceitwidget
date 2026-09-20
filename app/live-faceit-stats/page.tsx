@@ -8,7 +8,7 @@ import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 const path = SITE_PATHS.liveFaceitStatsGuide
 const title = "How FACEIT stats update"
 const description =
-  "Learn how the FACEIT overlay refreshes ELO, ranking, K/D, today stats, and the latest 30 CS2 matches."
+  "Learn when FACEIT Widget refreshes CS2 ELO, rank, K/D, and recent match stats in OBS, and what to check if a completed match is not visible yet."
 
 export const metadata: Metadata = createLandingMetadata({ title, description, path })
 

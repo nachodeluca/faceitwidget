@@ -1,7 +1,8 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Radio } from "lucide-react"
 
+import { ObsMark } from "@/components/icons/obs-mark"
+import { StreamlabsMark } from "@/components/icons/streamlabs-mark"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { APP_PATHS, SITE_PATHS } from "@/lib/site-metadata"
@@ -34,20 +35,17 @@ function HeroTitle() {
   return (
     <h1 id="hero-title" className="mt-6 max-w-[620px] text-[clamp(3rem,6.5vw,6.5rem)] font-semibold leading-[0.96] tracking-[-0.075em] text-foreground">
       <span className="block whitespace-nowrap">FACEIT Widget</span>
-      <span className="mt-1 flex items-center whitespace-nowrap text-[0.78em] leading-[0.92] text-muted-foreground">
-        <span>in the</span>
-        <span className="group/frame relative isolate ml-[0.1em] inline-block overflow-visible rounded-[0.14em] border border-border-strong bg-surface-raised/60 px-[0.14em] py-[0.02em] leading-[0.86] text-muted-foreground shadow-[inset_0_1px_rgb(255_255_255_/_4%)] motion-safe:transition-[background-color,border-color,box-shadow,color,transform] motion-safe:duration-[220ms] motion-safe:ease-[var(--ease-out)] [@media(hover:hover)_and_(pointer:fine)]:hover:scale-[1.015] [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-foreground/45 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-surface-hover/85 [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_8px_24px_rgb(0_0_0_/_16%),inset_0_1px_rgb(255_255_255_/_7%)] motion-reduce:transition-none">
-          <span className="relative z-10">frame</span>
-          <Image
-            src="/logo.svg"
-            alt=""
-            aria-hidden="true"
-            width={64}
-            height={64}
-            className="pointer-events-none absolute -right-[0.16em] -top-[0.3em] z-20 size-[0.4em] -rotate-12 scale-[0.92] opacity-0 motion-safe:transition-[opacity,transform,filter] motion-safe:duration-[220ms] motion-safe:ease-[var(--ease-out)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/frame:rotate-6 [@media(hover:hover)_and_(pointer:fine)]:group-hover/frame:scale-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/frame:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/frame:drop-shadow-[0_3px_7px_rgb(255_111_0_/_22%)] motion-reduce:transition-opacity"
-          />
+      <span className="mt-2 flex max-w-full items-center gap-[0.18em] whitespace-nowrap text-[0.7em] leading-[0.92] text-muted-foreground">
+        <span aria-hidden="true">for</span>
+        <span className="inline-flex shrink-0 items-center gap-[0.12em] rounded-[0.2em] border border-border-strong bg-surface-raised/70 px-[0.14em] py-[0.09em] text-foreground shadow-[inset_0_1px_rgb(255_255_255_/_6%)]">
+          <ObsMark className="size-[0.6em]" />
+          <span className="text-[0.36em] font-semibold leading-none tracking-[-0.01em]">OBS</span>
         </span>
-        <span className="ml-[0.02em] text-muted-foreground">.</span>
+        <span aria-hidden="true">and</span>
+        <span className="inline-flex shrink-0 items-center gap-[0.12em] rounded-[0.2em] border border-border-strong bg-surface-raised/70 px-[0.14em] py-[0.09em] text-foreground shadow-[inset_0_1px_rgb(255_255_255_/_6%)]">
+          <StreamlabsMark className="size-[0.6em]" />
+          <span className="text-[0.36em] font-semibold leading-none tracking-[-0.01em]">Streamlabs</span>
+        </span>
       </span>
     </h1>
   )
@@ -64,7 +62,7 @@ export function Hero({ player }: HeroProps) {
         <div className="relative z-10 max-w-[600px]">
           <LiveBadge />
           <HeroTitle />
-          <p className="mt-6 max-w-[350px] text-[14px] leading-6 text-muted-foreground sm:text-[15px]">
+          <p className="mt-6 max-w-[500px] text-[14px] leading-6 text-muted-foreground sm:text-[15px]">
             Build a free{" "}
             <Link
               href={SITE_PATHS.faceitWidgetObsGuide}

@@ -16,6 +16,7 @@ The widget reads public FACEIT data. It does not ask for a FACEIT password, OAut
 - [Widget builder](https://faceitwidget.com/builder/): create and configure an overlay.
 - [OBS setup](https://faceitwidget.com/faceit-widget-obs/): add the URL as a Browser source.
 - [Live stats](https://faceitwidget.com/live-faceit-stats/): understand what appears after a match.
+- [About](https://faceitwidget.com/about/): learn how the project works and who maintains it.
 - [Contact](https://faceitwidget.com/contact/): GitHub issue templates and support channel.
 - [Privacy](https://faceitwidget.com/privacy/): analytics and service data details.
 `,
@@ -75,6 +76,21 @@ The widget reads public statistics only. It does not request a password, OAuth c
 `,
   ],
   [
+    "/about/",
+    `# About the FACEIT Widget project
+
+FACEIT Widget is a free, open-source web application for creating FACEIT CS2 statistics overlays for OBS and Streamlabs. It turns public player statistics into a Browser source URL without requiring a desktop plugin or a FACEIT password.
+
+## How it works
+
+Enter a public FACEIT nickname in the [widget builder](https://faceitwidget.com/builder/), choose a preset, adjust the fields and style, and copy the generated URL into OBS. The open source checks for changed values about every two minutes while it is running. A completed match can take a little time to appear after FACEIT publishes the result.
+
+## Maintainer and limits
+
+The project is maintained by [Nacho](https://github.com/nachodeluca). Source code and support are available in the [GitHub repository](https://github.com/nachodeluca/faceitwidget). This is an independent community project and is not affiliated with FACEIT. See the [privacy page](https://faceitwidget.com/privacy/) for data details or the [contact page](https://faceitwidget.com/contact/) for technical questions.
+`,
+  ],
+  [
     "/contact/",
     `# Contact FACEIT Widget
 
@@ -110,7 +126,7 @@ export const NOT_FOUND_MARKDOWN = `# Page not found
 
 The requested FACEIT Widget page does not exist.
 
-Try the [homepage](https://faceitwidget.com/), [widget builder](https://faceitwidget.com/builder/), [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/), or [live stats guide](https://faceitwidget.com/live-faceit-stats/). Machine-readable navigation is available in the [sitemap](https://faceitwidget.com/sitemap.xml) and [llms.txt](https://faceitwidget.com/llms.txt).
+Try the [homepage](https://faceitwidget.com/), [widget builder](https://faceitwidget.com/builder/), [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/), [live stats guide](https://faceitwidget.com/live-faceit-stats/), or [About page](https://faceitwidget.com/about/). Machine-readable navigation is available in the [sitemap](https://faceitwidget.com/sitemap.xml) and [llms.txt](https://faceitwidget.com/llms.txt).
 `
 
 const MARKDOWN_MEDIA_TYPE = "text/markdown; charset=utf-8"

@@ -4,11 +4,13 @@ import { Hero } from "@/components/home/hero"
 import { HomeStory } from "@/components/home/home-story"
 import { SiteFooter } from "@/components/home/site-footer"
 import { SITE_LINKS } from "@/lib/site-links"
-import { SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
+import { SITE_AUTHOR, SITE_LAST_MODIFIED, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
 const examplePlayer = "donk666"
 
 export const metadata: Metadata = {
+  title: { absolute: SITE_METADATA.title },
+  description: SITE_METADATA.description,
   alternates: { canonical: SITE_PATHS.home },
 }
 
@@ -23,7 +25,28 @@ const structuredData = {
       alternateName: ["faceitwidget.com", "FACEIT Widget for OBS"],
       description: SITE_METADATA.description,
       inLanguage: "en",
+      dateModified: SITE_LAST_MODIFIED,
+      author: { "@id": `${SITE_AUTHOR.url}#person` },
       publisher: { "@id": `${SITE_METADATA.url}/#organization` },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_METADATA.url}/#webpage`,
+      url: `${SITE_METADATA.url}/`,
+      name: SITE_METADATA.title,
+      description: SITE_METADATA.description,
+      isPartOf: { "@id": `${SITE_METADATA.url}/#website` },
+      inLanguage: "en",
+      dateModified: SITE_LAST_MODIFIED,
+      author: { "@id": `${SITE_AUTHOR.url}#person` },
+      publisher: { "@id": `${SITE_METADATA.url}/#organization` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_AUTHOR.url}#person`,
+      name: SITE_AUTHOR.name,
+      url: SITE_AUTHOR.url,
+      sameAs: [SITE_AUTHOR.url],
     },
     {
       "@type": "Organization",
@@ -33,7 +56,9 @@ const structuredData = {
       logo: `${SITE_METADATA.url}/logo.svg`,
       description: SITE_METADATA.description,
       alternateName: "FACEIT Widget for OBS",
-      sameAs: [SITE_LINKS.github],
+      sameAs: [SITE_LINKS.github, SITE_AUTHOR.url],
+      founder: { "@id": `${SITE_AUTHOR.url}#person` },
+      dateModified: SITE_LAST_MODIFIED,
       knowsAbout: ["FACEIT CS2 statistics", "OBS browser-source overlays"],
       contactPoint: {
         "@type": "ContactPoint",
@@ -53,11 +78,44 @@ const structuredData = {
       brand: { "@id": `${SITE_METADATA.url}/#organization` },
       isPartOf: { "@id": `${SITE_METADATA.url}/#website` },
       publisher: { "@id": `${SITE_METADATA.url}/#organization` },
+      dateModified: SITE_LAST_MODIFIED,
       offers: {
         "@type": "Offer",
         price: "0",
         priceCurrency: "USD",
       },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE_METADATA.url}/#faq`,
+      url: `${SITE_METADATA.url}/#faq`,
+      isPartOf: { "@id": `${SITE_METADATA.url}/#webpage` },
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Does it work with OBS and Streamlabs?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. The generated page is intended for a Browser source, so it works in OBS Studio and Streamlabs Desktop without installing a separate plugin.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does FACEIT Widget need my account?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No. FACEIT Widget uses the public statistics associated with the nickname you enter. It does not require a FACEIT password, API key, or private token.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is FACEIT Widget open source?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. FACEIT Widget is an independent open-source community project. Its source code and issue tracker are available in the public GitHub repository.",
+          },
+        },
+      ],
     },
   ],
 }
