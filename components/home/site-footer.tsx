@@ -48,6 +48,7 @@ export function SiteFooter() {
           </FooterLink>
         </div>
         <nav aria-label="Site information" className="flex items-center gap-3 text-[10px] text-text-muted">
+          <Link href={SITE_PATHS.about} className={SITE_NAV_LINK_CLASS}>About</Link>
           <Link href={SITE_PATHS.contact} className={SITE_NAV_LINK_CLASS}>Contact</Link>
           <Link href={SITE_PATHS.privacy} className={SITE_NAV_LINK_CLASS}>Privacy</Link>
         </nav>
