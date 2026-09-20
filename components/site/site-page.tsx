@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { SITE_NAV_LINK_CLASS } from "@/components/site/link-styles"
-import { APP_PATHS, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
+import { APP_PATHS, SITE_AUTHOR, SITE_LAST_MODIFIED, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
 type SitePageProps = {
   title: string
@@ -12,19 +12,31 @@ type SitePageProps = {
   path: string
   children: ReactNode
   showBuilderCta?: boolean
+  pageType?: "WebPage" | "AboutPage"
 }
 
-export function SitePage({ title, description, path, children, showBuilderCta = false }: SitePageProps) {
+export function SitePage({
+  title,
+  description,
+  path,
+  children,
+  showBuilderCta = false,
+  pageType = "WebPage",
+}: SitePageProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "WebPage",
+        "@type": pageType,
         "@id": `${SITE_METADATA.url}${path}#webpage`,
         url: `${SITE_METADATA.url}${path}`,
         name: title,
         description,
         isPartOf: { "@id": `${SITE_METADATA.url}/#website` },
+        inLanguage: "en",
+        author: { "@id": `${SITE_AUTHOR.url}#person` },
+        publisher: { "@id": `${SITE_METADATA.url}/#organization` },
+        dateModified: SITE_LAST_MODIFIED,
       },
       {
         "@type": "BreadcrumbList",
@@ -62,6 +74,7 @@ export function SitePage({ title, description, path, children, showBuilderCta = 
 
         <footer className="border-t border-border pt-8">
           <nav aria-label="Site pages" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+            <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.about}>About</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.liveFaceitStatsGuide}>Live stats</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.contact}>Contact</Link>

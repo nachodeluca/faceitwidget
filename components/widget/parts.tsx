@@ -250,6 +250,14 @@ export function LevelRankBadge({
   )
 }
 
+function countryName(code: string) {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(code.toUpperCase()) ?? code.toUpperCase()
+  } catch {
+    return code.toUpperCase()
+  }
+}
+
 export function CountryFlag({
   data,
   className,
@@ -267,7 +275,7 @@ export function CountryFlag({
     <Image
       className={cn("block h-3.5 w-5 max-w-none shrink-0 rounded-[2px] object-contain", className)}
       src={`/flags/${code}.svg`}
-      alt=""
+      alt={`${countryName(code)} flag`}
       width={20}
       height={14}
       unoptimized

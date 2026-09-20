@@ -8,6 +8,7 @@ describe("canonical page routing", () => {
     "/widget",
     "/faceit-widget-obs",
     "/live-faceit-stats",
+    "/about",
     "/contact",
     "/privacy",
   ])("permanently redirects %s to its trailing-slash URL", (pathname) => {

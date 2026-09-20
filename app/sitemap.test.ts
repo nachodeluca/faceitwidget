@@ -9,6 +9,7 @@ describe("sitemap.xml", () => {
       { url: "https://faceitwidget.com/builder/" },
       { url: "https://faceitwidget.com/faceit-widget-obs/" },
       { url: "https://faceitwidget.com/live-faceit-stats/" },
+      { url: "https://faceitwidget.com/about/" },
       { url: "https://faceitwidget.com/contact/" },
       { url: "https://faceitwidget.com/privacy/" },
     ])

@@ -3,7 +3,7 @@
     <img src=".github/assets/preview.png" alt="FACEIT Widget preview" width="920">
   </a>
 
-  <h1>FACEIT Widget</h1>
+  <h1>FACEIT Widget — Free FACEIT Stats Widget for OBS</h1>
 
   <p>Live FACEIT CS2 stats for OBS browser sources.</p>
 
@@ -22,7 +22,9 @@
   </p>
 </div>
 
-An unofficial community project for streamers. Build an overlay, choose the stats you want to show, and add the generated URL to OBS. No plugin or FACEIT login is required.
+The official project website is [faceitwidget.com](https://faceitwidget.com/). This repository contains the source code for FACEIT Widget, a free open-source FACEIT stats widget for OBS Studio and Streamlabs Desktop. Build an overlay, choose the stats you want to show, and add the generated URL to OBS. No plugin or FACEIT login is required.
+
+FACEIT Widget turns a public FACEIT nickname into a browser-source overlay for CS2. It can show ELO, FACEIT level, Challenger status, world rank, country rank, K/D, and recent match results while you stream.
 
 ## Use it
 
@@ -34,7 +36,7 @@ An unofficial community project for streamers. Build an overlay, choose the stat
 
 The widget page is transparent and starts at the top-left corner. Position and crop it in OBS without changing the URL.
 
-Read the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/?utm_source=github&utm_medium=referral) for the browser-source settings. The [live stats guide](https://faceitwidget.com/live-faceit-stats/?utm_source=github&utm_medium=referral) explains caching and match refreshes.
+Read the [OBS setup guide](https://faceitwidget.com/faceit-widget-obs/?utm_source=github&utm_medium=referral) for the browser-source settings. The [live stats guide](https://faceitwidget.com/live-faceit-stats/?utm_source=github&utm_medium=referral) explains caching and match refreshes. The [About page](https://faceitwidget.com/about/?utm_source=github&utm_medium=referral) explains how the independent open-source project works and how to contribute.
 
 ## What you can configure
 

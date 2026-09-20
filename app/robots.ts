@@ -5,12 +5,20 @@ import { SITE_METADATA } from "@/lib/site-metadata"
 export const dynamic = "force-static"
 
 const AI_DISCOVERY_CRAWLERS = [
+  "GPTBot",
+  "ChatGPT-User",
   "OAI-SearchBot",
+  "ClaudeBot",
+  "Claude-User",
+  "Claude-SearchBot",
   "Googlebot",
   "Google-Extended",
   "bingbot",
-  "Claude-SearchBot",
   "PerplexityBot",
+  "Perplexity-User",
+  "DeepSeekBot",
+  "Amazonbot",
+  "ora-agent",
   "Applebot",
 ] as const
 

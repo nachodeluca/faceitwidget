@@ -17,10 +17,14 @@
   "keywords": [
     "faceit",
     "obs",
+    "obs-browser-source",
     "streaming",
+    "streamlabs",
     "widget",
     "cs2",
-    "live-stats"
+    "live-stats",
+    "faceit-widget",
+    "faceit-stats"
   ],
   "license": "MIT",
   "engines": {
