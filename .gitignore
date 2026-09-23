@@ -18,6 +18,11 @@ next-env.d.ts
 # Cloudflare local state and secrets
 /.wrangler/
 /.wrangler-dry-run/
+
+# Cloudflare deployment configuration
+/wrangler.jsonc
+/wrangler.*.jsonc
+
 .dev.vars*
 !.dev.vars.example
 
