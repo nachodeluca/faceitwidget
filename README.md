@@ -65,7 +65,7 @@ For local Worker development, copy `.dev.vars.example` to `.dev.vars` and set th
 FACEIT_DATA_API_KEY=your-server-side-key
 ```
 
-`.dev.vars` is local-only and must never be committed.
+`.dev.vars` and `wrangler.jsonc` are local-only and must never be committed.
 
 Run only the frontend while working on the UI:
 
@@ -109,20 +109,6 @@ public/              Level icons, flags, maps, and static assets
 | `pnpm typecheck` | Check TypeScript without emitting files. |
 | `pnpm lint` | Run ESLint. |
 | `pnpm cf:typegen` | Regenerate Cloudflare binding types. |
-| `pnpm deploy` | Build and deploy with Wrangler. |
-
-## Deploy your own instance
-
-Forks need their own Worker name, domain, Durable Object namespacesand FACEIT key. Update `wrangler.jsonc` before deploying.
-
-```bash
-pnpm exec wrangler login
-pnpm exec wrangler secret put FACEIT_DATA_API_KEY
-pnpm test
-pnpm typecheck
-pnpm lint
-pnpm deploy
-```
 
 ## Contributing
 

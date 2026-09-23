@@ -9,6 +9,7 @@ export interface WorkerEnv {
   PLAYER_RATE_LIMIT: RateLimit
   SHARE_RATE_LIMIT: RateLimit
   BACKGROUND_RATE_LIMIT: RateLimit
+  WIDGET_ANALYTICS?: AnalyticsEngineDataset
   USER_BACKGROUNDS: R2Bucket
   FACEIT_DATA_API_KEY?: string
   R2_ACCESS_KEY_ID?: string

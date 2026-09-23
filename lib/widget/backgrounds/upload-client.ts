@@ -4,10 +4,11 @@ import {
   type CustomUploadMedia,
 } from "./upload-contract"
 import { isCustomBackdropRecord, type CustomBackdropRecord } from "./custom"
+import { getWidgetInstanceId } from "../data/widget-instance"
 
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 type SignedUpload = { url: string; headers: Record<string, string> }
-type UploadOptions = { fetcher?: Fetcher; onProgress?: (value: number) => void }
+type UploadOptions = { fetcher?: Fetcher; onProgress?: (value: number) => void; nickname?: string }
 type IntentResponse = {
   asset: CustomBackdropRecord
   upload: { source: SignedUpload; poster: SignedUpload | null }
@@ -80,11 +81,11 @@ async function putObject(fetcher: Fetcher, upload: SignedUpload, body: BodyInit)
   if (!response.ok) throw uploadError("R2 rejected the background upload.")
 }
 
-async function createIntent(fetcher: Fetcher, file: File, media: CustomUploadMedia): Promise<IntentResponse> {
+async function createIntent(fetcher: Fetcher, file: File, media: CustomUploadMedia, nickname?: string): Promise<IntentResponse> {
   const response = await fetcher("/api/v1/backgrounds/intents", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ media, contentType: file.type, size: file.size }),
+    body: JSON.stringify({ media, contentType: file.type, size: file.size, nickname, widgetInstanceId: getWidgetInstanceId() }),
   })
   return responseJson<IntentResponse>(response)
 }
@@ -110,7 +111,7 @@ export async function uploadCustomBackdrop(file: File, options: UploadOptions = 
   }
 
   onProgress(10)
-  const intent = await createIntent(fetcher, file, media)
+  const intent = await createIntent(fetcher, file, media, options.nickname)
   onProgress(30)
   await putObject(fetcher, intent.upload.source, file)
   onProgress(media === "video" ? 70 : 85)

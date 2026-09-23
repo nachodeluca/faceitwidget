@@ -2,6 +2,7 @@ import { z } from "zod"
 
 import type { WidgetDataSource } from "./data-source"
 import type { WidgetSnapshot } from "../types"
+import { getWidgetInstanceId } from "./widget-instance"
 
 const widgetDataSchema = z.object({
   profile: z.object({
@@ -81,9 +82,12 @@ export class WidgetApiClient implements WidgetDataSource {
 
   async getPlayerSnapshot(
     lookup: string,
-    options: { timezone?: string; signal?: AbortSignal } = {},
+    options: { timezone?: string; signal?: AbortSignal; telemetry?: boolean } = {},
   ): Promise<WidgetSnapshot> {
     const headers = new Headers({ Accept: "application/json" })
+    const instanceId = getWidgetInstanceId()
+    if (instanceId) headers.set("X-Widget-Instance", instanceId)
+    if (options.telemetry) headers.set("X-Widget-Usage", "widget")
     const cacheKey = `${lookup.toLowerCase()}:${options.timezone ?? "UTC"}`
     const cached = this.snapshotCache.get(cacheKey)
     if (cached) headers.set("If-None-Match", cached.etag)

@@ -27,6 +27,7 @@ import { useCustomBackdrops } from "./use-custom-backdrops"
 type BackdropControlProps = {
   value: WidgetBackdropConfig
   onChange: (patch: Partial<WidgetBackdropConfig>) => void
+  nickname?: string
 }
 
 const fieldLabelClass = "text-[12px] font-medium text-muted-foreground"
@@ -220,7 +221,7 @@ function PositionControls({ value, onChange }: BackdropControlProps) {
   )
 }
 
-export function BackdropControl({ value, onChange }: BackdropControlProps) {
+export function BackdropControl({ value, onChange, nickname }: BackdropControlProps) {
   const { backdrops, addBackdrop } = useCustomBackdrops()
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -232,7 +233,7 @@ export function BackdropControl({ value, onChange }: BackdropControlProps) {
     setProgress(0)
 
     try {
-      const asset = await uploadCustomBackdrop(file, { onProgress: setProgress })
+      const asset = await uploadCustomBackdrop(file, { onProgress: setProgress, nickname })
       addBackdrop(asset)
       selectBackdrop(createCustomBackdropAsset(asset.id, asset.media, asset.sourceUrl, asset.posterUrl), onChange)
     } catch (uploadFailure) {

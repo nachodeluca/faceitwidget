@@ -1,7 +1,7 @@
 import { DurableObject } from "cloudflare:workers"
 
 import { isValidTimezone, parsePlayerLookup } from "../lib/widget/data/player-lookup"
-import type { PlayerLookup } from "../lib/widget/types"
+import type { PlayerLookup, WidgetSnapshot } from "../lib/widget/types"
 import { ApiError, errorResponse } from "./errors"
 import { FaceitGateway } from "./faceit/gateway"
 import { rememberElo, type EloObservation } from "./faceit/elo"
@@ -148,10 +148,36 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
     })
   }
 
+  private recordUsage(request: Request, snapshot: WidgetSnapshot) {
+    const analytics = this.env.WIDGET_ANALYTICS
+    if (!analytics || request.headers.get("X-Widget-Usage") !== "widget") return
+
+    const clean = (value: string | null | undefined, max = 160) =>
+      (value ?? "").replace(/[^\x20-\x7e]/g, "").slice(0, max)
+    const instanceId = clean(request.headers.get("X-Widget-Instance"), 96) || "unknown"
+    const clientCountry = clean(request.headers.get("CF-IPCountry"), 8) || "unknown"
+    const userAgent = clean(request.headers.get("User-Agent"), 140) || "unknown"
+
+    analytics.writeDataPoint({
+      blobs: [
+        "widget_snapshot",
+        clean(snapshot.meta.playerId, 96),
+        clean(snapshot.data.profile.nickname, 80),
+        clean(snapshot.data.profile.countryCode, 8),
+        clientCountry,
+        instanceId,
+        userAgent,
+      ],
+      doubles: [1, snapshot.data.rank.elo, snapshot.data.rank.level],
+      indexes: [instanceId === "unknown" ? snapshot.meta.playerId : instanceId],
+    })
+  }
+
   private async snapshotResponse(request: Request) {
     const { lookup, timezone } = requestInput(request)
     const state = await this.ensureState(lookup)
     const snapshot = this.snapshot(state, timezone)
+    this.recordUsage(request, snapshot)
     const etagTimezone = timezone.replace(/[^a-z0-9]/gi, "-")
     const freshness = snapshot.meta.stale ? "stale" : "fresh"
     const etag = `W/"${snapshot.meta.revision}-${freshness}-${etagTimezone}"`
