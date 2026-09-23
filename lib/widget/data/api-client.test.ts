@@ -38,6 +38,21 @@ describe("WidgetApiClient", () => {
     expect((requestUrl as URL).searchParams.get("tz")).toBe("UTC")
   })
 
+  it("marks published widget traffic for telemetry", async () => {
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(snapshot), {
+        headers: { ETag: 'W/"revision-1-fresh-UTC"' },
+      }),
+    )
+    vi.stubGlobal("fetch", fetcher)
+    vi.stubGlobal("window", { location: { origin: "https://faceitwidget.com" } })
+
+    await new WidgetApiClient().getPlayerSnapshot("Carbonero20050", { timezone: "UTC", telemetry: true })
+
+    const headers = fetcher.mock.calls[0]?.[1]?.headers as Headers
+    expect(headers.get("X-Widget-Usage")).toBe("widget")
+  })
+
   it("reuses a cached snapshot when the server returns 304", async () => {
     const fetcher = vi
       .fn()

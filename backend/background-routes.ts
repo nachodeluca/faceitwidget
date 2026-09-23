@@ -22,7 +22,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:8787",
 ])
 
-type UploadRequest = { media: CustomUploadMedia; contentType: string; size: number }
+type UploadRequest = { media: CustomUploadMedia; contentType: string; size: number; nickname?: string; widgetInstanceId?: string }
 type CompleteRequest = { id: CustomWidgetBackdropId; media: CustomUploadMedia }
 
 const CONTENT_TYPES = {
@@ -81,12 +81,20 @@ function uploadContentType(value: unknown, media: CustomUploadMedia) {
   return value
 }
 
+function optionalMetadata(value: unknown, max: number) {
+  if (typeof value !== "string") return undefined
+  const cleaned = value.replace(/[^\x20-\x7e]/g, "").trim().slice(0, max)
+  return cleaned || undefined
+}
+
 function parseUploadRequest(body: Record<string, unknown>): UploadRequest {
   const media = uploadMedia(body.media)
   return {
     media,
     contentType: uploadContentType(body.contentType, media),
     size: uploadSize(body.size, media),
+    nickname: optionalMetadata(body.nickname, 80),
+    widgetInstanceId: optionalMetadata(body.widgetInstanceId, 96),
   }
 }
 
@@ -121,16 +129,20 @@ function signer(env: WorkerEnv) {
   })
 }
 
-async function signedUpload(env: WorkerEnv, key: string, contentType: string) {
+async function signedUpload(env: WorkerEnv, key: string, contentType: string, metadata: Record<string, string | undefined> = {}) {
   const target = new URL(objectUrl(env, key))
   target.searchParams.set("X-Amz-Expires", String(PRESIGNED_URL_TTL))
+  const headers: Record<string, string> = { "Content-Type": contentType }
+  for (const [name, value] of Object.entries(metadata)) {
+    if (value) headers[`x-amz-meta-${name}`] = value
+  }
   const request = await signer(env).sign(target.toString(), {
     method: "PUT",
-    headers: { "Content-Type": contentType },
+    headers,
     aws: { signQuery: true, allHeaders: true },
   })
 
-  return { url: request.url.toString(), headers: { "Content-Type": contentType } }
+  return { url: request.url.toString(), headers }
 }
 
 function assetResponse(env: WorkerEnv, id: CustomWidgetBackdropId, media: CustomUploadMedia) {
@@ -159,8 +171,13 @@ async function createIntent(request: Request, env: WorkerEnv) {
   const id = crypto.randomUUID() as CustomWidgetBackdropId
   const sourceKey = `custom/${id}/source`
   const posterKey = `custom/${id}/poster.webp`
-  const source = await signedUpload(env, sourceKey, upload.contentType)
-  const poster = upload.media === "video" ? await signedUpload(env, posterKey, "image/webp") : null
+  const metadata = {
+    nickname: upload.nickname,
+    owner: upload.nickname,
+    "widget-instance": upload.widgetInstanceId,
+  }
+  const source = await signedUpload(env, sourceKey, upload.contentType, metadata)
+  const poster = upload.media === "video" ? await signedUpload(env, posterKey, "image/webp", metadata) : null
 
   return jsonResponse(request, {
     asset: assetResponse(env, id, upload.media),

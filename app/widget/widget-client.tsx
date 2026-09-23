@@ -18,6 +18,7 @@ export function WidgetClient() {
   const config = deserializeConfig(searchParams.get("config") ?? undefined)
   const snapshot = usePlayerSnapshot(lookup, {
     timezone,
+    telemetry: true,
   })
 
   return (
