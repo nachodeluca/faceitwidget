@@ -7,8 +7,8 @@ import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 import { getPerformanceKills, PerformanceCardPreset } from "./performance-card"
 
 const data: WidgetData = {
-  profile: { nickname: "n4me" },
-  rank: { level: 8, elo: 1_640, eloChange: 27, worldRank: 2_500 },
+  profile: { nickname: "n4me", countryCode: "kr" },
+  rank: { level: 8, elo: 1_640, eloChange: 27, worldRank: 2_500, countryRank: 1_337 },
   lifetime: { avgKills: 20, kdr: 2, headshotRate: 50 },
   last30: { winRate: 50 },
   today: { wins: 2, losses: 0 },
@@ -34,17 +34,26 @@ describe("PerformanceCardPreset", () => {
   })
 
   it("renders the performance metrics and level progress bar", () => {
-    const markup = renderPerformanceCard()
+    const markup = renderPerformanceCard({ countryRank: true })
 
     expect(markup).toContain("data-widget-nickname")
     expect(markup).toContain("Kills")
     expect(markup).toContain("K/D")
     expect(markup).toContain("HS %")
     expect(markup).toContain("Wins %")
+    expect(markup).toContain("/flags/kr.svg")
+    expect(markup).toContain("#1,337")
     expect(markup).toContain("w-[34px]")
     expect(markup).toContain('aria-label="Level 8 progress"')
     expect(markup).toContain('aria-valuenow="50"')
     expect(markup).toContain("--performance-progress-color:#FF6309")
+  })
+
+  it("keeps the country rank line off by default", () => {
+    const markup = renderPerformanceCard()
+
+    expect(markup).not.toContain("/flags/kr.svg")
+    expect(markup).not.toContain("#1,337")
   })
 
   it("keeps W/L labels and ELO change opt-in", () => {
@@ -92,6 +101,14 @@ describe("PerformanceCardPreset", () => {
     })
 
     expect(markup).toContain("--challenger-icon-color")
+    expect(markup).toContain("size-8")
     expect(markup).not.toContain(">#174<")
+  })
+
+  it("can hide the country rank line", () => {
+    const markup = renderPerformanceCard({ countryRank: false })
+
+    expect(markup).not.toContain("/flags/kr.svg")
+    expect(markup).not.toContain("#1,337")
   })
 })

@@ -4,6 +4,7 @@ import { getRankProgress, isChallengerRank } from "@/lib/widget"
 
 import { AnimatedNumber } from "../animated-number"
 import {
+  CountryRank,
   EloSummary,
   ChallengerRankBadge,
   LevelMark,
@@ -101,7 +102,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
               value={challengerRank}
               showRankNumber={config.visibility.challengerRank}
               className={config.visibility.challengerRank ? "min-h-10" : "size-10"}
-              markClassName={config.visibility.challengerRank ? "size-6" : undefined}
+              markClassName={config.visibility.challengerRank ? "size-7" : "size-8"}
             />
           ) : (
             <LevelMark data={data} visibility={config.visibility} className="size-10" />
@@ -118,6 +119,13 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
               visibility={config.visibility}
               showChange={config.visibility.eloChange}
               className="text-[10px]"
+            />
+            <CountryRank
+              data={data}
+              visibility={config.visibility}
+              className="gap-[4px] leading-none"
+              flagClassName="h-3 w-[17px]"
+              valueClassName="text-[10px] font-bold text-[color:var(--widget-muted)]"
             />
           </div>
         </div>

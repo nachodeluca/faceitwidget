@@ -140,6 +140,7 @@ describe("rank preset defaults", () => {
       level: true,
       elo: true,
       challengerRank: true,
+      countryRank: false,
       eloChange: false,
       todayStats: true,
       recordLabels: false,
@@ -151,6 +152,7 @@ describe("rank preset defaults", () => {
     })
     expect(getEditableFields("performance-card")).toEqual(expect.arrayContaining([
       "eloChange",
+      "countryRank",
       "recordLabels",
       "avgKills",
       "headshotRate",
