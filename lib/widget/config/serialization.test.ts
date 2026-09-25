@@ -29,6 +29,23 @@ describe("widget config serialization", () => {
     expect(deserializeConfig(serialized)).toEqual(config)
   })
 
+  it("round-trips Performance Card visibility switches", () => {
+    const defaults = createDefaultConfig("performance-card")
+    const config = normalizeConfig({
+      ...defaults,
+      visibility: {
+        ...defaults.visibility,
+        eloChange: true,
+        recordLabels: true,
+        rankProgress: false,
+      },
+    })
+    const serialized = serializeConfig(config)
+
+    expect(serialized).not.toBe("v2.performance-card")
+    expect(deserializeConfig(serialized)).toEqual(config)
+  })
+
   it("keeps reading the previous full JSON format", () => {
     const config = createDefaultConfig("rich-profile")
 

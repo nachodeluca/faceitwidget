@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Hero } from "@/components/home/hero"
 import { HomeStory } from "@/components/home/home-story"
 import { SiteFooter } from "@/components/home/site-footer"
+import { AnnouncementBar } from "@/components/site/announcement-bar"
 import { SITE_LINKS } from "@/lib/site-links"
 import { SITE_AUTHOR, SITE_LAST_MODIFIED, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
@@ -123,6 +124,7 @@ const structuredData = {
 export default function Home() {
   return (
     <main data-home-page className="relative min-h-svh overflow-x-clip bg-background">
+      <AnnouncementBar />
       <div className="relative flex min-h-svh flex-col overflow-hidden">
         <script
           type="application/ld+json"

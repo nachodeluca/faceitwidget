@@ -323,7 +323,6 @@ html:has([data-home-page])::-webkit-scrollbar {
 .panel-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgb(255 255 255 / 20%) transparent;
-  scrollbar-gutter: stable;
 }
 
 .panel-scrollbar::-webkit-scrollbar {

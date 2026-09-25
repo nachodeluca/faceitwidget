@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { MapIconPreloads } from "@/components/widget/map-icon-preloads"
+import { AnnouncementBar } from "@/components/site/announcement-bar"
 import { APP_PATHS, createLandingMetadata } from "@/lib/site-metadata"
 
 import { BuilderClient } from "./builder-client"
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 export default function BuilderPage() {
   return (
     <>
+      <AnnouncementBar />
       <MapIconPreloads />
       <Suspense fallback={<main className="min-h-screen bg-background" />}>
         <BuilderClient />

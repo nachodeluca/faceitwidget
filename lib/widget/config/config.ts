@@ -16,6 +16,8 @@ import {
   type WidgetVisibilityKey,
 } from "../types"
 
+export { CHALLENGER_RANK_COLORS } from "../rank"
+
 const DEFAULT_COLORS = {
   accent: "#3a3a3a",
   text: "#f1f1f1",
@@ -25,13 +27,6 @@ const DEFAULT_COLORS = {
   borderEnabled: false,
   border: "#303030",
 }
-
-export const CHALLENGER_RANK_COLORS = {
-  gold: "#FFD335",
-  silver: "#DEF5FF",
-  bronze: "#FF7236",
-  top: "#E80129",
-} as const
 
 export const DEFAULT_WIDGET_CONFIG: WidgetConfig = {
   version: 1,
@@ -80,6 +75,12 @@ const VISIBILITY_KEYS = [
   "todayStats",
   "last30Stats",
   "last5Results",
+  "eloChange",
+  "recordLabels",
+  "avgKills",
+  "headshotRate",
+  "winRate",
+  "rankProgress",
 ] as const satisfies readonly (keyof WidgetVisibility)[]
 const ROTATION_VISIBILITY_FIELDS: Partial<Record<WidgetVisibilityKey, WidgetRotationField>> = {
   todayStats: "today",

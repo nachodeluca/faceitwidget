@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { SITE_NAV_LINK_CLASS } from "@/components/site/link-styles"
+import { AnnouncementBar } from "@/components/site/announcement-bar"
 import { APP_PATHS, SITE_AUTHOR, SITE_LAST_MODIFIED, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
 type SitePageProps = {
@@ -50,6 +51,7 @@ export function SitePage({
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <AnnouncementBar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}

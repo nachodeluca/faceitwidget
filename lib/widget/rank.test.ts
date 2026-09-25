@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest"
 
 import { createDefaultConfig, normalizeConfig, updateVisibilityConfig } from "./config/config"
 import { getEditableFields, getRotationFields } from "./config/presets"
-import { hasEloChange, isChallengerRank } from "./rank"
+import {
+  FACEIT_LEVEL_COLORS,
+  getChallengerRankColor,
+  getRankProgress,
+  hasEloChange,
+  isChallengerRank,
+} from "./rank"
 import type { WidgetData } from "./types"
 
 function rank(overrides: Partial<WidgetData["rank"]> = {}): WidgetData["rank"] {
@@ -74,6 +80,37 @@ describe("hasEloChange", () => {
   })
 })
 
+describe("getRankProgress", () => {
+  it("fills each level from its lower ELO boundary", () => {
+    expect(getRankProgress(rank({ level: 1, elo: 100 }))).toMatchObject({
+      percentage: 0,
+      color: FACEIT_LEVEL_COLORS[1],
+      label: "Level 1",
+    })
+    expect(getRankProgress(rank({ level: 1, elo: 500 })).percentage).toBe(100)
+    expect(getRankProgress(rank({ level: 9, elo: 1_751 })).percentage).toBe(0)
+    expect(getRankProgress(rank({ level: 9, elo: 2_000 })).percentage).toBe(100)
+  })
+
+  it("clamps ELO outside the active level range", () => {
+    expect(getRankProgress(rank({ level: 4, elo: 200 })).percentage).toBe(0)
+    expect(getRankProgress(rank({ level: 4, elo: 2_500 })).percentage).toBe(100)
+  })
+
+  it("keeps Level 10 and Challenger progress full", () => {
+    expect(getRankProgress(rank({ level: 10, elo: 2_001, worldRank: 2_500 }))).toMatchObject({
+      percentage: 100,
+      color: FACEIT_LEVEL_COLORS[10],
+      label: "Level 10",
+    })
+    expect(getRankProgress(rank({ level: 10, elo: 2_100, worldRank: 1 }))).toMatchObject({
+      percentage: 100,
+      color: getChallengerRankColor(1),
+      label: "Challenger",
+    })
+  })
+})
+
 describe("rank preset defaults", () => {
   it("starts Rank + ELO without the global rank", () => {
     expect(createDefaultConfig("rank-elo").visibility.worldRank).toBe(false)
@@ -93,6 +130,32 @@ describe("rank preset defaults", () => {
 
     expect(config.visibility.worldRank).toBe(false)
     expect(config.visibility.challengerRank).toBe(false)
+  })
+
+  it("starts Performance Card with its full performance layout", () => {
+    const config = createDefaultConfig("performance-card")
+
+    expect(config.visibility).toMatchObject({
+      nickname: true,
+      level: true,
+      elo: true,
+      eloChange: false,
+      todayStats: true,
+      recordLabels: false,
+      avgKills: true,
+      kdr: true,
+      headshotRate: true,
+      winRate: true,
+      rankProgress: true,
+    })
+    expect(getEditableFields("performance-card")).toEqual(expect.arrayContaining([
+      "eloChange",
+      "recordLabels",
+      "avgKills",
+      "headshotRate",
+      "winRate",
+      "rankProgress",
+    ]))
   })
 
   it("hides the unused World rank control for Challenger Profile Card", () => {
