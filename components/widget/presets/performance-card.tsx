@@ -1,15 +1,20 @@
 import type { CSSProperties } from "react"
 
-import { getRankProgress } from "@/lib/widget"
+import { getRankProgress, isChallengerRank } from "@/lib/widget"
 
 import { AnimatedNumber } from "../animated-number"
 import {
   EloSummary,
+  ChallengerRankBadge,
   LevelMark,
   PlayerNickname,
   RecordStat,
 } from "../parts"
 import type { PresetViewProps } from "./types"
+
+export function getPerformanceKills(data: PresetViewProps["data"]) {
+  return data.lifetime?.avgKills ?? data.last30?.avgKills ?? data.today?.avgKills
+}
 
 function hasValue(value?: number) {
   return typeof value === "number" && Number.isFinite(value)
@@ -63,9 +68,12 @@ function RankProgressBar({ data }: Pick<PresetViewProps, "data">) {
 }
 
 export function PerformanceCardPreset({ data, config }: PresetViewProps) {
+  const challenger = isChallengerRank(data.rank)
+  const showChallenger = challenger && config.visibility.challenger
+  const challengerRank = data.rank.worldRank ?? data.rank.regionRank
   const metrics = [
     config.visibility.avgKills
-      ? { label: "Kills", value: data.lifetime?.avgKills, maximumFractionDigits: 1 }
+      ? { label: "Kills", value: getPerformanceKills(data), maximumFractionDigits: 1 }
       : null,
     config.visibility.kdr
       ? { label: "K/D", value: data.lifetime?.kdr, maximumFractionDigits: 2 }
@@ -79,15 +87,29 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
   ].filter((metric): metric is NonNullable<typeof metric> => metric !== null)
 
   return (
-    <div className="flex min-w-[360px] max-w-full flex-col gap-[var(--widget-layout-gap)]">
-      <div className="flex min-w-0 items-start justify-between gap-4">
-        <div className="flex min-w-0 items-center gap-2">
-          <LevelMark data={data} visibility={config.visibility} className="size-10" />
+    <div className="flex min-w-[320px] max-w-full flex-col gap-[var(--widget-layout-gap)]">
+      <div className={config.visibility.todayStats
+        ? "grid min-w-0 grid-cols-[repeat(4,minmax(0,1fr))] gap-2"
+        : "flex min-w-0 items-center"}
+      >
+        <div className={config.visibility.todayStats
+          ? "col-span-3 flex min-w-0 items-center gap-2"
+          : "flex min-w-0 items-center gap-2"}
+        >
+          {showChallenger ? (
+            <ChallengerRankBadge
+              value={challengerRank}
+              showRankNumber={config.visibility.challengerRank}
+              className={config.visibility.challengerRank ? "min-h-10" : "size-10"}
+            />
+          ) : (
+            <LevelMark data={data} visibility={config.visibility} className="size-10" />
+          )}
           <div className="flex min-w-0 flex-col gap-[5px]">
             {config.visibility.nickname ? (
               <PlayerNickname
                 data={data}
-                className="max-w-[13rem] truncate text-[18px] font-extrabold tracking-[-0.03em]"
+                className="max-w-[13rem] truncate text-[16px] font-extrabold tracking-[-0.03em]"
               />
             ) : null}
             <EloSummary
@@ -100,7 +122,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
         </div>
 
         {config.visibility.todayStats ? (
-          <div className="grid shrink-0 grid-cols-[repeat(2,34px)] gap-[5px]" aria-label="Wins and losses">
+          <div className="col-start-4 flex shrink-0 items-start justify-start gap-[5px]" aria-label="Wins and losses">
             <RecordStat
               label="wins"
               value={data.today?.wins}
@@ -119,7 +141,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
 
       {metrics.length > 0 ? (
         <div
-          className="grid gap-3"
+          className="grid gap-2"
           style={{ gridTemplateColumns: `repeat(${metrics.length}, minmax(0, 1fr))` }}
         >
           {metrics.map((metric) => (

@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 
 import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 
-import { PerformanceCardPreset } from "./performance-card"
+import { getPerformanceKills, PerformanceCardPreset } from "./performance-card"
 
 const data: WidgetData = {
   profile: { nickname: "n4me" },
@@ -25,6 +25,14 @@ function renderPerformanceCard(
 }
 
 describe("PerformanceCardPreset", () => {
+  it("falls back to recent match kills when lifetime kills are missing", () => {
+    expect(getPerformanceKills({
+      ...data,
+      lifetime: { kdr: 2, headshotRate: 50 },
+      last30: { avgKills: 18, winRate: 50 },
+    })).toBe(18)
+  })
+
   it("renders the performance metrics and level progress bar", () => {
     const markup = renderPerformanceCard()
 
@@ -70,8 +78,19 @@ describe("PerformanceCardPreset", () => {
     })
 
     expect(markup).toContain("--challenger-icon-color")
+    expect(markup).toContain(">#174<")
     expect(markup).toContain('aria-label="Challenger progress"')
     expect(markup).toContain('aria-valuenow="100"')
     expect(markup).toContain("--performance-progress-color:#E80129")
+  })
+
+  it("keeps the Challenger icon while hiding its rank number when disabled", () => {
+    const markup = renderPerformanceCard({ challengerRank: false }, {
+      ...data,
+      rank: { ...data.rank, level: 10, worldRank: 174 },
+    })
+
+    expect(markup).toContain("--challenger-icon-color")
+    expect(markup).not.toContain(">#174<")
   })
 })

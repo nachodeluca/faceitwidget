@@ -5,6 +5,6 @@ export function formatNumber(value: number | undefined, maximumFractionDigits = 
 
   return new Intl.NumberFormat("en-US", {
     maximumFractionDigits,
-    minimumFractionDigits: maximumFractionDigits,
+    minimumFractionDigits: 0,
   }).format(value)
 }

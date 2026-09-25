@@ -139,6 +139,7 @@ describe("rank preset defaults", () => {
       nickname: true,
       level: true,
       elo: true,
+      challengerRank: true,
       eloChange: false,
       todayStats: true,
       recordLabels: false,

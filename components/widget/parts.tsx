@@ -189,9 +189,11 @@ export function RankValue({
 export function ChallengerRankBadge({
   value,
   showRankNumber = true,
+  className,
 }: {
   value?: number
   showRankNumber?: boolean
+  className?: string
 }) {
   const color = getChallengerRankColor(value)
   const label = `#${formatNumber(value)}`
@@ -205,6 +207,7 @@ export function ChallengerRankBadge({
         showRankNumber
           ? "inline-flex min-h-7 shrink-0 items-center gap-[5px] rounded-full border border-[color:var(--challenger-rank-color)] bg-[color:var(--challenger-rank-color)] px-2 py-1 leading-none text-[#090909] shadow-[0_1px_0_rgb(0_0_0_/_28%)]"
           : "inline-flex size-7 shrink-0 items-center justify-center",
+        className,
       )}
       style={style}
       title={`World rank ${label}`}
