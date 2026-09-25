@@ -4,6 +4,8 @@ import {
   MessageSquare,
   RotateCcw,
 } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 import {
   getEditableFields,
@@ -28,6 +30,7 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 import { cn } from "@/lib/utils"
 
 import { BackdropControl } from "./background"
@@ -41,12 +44,18 @@ const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
   ["nickname", "Nickname"],
   ["level", "Level"],
   ["elo", "ELO"],
+  ["eloChange", "ELO change"],
   ["worldRank", "World rank"],
   ["countryRank", "Country rank"],
   ["challenger", "Challenger"],
   ["challengerRank", "Rank number"],
   ["kdr", "K/D"],
-  ["todayStats", "Today stats"],
+  ["todayStats", "Wins / losses"],
+  ["recordLabels", "W/L labels"],
+  ["avgKills", "Kills"],
+  ["headshotRate", "HS %"],
+  ["winRate", "Wins %"],
+  ["rankProgress", "Rank progress"],
   ["last30Stats", "Last 30"],
   ["last5Results", "Last 5 results"],
 ]
@@ -71,12 +80,18 @@ const visibilityGroupByKey: Partial<Record<WidgetVisibilityKey, VisibilityGroup>
   nickname: "Player",
   level: "Player",
   elo: "Rank",
+  eloChange: "Rank",
   worldRank: "Rank",
   countryRank: "Rank",
   challenger: "Rank",
   challengerRank: "Rank",
   kdr: "Stats",
   todayStats: "Stats",
+  recordLabels: "Stats",
+  avgKills: "Stats",
+  headshotRate: "Stats",
+  winRate: "Stats",
+  rankProgress: "Stats",
   last30Stats: "Stats",
   last5Results: "Stats",
 }
@@ -181,6 +196,10 @@ function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: Conten
                       label={label}
                       checked={config.visibility[key] ?? false}
                       onCheckedChange={(checked) => onVisibilityChange(key, checked)}
+                      disabled={
+                        (key === "eloChange" && !config.visibility.elo)
+                        || (key === "recordLabels" && !config.visibility.todayStats)
+                      }
                       ariaLabel={`Show ${label}`}
                     />
                   ))}
@@ -538,7 +557,7 @@ function SidebarTabs({
           <span>Backgrounds</span>
           <Badge
             variant="secondary"
-            className="h-4 rounded-full px-1.5 text-[9px] font-bold uppercase tracking-[0.08em]"
+            className="h-4 rounded-full border-emerald-400/30 bg-emerald-400/15 px-1.5 text-[9px] font-bold uppercase tracking-[0.08em] text-emerald-300"
           >
             New
           </Badge>
@@ -629,14 +648,18 @@ export function BuilderSidebar({
   onFeedback,
 }: BuilderSidebarProps) {
   return (
-    <aside className="scrollbar-hidden border-b border-border/70 bg-surface/55 lg:sticky lg:top-0 lg:h-screen lg:w-[360px] lg:shrink-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r">
+    <aside className="scrollbar-hidden border-b border-border/70 bg-surface/55 lg:sticky lg:top-12 lg:h-[calc(100vh-3rem)] lg:w-[360px] lg:shrink-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r">
       <div className="flex min-h-full flex-col px-4 py-5 sm:px-6 lg:px-7 lg:py-6">
         <header>
-          <h1 className="text-2xl font-semibold tracking-[-0.03em] text-on-surface">FACEIT Widget Builder</h1>
-          <p className="mt-2 text-body-sm text-tertiary">
-            Build a free FACEIT overlay for OBS or Streamlabs. Enter a public nickname, choose a preset, and copy the Browser source URL when the preview is ready.
-          </p>
-          <h2 className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80">Settings</h2>
+          <h1 className="inline-flex items-center text-2xl font-semibold tracking-[-0.03em] text-on-surface">
+            <Link
+              href={SITE_PATHS.home}
+              className="inline-flex items-center gap-2.5 transition-colors hover:text-foreground/80"
+            >
+              <Image src="/logo.svg" alt="" width={28} height={28} className="size-7 shrink-0" priority />
+              <span>{SITE_METADATA.name}</span>
+            </Link>
+          </h1>
         </header>
         <SidebarPlayer nickname={nickname} onNicknameChange={onNicknameChange} />
         <SidebarTabs

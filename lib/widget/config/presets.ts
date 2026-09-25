@@ -3,6 +3,7 @@ import type {
   WidgetRotationField,
   WidgetStyle,
   WidgetData,
+  WidgetPreviewSize,
   WidgetVisibilityKey,
   WidgetVisibility,
 } from "../types"
@@ -12,6 +13,7 @@ export type WidgetPreset = {
   id: WidgetPresetId
   label: string
   description: string
+  previewSize: WidgetPreviewSize
   supportsRotation: boolean
   defaultRotationFields?: WidgetRotationField[]
   rotationFields?: WidgetRotationField[]
@@ -34,6 +36,12 @@ const hiddenStats: WidgetVisibility = {
   todayStats: false,
   last30Stats: false,
   last5Results: false,
+  eloChange: false,
+  recordLabels: false,
+  avgKills: false,
+  headshotRate: false,
+  winRate: false,
+  rankProgress: false,
 }
 const allRotationFields: WidgetRotationField[] = ["today", "last30", "lifetime"]
 
@@ -42,6 +50,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "elo-pill",
     label: "ELO Pill",
     description: "Level and ELO",
+    previewSize: "pill",
     supportsRotation: false,
     defaultVisibility: { ...hiddenStats, challengerRank: false },
     editableFields: ["level", "challenger", "challengerRank", "elo", "last5Results"],
@@ -50,6 +59,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "rank-elo",
     label: "Rank + ELO",
     description: "Rank, KDR, level, ELO",
+    previewSize: "pill",
     supportsRotation: false,
     defaultVisibility: { ...hiddenStats, countryRank: true, kdr: true },
     editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr"],
@@ -58,6 +68,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "rank-country",
     label: "Rank + Country",
     description: "World and country rank",
+    previewSize: "pill",
     supportsRotation: false,
     defaultVisibility: {
       ...hiddenStats,
@@ -69,6 +80,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "today-stats",
     label: "Today Stats",
     description: "Current session stats",
+    previewSize: "card",
     supportsRotation: true,
     defaultRotationFields: ["today", "last30"],
     rotationFields: ["today", "last30"],
@@ -94,6 +106,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "rich-profile",
     label: "Rich Profile",
     description: "Profile, rank, stats",
+    previewSize: "card",
     supportsRotation: true,
     defaultRotationFields: ["today", "last30"],
     defaultVisibility: {
@@ -112,6 +125,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     id: "profile-card",
     label: "Profile Card",
     description: "Rank and win/loss stats",
+    previewSize: "card",
     supportsRotation: false,
     defaultVisibility: {
       ...hiddenStats,
@@ -124,6 +138,41 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     },
     editableFields: ["nickname", "worldRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
     defaultStyle: { density: "comfortable", radius: 8 },
+  },
+  {
+    id: "performance-card",
+    label: "Performance Card",
+    description: "Rank progress and match performance",
+    previewSize: "card",
+    supportsRotation: false,
+    defaultVisibility: {
+      ...hiddenStats,
+      nickname: true,
+      level: true,
+      challenger: true,
+      elo: true,
+      todayStats: true,
+      avgKills: true,
+      kdr: true,
+      headshotRate: true,
+      winRate: true,
+      rankProgress: true,
+    },
+    editableFields: [
+      "nickname",
+      "level",
+      "challenger",
+      "elo",
+      "eloChange",
+      "todayStats",
+      "recordLabels",
+      "avgKills",
+      "kdr",
+      "headshotRate",
+      "winRate",
+      "rankProgress",
+    ],
+    defaultStyle: { density: "comfortable", radius: 12 },
   },
 ]
 

@@ -12,9 +12,9 @@ import {
 
 import {
   createDefaultConfig,
-  supportsWidgetRotation,
   WIDGET_MAPS,
   WIDGET_PRESETS,
+  WIDGET_PRESET_MAP,
   type PlayerSnapshotState,
   type WidgetConfig,
   type WidgetData,
@@ -47,6 +47,7 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
   "today-stats": 0.63,
   "rich-profile": 0.64,
   "profile-card": 0.68,
+  "performance-card": 0.68,
 }
 
 const previewBackgrounds = {
@@ -78,7 +79,7 @@ function MapPreviewIcon({
 }
 
 function LayoutPreview({ state, presetId }: { state: PlayerSnapshotState; presetId: WidgetPresetId }) {
-  const placeholder = <WidgetSkeleton size={supportsWidgetRotation(presetId) ? "card" : "pill"} />
+  const placeholder = <WidgetSkeleton size={WIDGET_PRESET_MAP[presetId].previewSize} />
 
   return (
     <div className="relative flex h-[104px] w-full items-center justify-center overflow-hidden rounded-[calc(var(--radius-md)-2px)] bg-background/70">

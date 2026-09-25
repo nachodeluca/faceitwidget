@@ -22,6 +22,12 @@ const VISIBILITY_KEYS = [
   "todayStats",
   "last30Stats",
   "last5Results",
+  "eloChange",
+  "recordLabels",
+  "avgKills",
+  "headshotRate",
+  "winRate",
+  "rankProgress",
 ] as const satisfies readonly (keyof WidgetConfig["visibility"])[]
 
 const STYLE_FIELDS = [

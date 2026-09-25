@@ -17,6 +17,7 @@ export const WIDGET_PRESET_IDS = [
   "today-stats",
   "rich-profile",
   "profile-card",
+  "performance-card",
 ] as const
 
 export type WidgetPresetId = (typeof WIDGET_PRESET_IDS)[number]
@@ -28,6 +29,7 @@ export function isWidgetPresetId(value: unknown): value is WidgetPresetId {
 export type WidgetFontId = "outfit" | "system" | "mono"
 export type WidgetBackground = "solid" | "none"
 export type WidgetDensity = "compact" | "comfortable"
+export type WidgetPreviewSize = "pill" | "card"
 export type WidgetRotationField = "rank" | "today" | "last30" | "lifetime"
 
 export type WidgetVisibility = {
@@ -44,6 +46,12 @@ export type WidgetVisibility = {
   todayStats: boolean
   last30Stats: boolean
   last5Results: boolean
+  eloChange: boolean
+  recordLabels: boolean
+  avgKills: boolean
+  headshotRate: boolean
+  winRate: boolean
+  rankProgress: boolean
 }
 
 export type WidgetVisibilityKey = keyof WidgetVisibility

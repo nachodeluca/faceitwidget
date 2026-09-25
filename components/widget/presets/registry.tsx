@@ -2,6 +2,7 @@ import type { WidgetPresetId } from "@/lib/widget"
 
 import { EloPillPreset } from "./elo-pill"
 import { ProfileCardPreset } from "./profile-card"
+import { PerformanceCardPreset } from "./performance-card"
 import { RankCountryPreset } from "./rank-country"
 import { RankEloPreset } from "./rank-elo"
 import { RichStatsPreset } from "./rich-stats"
@@ -15,6 +16,7 @@ const presetRegistry: Record<WidgetPresetId, PresetRenderer> = {
   "today-stats": (props: PresetViewProps) => <TodayStatsPreset {...props} />,
   "rich-profile": (props: PresetViewProps) => <RichStatsPreset {...props} />,
   "profile-card": (props: PresetViewProps) => <ProfileCardPreset {...props} />,
+  "performance-card": (props: PresetViewProps) => <PerformanceCardPreset {...props} />,
 }
 
 export function renderPreset(preset: WidgetPresetId, props: PresetViewProps) {

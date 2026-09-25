@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Globe2 } from "lucide-react"
 
 import {
-  CHALLENGER_RANK_COLORS,
+  getChallengerRankColor,
   hasEloChange,
   isChallengerRank,
   type WidgetData,
@@ -131,7 +131,17 @@ export function EloValue({
   )
 }
 
-export function EloSummary({ data, visibility }: { data: WidgetData; visibility: WidgetVisibility }) {
+export function EloSummary({
+  data,
+  visibility,
+  showChange = true,
+  className,
+}: {
+  data: WidgetData
+  visibility: WidgetVisibility
+  showChange?: boolean
+  className?: string
+}) {
   if (!visibility.elo) {
     return null
   }
@@ -139,12 +149,12 @@ export function EloSummary({ data, visibility }: { data: WidgetData; visibility:
   const eloChange = data.rank.eloChange
 
   return (
-    <span className="inline-flex min-w-0 items-baseline gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">
+    <span className={cn("inline-flex min-w-0 items-baseline gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]", className)}>
       <strong className="text-[9px] font-bold text-[color:var(--widget-text)] tabular-nums">
         <AnimatedNumber value={data.rank.elo} />
       </strong>
       <span>ELO</span>
-      {hasEloChange(eloChange) ? (
+      {showChange && hasEloChange(eloChange) ? (
         <span className={cn("tabular-nums", eloChange > 0 ? "text-[#83dba5]" : "text-[#ff7884]")}>
           (<AnimatedNumber value={eloChange} signed />)
         </span>
@@ -176,28 +186,6 @@ export function RankValue({
   )
 }
 
-type ChallengerRankTier = "gold" | "silver" | "bronze" | "top"
-
-function challengerRankTier(value?: number): ChallengerRankTier {
-  if (value === 1) {
-    return "gold"
-  }
-
-  if (value === 2) {
-    return "silver"
-  }
-
-  if (value === 3) {
-    return "bronze"
-  }
-
-  return "top"
-}
-
-export function getChallengerRankColor(value?: number) {
-  return CHALLENGER_RANK_COLORS[challengerRankTier(value)]
-}
-
 export function ChallengerRankBadge({
   value,
   showRankNumber = true,
@@ -205,10 +193,10 @@ export function ChallengerRankBadge({
   value?: number
   showRankNumber?: boolean
 }) {
-  const tier = challengerRankTier(value)
+  const color = getChallengerRankColor(value)
   const label = `#${formatNumber(value)}`
   const style = {
-    "--challenger-rank-color": CHALLENGER_RANK_COLORS[tier],
+    "--challenger-rank-color": color,
   } as CSSProperties
 
   return (
@@ -227,7 +215,7 @@ export function ChallengerRankBadge({
       ) : null}
       <ChallengerMark
         className={cn("block shrink-0 object-contain", showRankNumber ? "size-5" : "size-7")}
-        accentColor={CHALLENGER_RANK_COLORS[tier]}
+        accentColor={color}
       />
     </span>
   )
@@ -383,10 +371,12 @@ export function RecordStat({
   label,
   value,
   tone,
+  showLabel = true,
 }: {
   label: string
   value?: number
   tone: "positive" | "negative"
+  showLabel?: boolean
 }) {
   const toneStyles =
     tone === "positive"
@@ -403,9 +393,11 @@ export function RecordStat({
       <strong className="text-[12px] font-extrabold leading-none tabular-nums">
         <AnimatedNumber value={value} />
       </strong>
-      <small className="text-[7px] font-bold lowercase leading-none text-[color:var(--widget-muted)]">
-        {label}
-      </small>
+      {showLabel ? (
+        <small className="text-[7px] font-bold lowercase leading-none text-[color:var(--widget-muted)]">
+          {label}
+        </small>
+      ) : null}
     </span>
   )
 }
