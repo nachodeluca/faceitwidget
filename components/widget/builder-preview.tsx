@@ -47,7 +47,7 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
   "today-stats": 0.63,
   "rich-profile": 0.64,
   "profile-card": 0.68,
-  "performance-card": 0.68,
+  "performance-card": 0.58,
 }
 
 const previewBackgrounds = {

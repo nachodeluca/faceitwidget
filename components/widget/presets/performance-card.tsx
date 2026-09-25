@@ -101,6 +101,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
               value={challengerRank}
               showRankNumber={config.visibility.challengerRank}
               className={config.visibility.challengerRank ? "min-h-10" : "size-10"}
+              markClassName={config.visibility.challengerRank ? "size-6" : undefined}
             />
           ) : (
             <LevelMark data={data} visibility={config.visibility} className="size-10" />
@@ -128,12 +129,14 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
               value={data.today?.wins}
               tone="positive"
               showLabel={config.visibility.recordLabels}
+              className="w-[34px]"
             />
             <RecordStat
               label="losses"
               value={data.today?.losses}
               tone="negative"
               showLabel={config.visibility.recordLabels}
+              className="w-[34px]"
             />
           </div>
         ) : null}
