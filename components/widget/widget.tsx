@@ -13,7 +13,7 @@ const fontStacks = {
   system: "Inter, ui-sans-serif, system-ui, sans-serif",
   mono: "ui-monospace, SFMono-Regular, Menlo, monospace",
 } as const
-const transparentSurfaceClass = "bg-[rgb(12_12_12_/_72%)]"
+const transparentSurfaceBaseOpacity = 0.72
 
 type WidgetProps = {
   data: WidgetData
@@ -48,7 +48,6 @@ export function Widget({
     "--widget-border": config.style.border,
     "--widget-radius": `${config.style.radius}px`,
     "--widget-zoom": getWidgetZoom(config.style.scale, outputScale),
-    "--widget-opacity": config.style.opacity,
     "--widget-font": fontStacks[config.style.font],
     "--widget-layout-gap": config.style.density === "comfortable" ? "12px" : "6px",
   } as CSSProperties
@@ -58,8 +57,12 @@ export function Widget({
       : "border-[color:var(--widget-border)]"
   const surfaceBackgroundClass =
     config.style.background === "none"
-      ? transparentSurfaceClass
+      ? "bg-transparent"
       : "bg-[color:var(--widget-surface)]"
+  const surfaceStyle: CSSProperties | undefined =
+    config.style.background === "none"
+      ? { backgroundColor: `rgb(12 12 12 / ${config.style.opacity * transparentSurfaceBaseOpacity})` }
+      : undefined
   const surfaceShadowClass =
     config.style.background === "none" || shadow === "none"
       ? "shadow-none"
@@ -72,7 +75,7 @@ export function Widget({
     <div
       ref={ref}
       className={cn(
-        "inline-block max-w-full text-[12px] font-normal leading-none text-[color:var(--widget-text)] opacity-[var(--widget-opacity)] [font-family:var(--widget-font)] [zoom:var(--widget-zoom)]",
+        "inline-block max-w-full text-[12px] font-normal leading-none text-[color:var(--widget-text)] [font-family:var(--widget-font)] [zoom:var(--widget-zoom)]",
         className,
       )}
       style={style}
@@ -88,6 +91,7 @@ export function Widget({
           surfaceBackgroundClass,
           surfaceShadowClass,
         )}
+        style={surfaceStyle}
       >
         <BackdropLayer config={config.backdrop} interaction={backdropInteraction} />
         <div className="relative z-[1]">
