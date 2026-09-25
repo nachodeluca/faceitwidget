@@ -360,6 +360,18 @@ function StyleTab({ config, onStyleChange }: StyleTabProps) {
         <section className="flex flex-col gap-3">
           <SettingsSectionHeading label="Surface" />
           <SurfaceFillControl value={config.style.background} onChange={onStyleChange} />
+          {config.style.background === "none" ? (
+            <RangeControl
+              label="Opacity"
+              value={`${Math.round(config.style.opacity * 100)}%`}
+              min={0.2}
+              max={1}
+              step={0.05}
+              sliderValue={config.style.opacity}
+              onValueChange={(value) => onStyleChange({ opacity: value })}
+              ariaLabel="Transparent surface opacity"
+            />
+          ) : null}
           <BorderControl enabled={config.style.borderEnabled} onChange={onStyleChange} />
         </section>
         <section className="flex flex-col gap-3 border-t border-border/70 pt-5">
