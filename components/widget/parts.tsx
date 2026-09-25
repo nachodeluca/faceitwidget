@@ -190,10 +190,12 @@ export function ChallengerRankBadge({
   value,
   showRankNumber = true,
   className,
+  markClassName,
 }: {
   value?: number
   showRankNumber?: boolean
   className?: string
+  markClassName?: string
 }) {
   const color = getChallengerRankColor(value)
   const label = `#${formatNumber(value)}`
@@ -217,7 +219,11 @@ export function ChallengerRankBadge({
         <strong className="font-system text-[13px] font-extrabold text-[#090909] tabular-nums">{label}</strong>
       ) : null}
       <ChallengerMark
-        className={cn("block shrink-0 object-contain", showRankNumber ? "size-5" : "size-7")}
+        className={cn(
+          "block shrink-0 object-contain",
+          showRankNumber ? "size-5" : "size-7",
+          markClassName,
+        )}
         accentColor={color}
       />
     </span>
@@ -375,11 +381,13 @@ export function RecordStat({
   value,
   tone,
   showLabel = true,
+  className,
 }: {
   label: string
   value?: number
   tone: "positive" | "negative"
   showLabel?: boolean
+  className?: string
 }) {
   const toneStyles =
     tone === "positive"
@@ -391,6 +399,7 @@ export function RecordStat({
       className={cn(
         "flex min-h-10 flex-col items-center justify-center gap-[3px] rounded-[5px] border bg-[color:var(--widget-surface)] px-[3px] py-1 shadow-[inset_0_1px_0_rgb(255_255_255_/_4%)]",
         toneStyles,
+        className,
       )}
     >
       <strong className="text-[12px] font-extrabold leading-none tabular-nums">

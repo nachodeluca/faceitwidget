@@ -41,6 +41,7 @@ describe("PerformanceCardPreset", () => {
     expect(markup).toContain("K/D")
     expect(markup).toContain("HS %")
     expect(markup).toContain("Wins %")
+    expect(markup).toContain("w-[34px]")
     expect(markup).toContain('aria-label="Level 8 progress"')
     expect(markup).toContain('aria-valuenow="50"')
     expect(markup).toContain("--performance-progress-color:#FF6309")
