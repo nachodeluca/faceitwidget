@@ -22,7 +22,21 @@ describe("Widget surface", () => {
     const markup = renderToStaticMarkup(createElement(Widget, { data, config }))
 
     expect(markup).toContain('data-background="none"')
-    expect(markup).toContain("bg-[rgb(12_12_12_/_72%)]")
+    expect(markup).toContain("background-color:rgb(12 12 12 / 0.72)")
+    expect(markup).not.toContain("opacity-[var(--widget-opacity)]")
     expect(markup).not.toContain("data-widget-surface-overlay")
+  })
+
+  it("adjusts only the transparent surface opacity", () => {
+    const defaults = createDefaultConfig("elo-pill")
+    const config = normalizeConfig({
+      ...defaults,
+      style: { ...defaults.style, background: "none", opacity: 0.2 },
+    })
+
+    const markup = renderToStaticMarkup(createElement(Widget, { data, config }))
+
+    expect(markup).toContain("background-color:rgb(12 12 12 / 0.144)")
+    expect(markup).not.toContain("opacity-[var(--widget-opacity)]")
   })
 })
