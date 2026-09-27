@@ -15,7 +15,11 @@ export function TodayStatsPreset({ data, config }: PresetViewProps) {
           showFocusRank={isChallengerRank(data.rank) && config.visibility.challengerRank}
         />
         {config.visibility.nickname ? (
-          <PlayerNickname data={data} className="max-w-[9rem] truncate text-right" />
+          <PlayerNickname
+            data={data}
+            className="max-w-[9rem] truncate text-right"
+            showVerifiedBadge={config.visibility.verifiedBadge}
+          />
         ) : null}
       </div>
       <RotatingDetails data={data} config={config} />

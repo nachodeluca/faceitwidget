@@ -31,9 +31,11 @@ export type WidgetBackground = "solid" | "none"
 export type WidgetDensity = "compact" | "comfortable"
 export type WidgetPreviewSize = "pill" | "card"
 export type WidgetRotationField = "rank" | "today" | "last30" | "lifetime"
+export type VerifiedBadgeType = "none" | "verified" | "gold"
 
 export type WidgetVisibility = {
   nickname: boolean
+  verifiedBadge: boolean
   avatar: boolean
   level: boolean
   elo: boolean
@@ -92,6 +94,7 @@ export type WidgetData = {
     nickname: string
     avatarUrl?: string
     countryCode?: string
+    verifiedBadge?: VerifiedBadgeType
   }
   rank: {
     level: number

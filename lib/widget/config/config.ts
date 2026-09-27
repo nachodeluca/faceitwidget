@@ -81,6 +81,7 @@ const VISIBILITY_KEYS = [
   "headshotRate",
   "winRate",
   "rankProgress",
+  "verifiedBadge",
 ] as const satisfies readonly (keyof WidgetVisibility)[]
 const ROTATION_VISIBILITY_FIELDS: Partial<Record<WidgetVisibilityKey, WidgetRotationField>> = {
   todayStats: "today",

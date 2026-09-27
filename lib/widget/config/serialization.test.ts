@@ -19,7 +19,13 @@ describe("widget config serialization", () => {
     const defaults = createDefaultConfig("rich-profile")
     const config = normalizeConfig({
       ...defaults,
-      visibility: { ...defaults.visibility, nickname: true, todayStats: false, last5Results: true },
+      visibility: {
+        ...defaults.visibility,
+        nickname: true,
+        verifiedBadge: true,
+        todayStats: false,
+        last5Results: true,
+      },
       style: { ...defaults.style, scale: 1.25, borderEnabled: true, border: "#ffffff" },
       rotation: { ...defaults.rotation, enabled: false, intervalMs: 5000, fields: ["lifetime"] },
     })
@@ -44,6 +50,11 @@ describe("widget config serialization", () => {
 
     expect(serialized).not.toBe("v2.performance-card")
     expect(deserializeConfig(serialized)).toEqual(config)
+  })
+
+  it("defaults the new badge option off for old links and presets", () => {
+    expect(deserializeConfig("v2.profile-card").visibility.verifiedBadge).toBe(false)
+    expect(createDefaultConfig("today-stats").visibility.verifiedBadge).toBe(false)
   })
 
   it("keeps reading the previous full JSON format", () => {

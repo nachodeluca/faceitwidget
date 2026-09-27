@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils"
 import { AnimatedNumber } from "./animated-number"
 import { ChallengerMark } from "./challenger-mark"
 import { getWinRateTone } from "./stat-tone"
+import { VerificationBadge } from "./verification-badge"
 
 export { ChallengerMark } from "./challenger-mark"
 
@@ -25,19 +26,26 @@ const levelAsset = (data: WidgetData) => {
 export function PlayerNickname({
   data,
   className,
+  showVerifiedBadge = false,
 }: {
   data: WidgetData
   className?: string
+  showVerifiedBadge?: boolean
 }) {
+  const verifiedBadge = data.profile.verifiedBadge
+
   return (
     <strong
       className={cn(
-        "shrink-0 whitespace-nowrap text-[13px] font-bold leading-none text-[color:var(--widget-text)]",
+        "inline-flex min-w-0 shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-bold leading-none text-[color:var(--widget-text)]",
         className,
       )}
       data-widget-nickname
     >
-      {data.profile.nickname}
+      <span className="min-w-0 truncate">{data.profile.nickname}</span>
+      {showVerifiedBadge && verifiedBadge && verifiedBadge !== "none" ? (
+        <VerificationBadge type={verifiedBadge} />
+      ) : null}
     </strong>
   )
 }
@@ -97,7 +105,9 @@ export function Identity({
   return (
     <div className={cn("flex min-w-0 items-center gap-2", className)}>
       <LevelMark data={data} visibility={visibility} />
-      {visibility.nickname ? <PlayerNickname data={data} /> : null}
+      {visibility.nickname ? (
+        <PlayerNickname data={data} showVerifiedBadge={visibility.verifiedBadge} />
+      ) : null}
     </div>
   )
 }

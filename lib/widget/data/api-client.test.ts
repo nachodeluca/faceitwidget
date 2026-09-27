@@ -38,6 +38,22 @@ describe("WidgetApiClient", () => {
     expect((requestUrl as URL).searchParams.get("tz")).toBe("UTC")
   })
 
+  it("preserves the detected verification badge from the snapshot", async () => {
+    const verifiedSnapshot = {
+      ...snapshot,
+      data: {
+        ...snapshot.data,
+        profile: { nickname: "nachete", verifiedBadge: "verified" },
+      },
+    }
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(verifiedSnapshot))))
+    vi.stubGlobal("window", { location: { origin: "https://faceitwidget.com" } })
+
+    const result = await new WidgetApiClient().getPlayerSnapshot("nachete", { timezone: "UTC" })
+
+    expect(result.data.profile.verifiedBadge).toBe("verified")
+  })
+
   it("marks published widget traffic for telemetry", async () => {
     const fetcher = vi.fn().mockResolvedValue(
       new Response(JSON.stringify(snapshot), {

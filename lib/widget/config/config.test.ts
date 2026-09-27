@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { createDefaultConfig, normalizeConfig } from "./config"
+import { getEditableFields } from "./presets"
 
 describe("widget backdrop configuration", () => {
   it("defaults to no backdrop centered in the widget", () => {
@@ -27,5 +28,22 @@ describe("widget backdrop configuration", () => {
       id: "none",
       position: { x: 50, y: 50 },
     })
+  })
+})
+
+describe("verification badge visibility", () => {
+  it("offers the badge setting only on presets that expose a nickname", () => {
+    expect(getEditableFields("today-stats")).toContain("verifiedBadge")
+    expect(getEditableFields("profile-card")).toContain("verifiedBadge")
+    expect(getEditableFields("performance-card")).toContain("verifiedBadge")
+    expect(getEditableFields("elo-pill")).not.toContain("verifiedBadge")
+    expect(getEditableFields("rank-elo")).not.toContain("verifiedBadge")
+    expect(getEditableFields("rank-country")).not.toContain("verifiedBadge")
+    expect(getEditableFields("rich-profile")).not.toContain("verifiedBadge")
+  })
+
+  it("defaults the option off and normalizes missing values to off", () => {
+    expect(createDefaultConfig("profile-card").visibility.verifiedBadge).toBe(false)
+    expect(normalizeConfig({ preset: "profile-card", visibility: { nickname: true } }).visibility.verifiedBadge).toBe(false)
   })
 })

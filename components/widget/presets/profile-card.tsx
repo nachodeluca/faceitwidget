@@ -34,7 +34,11 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
         <div className="flex min-w-0 flex-col gap-[5px]">
           {config.visibility.nickname ? (
             <div className="flex min-w-0 items-center gap-[6px]">
-              <PlayerNickname data={data} className="text-[14px] font-extrabold" />
+              <PlayerNickname
+                data={data}
+                className="text-[14px] font-extrabold"
+                showVerifiedBadge={config.visibility.verifiedBadge}
+              />
             </div>
           ) : null}
           <div className="flex min-w-0 items-center gap-1 whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">

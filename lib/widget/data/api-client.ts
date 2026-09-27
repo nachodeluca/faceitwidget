@@ -9,6 +9,7 @@ const widgetDataSchema = z.object({
     nickname: z.string(),
     avatarUrl: z.string().optional(),
     countryCode: z.string().optional(),
+    verifiedBadge: z.enum(["none", "verified", "gold"]).optional(),
   }),
   rank: z.object({
     level: z.number(),

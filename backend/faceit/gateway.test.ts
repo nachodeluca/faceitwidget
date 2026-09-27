@@ -40,6 +40,22 @@ describe("FaceitGateway", () => {
     expect(requestedUrl).toContain("nickname=donk666")
   })
 
+  it("looks up verification level by UUID without sending the Data API key", async () => {
+    let requestedUrl = ""
+    const fetcher = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      requestedUrl = String(input)
+      expect(new Headers(init?.headers).get("Authorization")).toBeNull()
+      return Response.json({
+        result: "OK",
+        payload: { current: 3, timestamp: "2023-10-06T14:43:07.640Z" },
+      })
+    })
+    const gateway = new FaceitGateway("server-key", fetcher)
+
+    await expect(gateway.getVerificationLevel("player-uuid")).resolves.toBe(3)
+    expect(requestedUrl).toBe("https://www.faceit.com/api/verifications/v1/users/player-uuid/level")
+  })
+
   it("turns FACEIT rate limits into a retryable service error", async () => {
     const fetcher = vi.fn(async () => new Response(null, {
       status: 429,

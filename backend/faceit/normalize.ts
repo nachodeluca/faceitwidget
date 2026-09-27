@@ -1,9 +1,10 @@
-import type { PlayerLookup, WidgetData, WidgetSnapshot } from "../../lib/widget/types"
+import type { PlayerLookup, VerifiedBadgeType, WidgetData, WidgetSnapshot } from "../../lib/widget/types"
 import { isChallengerRank } from "../../lib/widget/rank"
 import { ApiError } from "../errors"
 import { FaceitGateway } from "./gateway"
 import { calendarDay, dailyEloChange, type EloObservation } from "./elo"
 import type { FaceitPlayer, FaceitRanking } from "./schemas"
+import { verificationBadgeFromLevel } from "./verification"
 
 type StatRecord = Record<string, unknown>
 
@@ -214,6 +215,14 @@ async function optionalRanking(request: Promise<FaceitRanking>) {
   }
 }
 
+async function optionalVerificationBadge(gateway: FaceitGateway, playerId: string): Promise<VerifiedBadgeType> {
+  try {
+    return verificationBadgeFromLevel(await gateway.getVerificationLevel(playerId))
+  } catch {
+    return "none"
+  }
+}
+
 async function resolvePlayer(gateway: FaceitGateway, lookup: PlayerLookup) {
   return lookup.kind === "id"
     ? gateway.getPlayerById(lookup.value)
@@ -241,12 +250,13 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
   const playerId = player.player_id
   const region = game.region?.toUpperCase()
   const country = player.country?.toLowerCase()
-  const [lifetime, matchStats, history, ranking, countryRanking] = await Promise.all([
+  const [lifetime, matchStats, history, ranking, countryRanking, verifiedBadge] = await Promise.all([
     gateway.getLifetime(playerId),
     gateway.getMatchStats(playerId),
     gateway.getHistory(playerId),
     region ? optionalRanking(gateway.getRanking(playerId, region)) : undefined,
     region && country ? optionalRanking(gateway.getRanking(playerId, region, country)) : undefined,
+    optionalVerificationBadge(gateway, playerId),
   ])
   const matches = matchStats.items.map((item) => normalizeMatch(item.stats))
   const worldRank = ranking?.position
@@ -266,6 +276,7 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
         nickname: player.nickname,
         avatarUrl: safeImageUrl(player.avatar),
         countryCode: country,
+        verifiedBadge,
       },
       rank: { ...rank, isChallenger: isChallengerRank(rank) },
       lifetime: normalizedLifetime,

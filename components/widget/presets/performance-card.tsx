@@ -112,6 +112,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
               <PlayerNickname
                 data={data}
                 className="max-w-[13rem] truncate text-[16px] font-extrabold tracking-[-0.03em]"
+                showVerifiedBadge={config.visibility.verifiedBadge}
               />
             ) : null}
             <EloSummary

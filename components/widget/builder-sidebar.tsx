@@ -42,6 +42,7 @@ const fieldRowClass = "flex items-center justify-between gap-2 rounded-md border
 
 const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
   ["nickname", "Nickname"],
+  ["verifiedBadge", "Verification badge"],
   ["level", "Level"],
   ["elo", "ELO"],
   ["eloChange", "ELO change"],
@@ -78,6 +79,7 @@ type VisibilityGroup = "Player" | "Rank" | "Stats"
 const visibilityGroupOrder: VisibilityGroup[] = ["Player", "Rank", "Stats"]
 const visibilityGroupByKey: Partial<Record<WidgetVisibilityKey, VisibilityGroup>> = {
   nickname: "Player",
+  verifiedBadge: "Player",
   level: "Player",
   elo: "Rank",
   eloChange: "Rank",
@@ -146,7 +148,9 @@ type ContentTabProps = {
 function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: ContentTabProps) {
   const editableFields = getEditableFields(config.preset, rank)
   const fields = visibilityLabels.filter(([key]) => editableFields.includes(key))
-  const activeCount = fields.filter(([key]) => config.visibility[key]).length
+  const activeCount = fields.filter(([key]) =>
+    config.visibility[key] && (key !== "verifiedBadge" || config.visibility.nickname),
+  ).length
   const groupedFields = visibilityGroupOrder
     .map((group) => ({
       group,
@@ -199,6 +203,7 @@ function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: Conten
                       disabled={
                         (key === "eloChange" && !config.visibility.elo)
                         || (key === "recordLabels" && !config.visibility.todayStats)
+                        || (key === "verifiedBadge" && !config.visibility.nickname)
                       }
                       ariaLabel={`Show ${label}`}
                     />

@@ -24,6 +24,7 @@ export type WidgetPreset = {
 
 const hiddenStats: WidgetVisibility = {
   nickname: false,
+  verifiedBadge: false,
   avatar: false,
   level: true,
   elo: true,
@@ -93,6 +94,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     },
     editableFields: [
       "nickname",
+      "verifiedBadge",
       "level",
       "challenger",
       "challengerRank",
@@ -136,7 +138,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       elo: true,
       todayStats: true,
     },
-    editableFields: ["nickname", "worldRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
+    editableFields: ["nickname", "verifiedBadge", "worldRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
     defaultStyle: { density: "comfortable", radius: 8 },
   },
   {
@@ -162,6 +164,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     },
     editableFields: [
       "nickname",
+      "verifiedBadge",
       "level",
       "challenger",
       "challengerRank",

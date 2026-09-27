@@ -7,6 +7,7 @@ import {
   faceitMatchStatsSchema,
   faceitPlayerSchema,
   faceitRankingSchema,
+  faceitVerificationLevelSchema,
   type FaceitHistory,
   type FaceitLifetime,
   type FaceitMatchStats,
@@ -15,6 +16,7 @@ import {
 } from "./schemas"
 
 const FACEIT_API_URL = "https://open.faceit.com/data/v4"
+const FACEIT_VERIFICATION_API_URL = "https://www.faceit.com/api/verifications/v1/users"
 const DEFAULT_TIMEOUT_MS = 5_000
 
 export type HttpFetcher = (
@@ -105,5 +107,37 @@ export class FaceitGateway {
       `/rankings/games/cs2/regions/${encodeURIComponent(region)}/players/${encodeURIComponent(playerId)}${suffix}`,
       faceitRankingSchema,
     )
+  }
+
+  async getVerificationLevel(playerId: string): Promise<number> {
+    const url = `${FACEIT_VERIFICATION_API_URL}/${encodeURIComponent(playerId)}/level`
+    const response = await this.fetcher(url, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "faceitwidget.com",
+      },
+      signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
+    }).catch((cause) => {
+      throw new ApiError(503, "FACEIT verification data did not respond in time.", 15_000, { cause })
+    })
+
+    if (!response.ok) {
+      const status = response.status === 429 || response.status >= 500 ? 503 : response.status
+      throw new ApiError(
+        status,
+        "FACEIT rejected the verification request.",
+        retryAfterMs(response),
+      )
+    }
+
+    try {
+      const verification = faceitVerificationLevelSchema.parse(await response.json())
+      return verification.payload.current
+    } catch (cause) {
+      if (cause instanceof z.ZodError) {
+        throw new ApiError(503, "FACEIT returned an unsupported verification response.", 30_000, { cause })
+      }
+      throw cause
+    }
   }
 }

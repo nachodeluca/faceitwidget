@@ -28,6 +28,7 @@ const VISIBILITY_KEYS = [
   "headshotRate",
   "winRate",
   "rankProgress",
+  "verifiedBadge",
 ] as const satisfies readonly (keyof WidgetConfig["visibility"])[]
 
 const STYLE_FIELDS = [

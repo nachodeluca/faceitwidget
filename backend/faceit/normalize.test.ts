@@ -35,6 +35,7 @@ describe("normalizeMatch", () => {
 
 describe("fetchPlayerFacts", () => {
   it("keeps one canonical ranking when FACEIT returns one ranking response", async () => {
+    const getVerificationLevel = async () => 2
     const gateway = {
       getPlayerByNickname: async () => ({
         player_id: "player-1",
@@ -45,6 +46,7 @@ describe("fetchPlayerFacts", () => {
       getLifetime: async () => ({ lifetime: {} }),
       getMatchStats: async () => ({ items: [] }),
       getHistory: async () => ({ items: [] }),
+      getVerificationLevel,
       getRanking: async (_playerId: string, _region: string, country?: string) => ({
         position: country ? 38 : 2_350,
       }),
@@ -54,6 +56,33 @@ describe("fetchPlayerFacts", () => {
 
     expect(facts.baseData.rank.worldRank).toBe(2_350)
     expect(facts.baseData.rank.regionRank).toBeUndefined()
+    expect(facts.baseData.profile.verifiedBadge).toBe("verified")
+  })
+
+  it("uses the UUID resolved from a nickname and ignores verification endpoint failures", async () => {
+    const getVerificationLevel = async (playerId: string) => {
+      expect(playerId).toBe("player-1")
+      throw new Error("verification endpoint unavailable")
+    }
+    const gateway = {
+      getPlayerByNickname: async () => ({
+        player_id: "player-1",
+        nickname: "nachete",
+        country: "uy",
+        games: { cs2: { region: "SA", skill_level: 10, faceit_elo: 2_173 } },
+      }),
+      getLifetime: async () => ({ lifetime: {} }),
+      getMatchStats: async () => ({ items: [] }),
+      getHistory: async () => ({ items: [] }),
+      getVerificationLevel,
+      getRanking: async () => ({ position: 10 }),
+    } as unknown as FaceitGateway
+
+    const facts = await fetchPlayerFacts(gateway, { kind: "nickname", value: "nachete" })
+
+    expect(facts.playerId).toBe("player-1")
+    expect(facts.baseData.profile.verifiedBadge).toBe("none")
+    expect(facts.baseData.rank.elo).toBe(2_173)
   })
 })
 

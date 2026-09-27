@@ -36,8 +36,16 @@ export const faceitRankingSchema = z.object({
   position: z.number().optional(),
 }).passthrough()
 
+export const faceitVerificationLevelSchema = z.object({
+  result: z.literal("OK"),
+  payload: z.object({
+    current: z.number(),
+  }).passthrough(),
+}).passthrough()
+
 export type FaceitPlayer = z.infer<typeof faceitPlayerSchema>
 export type FaceitLifetime = z.infer<typeof faceitLifetimeSchema>
 export type FaceitMatchStats = z.infer<typeof faceitMatchStatsSchema>
 export type FaceitHistory = z.infer<typeof faceitHistorySchema>
 export type FaceitRanking = z.infer<typeof faceitRankingSchema>
+export type FaceitVerificationLevel = z.infer<typeof faceitVerificationLevelSchema>
