@@ -40,6 +40,7 @@ export function Builder({ initialConfig, initialNickname }: BuilderProps) {
           config={settings.config}
           nickname={settings.nickname}
           rank={playerSnapshot.data?.rank}
+          verifiedBadge={playerSnapshot.data?.profile.verifiedBadge}
           rotationAvailable={supportsWidgetRotation(settings.config.preset)}
           copied={actions.copied}
           canCopy={actions.canCopy}

@@ -141,13 +141,17 @@ function FieldSwitch({
 type ContentTabProps = {
   config: WidgetConfig
   rank?: WidgetData["rank"]
+  verifiedBadge?: WidgetData["profile"]["verifiedBadge"]
   onPresetChange: (preset: WidgetPresetId) => void
   onVisibilityChange: (key: WidgetVisibilityKey, value: boolean) => void
 }
 
-function ContentTab({ config, rank, onPresetChange, onVisibilityChange }: ContentTabProps) {
+function ContentTab({ config, rank, verifiedBadge, onPresetChange, onVisibilityChange }: ContentTabProps) {
   const editableFields = getEditableFields(config.preset, rank)
-  const fields = visibilityLabels.filter(([key]) => editableFields.includes(key))
+  const hasVerifiedBadge = verifiedBadge === "verified" || verifiedBadge === "gold"
+  const fields = visibilityLabels.filter(([key]) =>
+    editableFields.includes(key) && (key !== "verifiedBadge" || hasVerifiedBadge),
+  )
   const activeCount = fields.filter(([key]) =>
     config.visibility[key] && (key !== "verifiedBadge" || config.visibility.nickname),
   ).length
@@ -521,6 +525,7 @@ type BuilderSidebarProps = {
   config: WidgetConfig
   nickname: string
   rank?: WidgetData["rank"]
+  verifiedBadge?: WidgetData["profile"]["verifiedBadge"]
   rotationAvailable: boolean
   copied: boolean
   canCopy: boolean
@@ -556,6 +561,7 @@ function SidebarPlayer({ nickname, onNicknameChange }: Pick<BuilderSidebarProps,
 function SidebarTabs({
   config,
   rank,
+  verifiedBadge,
   rotationAvailable,
   onPresetChange,
   onVisibilityChange,
@@ -563,7 +569,7 @@ function SidebarTabs({
   onBackdropChange,
   nickname,
   onRotationChange,
-}: Pick<BuilderSidebarProps, "config" | "nickname" | "rank" | "rotationAvailable" | "onPresetChange" | "onVisibilityChange" | "onStyleChange" | "onBackdropChange" | "onRotationChange">) {
+}: Pick<BuilderSidebarProps, "config" | "nickname" | "rank" | "verifiedBadge" | "rotationAvailable" | "onPresetChange" | "onVisibilityChange" | "onStyleChange" | "onBackdropChange" | "onRotationChange">) {
   return (
     <Tabs key={config.preset} className="mt-6" defaultValue="content">
       <TabsList className="w-full justify-between p-0" variant="line">
@@ -584,6 +590,7 @@ function SidebarTabs({
       <ContentTab
         config={config}
         rank={rank}
+        verifiedBadge={verifiedBadge}
         onPresetChange={onPresetChange}
         onVisibilityChange={onVisibilityChange}
       />
@@ -650,6 +657,7 @@ export function BuilderSidebar({
   config,
   nickname,
   rank,
+  verifiedBadge,
   rotationAvailable,
   copied,
   canCopy,
@@ -683,6 +691,7 @@ export function BuilderSidebar({
           config={config}
           nickname={nickname}
           rank={rank}
+          verifiedBadge={verifiedBadge}
           rotationAvailable={rotationAvailable}
           onPresetChange={onPresetChange}
           onVisibilityChange={onVisibilityChange}
