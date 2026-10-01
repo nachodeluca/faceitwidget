@@ -599,7 +599,7 @@ export function RegionRank({
   data,
   visibility,
   showChallengerBadge = true,
-  iconSize = 14,
+  iconSize = 20,
   className,
   valueClassName,
 }: {

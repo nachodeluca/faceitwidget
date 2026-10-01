@@ -48,6 +48,7 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
                 data={data}
                 visibility={config.visibility}
                 showChallengerBadge={false}
+                iconSize={17}
                 className={compactRankClass}
                 valueClassName={compactRankValueClass}
               />

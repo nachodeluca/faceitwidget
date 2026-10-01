@@ -70,8 +70,7 @@ function MapPreviewIcon({
   return (
     <Image
       src={map.iconSrc}
-      alt=""
-      aria-hidden="true"
+      alt={`${map.label} map icon`}
       width={24}
       height={24}
       className={cn("size-4 shrink-0 rounded-[3px] object-cover", className)}
