@@ -2,7 +2,6 @@ import type { CSSProperties } from "react"
 
 import { getRankProgress, isChallengerRank } from "@/lib/widget"
 
-import { AnimatedNumber } from "../animated-number"
 import {
   CountryRank,
   EloSummary,
@@ -11,38 +10,11 @@ import {
   PlayerNickname,
   RecordStat,
 } from "../parts"
+import { PerformanceMetric } from "./shared/performance-metric"
 import type { PresetViewProps } from "./types"
 
 export function getPerformanceKills(data: PresetViewProps["data"]) {
   return data.lifetime?.avgKills ?? data.last30?.avgKills ?? data.today?.avgKills
-}
-
-function hasValue(value?: number) {
-  return typeof value === "number" && Number.isFinite(value)
-}
-
-function PerformanceMetric({
-  label,
-  value,
-  maximumFractionDigits = 0,
-  suffix,
-}: {
-  label: string
-  value?: number
-  maximumFractionDigits?: number
-  suffix?: string
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-[4px]">
-      <strong className="whitespace-nowrap text-[15px] font-extrabold leading-none tracking-[-0.02em] text-[color:var(--widget-text)] tabular-nums">
-        <AnimatedNumber value={value} maximumFractionDigits={maximumFractionDigits} />
-        {suffix && hasValue(value) ? suffix : null}
-      </strong>
-      <span className="whitespace-nowrap text-[8px] font-bold uppercase leading-none tracking-[0.04em] text-[color:var(--widget-muted)]">
-        {label}
-      </span>
-    </div>
-  )
 }
 
 function RankProgressBar({ data }: Pick<PresetViewProps, "data">) {
@@ -71,10 +43,10 @@ function RankProgressBar({ data }: Pick<PresetViewProps, "data">) {
 export function PerformanceCardPreset({ data, config }: PresetViewProps) {
   const challenger = isChallengerRank(data.rank)
   const showChallenger = challenger && config.visibility.challenger
-  const challengerRank = data.rank.worldRank ?? data.rank.regionRank
+  const challengerRank = data.rank.regionRank
   const metrics = [
     config.visibility.avgKills
-      ? { label: "Kills", value: getPerformanceKills(data), maximumFractionDigits: 1 }
+      ? { label: "Kills", value: getPerformanceKills(data), maximumFractionDigits: 0 }
       : null,
     config.visibility.kdr
       ? { label: "K/D", value: data.lifetime?.kdr, maximumFractionDigits: 2 }
@@ -100,6 +72,7 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
           {showChallenger ? (
             <ChallengerRankBadge
               value={challengerRank}
+              regionCode={data.profile.regionCode}
               showRankNumber={config.visibility.challengerRank}
               className={config.visibility.challengerRank ? "min-h-10" : "size-10"}
               markClassName={config.visibility.challengerRank ? "size-7" : "size-8"}

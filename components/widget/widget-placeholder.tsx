@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 type WidgetSkeletonProps = {
   className?: string
-  size?: "pill" | "card"
+  size?: "pill" | "card" | "compact"
 }
 
 export function WidgetSkeleton({ className, size = "pill" }: WidgetSkeletonProps) {
@@ -12,7 +12,11 @@ export function WidgetSkeleton({ className, size = "pill" }: WidgetSkeletonProps
       aria-hidden="true"
       className={cn(
         "flex items-center gap-2 rounded-lg border border-border/70 bg-surface-raised/75 p-2 motion-safe:animate-pulse",
-        size === "card" ? "h-[72px] w-[230px]" : "h-10 w-[150px]",
+        size === "compact"
+          ? "h-[116px] w-[464px]"
+          : size === "card"
+            ? "h-[72px] w-[230px]"
+            : "h-10 w-[150px]",
         className,
       )}
     >

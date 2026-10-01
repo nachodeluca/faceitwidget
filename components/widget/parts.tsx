@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from "react"
 import Image from "next/image"
-import { Globe2 } from "lucide-react"
 
 import {
   getChallengerRankColor,
@@ -9,13 +8,14 @@ import {
   type WidgetData,
   type WidgetVisibility,
 } from "@/lib/widget"
-import { formatNumber } from "@/lib/format"
+import { formatNumber, formatRankNumber } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 import { AnimatedNumber } from "./animated-number"
 import { ChallengerMark } from "./challenger-mark"
 import { getWinRateTone } from "./stat-tone"
 import { VerificationBadge } from "./verification-badge"
+import { RegionLogo } from "./region-logo"
 
 export { ChallengerMark } from "./challenger-mark"
 
@@ -74,7 +74,7 @@ export function LevelMark({
       {showChallenger ? (
         <ChallengerMark
           className="size-full object-contain"
-          accentColor={getChallengerRankColor(data.rank.worldRank)}
+          accentColor={getChallengerRankColor(data.rank.regionRank)}
         />
       ) : (
         <Image
@@ -135,7 +135,10 @@ export function EloValue({
           valueClassName,
         )}
       >
-        <AnimatedNumber value={data.rank.elo} />
+        <span className="inline-flex items-center gap-1">
+          {visibility.eloIcon ? <EloIcon /> : null}
+          <AnimatedNumber value={data.rank.elo} />
+        </span>
       </strong>
     </span>
   )
@@ -159,9 +162,12 @@ export function EloSummary({
   const eloChange = data.rank.eloChange
 
   return (
-    <span className={cn("inline-flex min-w-0 items-baseline gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]", className)}>
-      <strong className="text-[9px] font-bold text-[color:var(--widget-text)] tabular-nums">
-        <AnimatedNumber value={data.rank.elo} />
+    <span className={cn("inline-flex min-w-0 items-center gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]", className)}>
+      <strong className="inline-flex items-center font-bold leading-none text-[color:var(--widget-text)] tabular-nums">
+        <span className="inline-flex items-center gap-[2px] leading-none">
+          {visibility.eloIcon ? <EloIcon small /> : null}
+          <AnimatedNumber value={data.rank.elo} />
+        </span>
       </strong>
       <span>ELO</span>
       {showChange && hasEloChange(eloChange) ? (
@@ -173,14 +179,36 @@ export function EloSummary({
   )
 }
 
+export function EloIcon({ small = false }: { small?: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={small ? 10 : 16}
+      height={small ? 5 : 8}
+      fill="none"
+      viewBox="0 0 24 12"
+      aria-hidden="true"
+      focusable="false"
+      className="shrink-0"
+    >
+      <path
+        fill="currentColor"
+        d="M12 3c0 .463-.105.902-.292 1.293l1.998 2A2.97 2.97 0 0 1 15 6a2.99 2.99 0 0 1 1.454.375l1.921-1.921a3 3 0 1 1 1.5 1.328l-2.093 2.093a3 3 0 1 1-5.49-.168l-1.999-2a2.992 2.992 0 0 1-2.418.074L5.782 7.876a3 3 0 1 1-1.328-1.5l1.921-1.921A3 3 0 1 1 12 3z"
+      />
+    </svg>
+  )
+}
+
 export function RankValue({
   value,
   className,
   valueClassName,
+  format = formatNumber,
 }: {
   value?: number
   className?: string
   valueClassName?: string
+  format?: (value: number | undefined) => string
 }) {
   return (
     <span className={cn("inline-flex flex-col gap-[3px]", className)}>
@@ -190,7 +218,7 @@ export function RankValue({
           valueClassName,
         )}
       >
-        #{formatNumber(value)}
+        #{format(value)}
       </strong>
     </span>
   )
@@ -199,16 +227,19 @@ export function RankValue({
 export function ChallengerRankBadge({
   value,
   showRankNumber = true,
+  regionCode,
   className,
   markClassName,
 }: {
   value?: number
   showRankNumber?: boolean
+  regionCode?: string
   className?: string
   markClassName?: string
 }) {
   const color = getChallengerRankColor(value)
-  const label = `#${formatNumber(value)}`
+  const label = `#${formatRankNumber(value)}`
+  const rankLabel = `Regional Ranking${regionCode ? ` (${regionCode.toUpperCase()})` : ""} ${label}`
   const style = {
     "--challenger-rank-color": color,
   } as CSSProperties
@@ -222,8 +253,8 @@ export function ChallengerRankBadge({
         className,
       )}
       style={style}
-      title={`World rank ${label}`}
-      aria-label={`World rank ${label}`}
+      title={rankLabel}
+      aria-label={rankLabel}
     >
       {showRankNumber ? (
         <strong className="font-system text-[13px] font-extrabold text-[#090909] tabular-nums">{label}</strong>
@@ -479,17 +510,25 @@ const matchResultStyles = {
   loss: "text-[#ef5265]",
 } as const
 
-export function LastFiveResults({ data }: { data: WidgetData }) {
+export function LastFiveResults({
+  data,
+  className,
+  resultClassName,
+}: {
+  data: WidgetData
+  className?: string
+  resultClassName?: string
+}) {
   const results = data.last5Results?.slice(0, 5) ?? []
 
   if (results.length === 0) return null
 
   return (
-    <div className="flex shrink-0 items-center gap-[3px]" aria-label="Last 5 matches">
+    <div className={cn("flex shrink-0 items-center gap-[3px]", className)} aria-label="Last 5 matches">
       {results.map((result, index) => (
         <span
           key={`${result}-${index}`}
-          className={cn("text-[9px] font-extrabold leading-none", matchResultStyles[result])}
+          className={cn("text-[9px] font-extrabold leading-none", resultClassName, matchResultStyles[result])}
           title={result === "win" ? "Win" : "Loss"}
         >
           {result === "win" ? "W" : "L"}
@@ -533,59 +572,68 @@ export function StatsPanel({
   )
 }
 
-function GlobeIcon() {
-  return <Globe2 aria-hidden="true" className="size-3.5 shrink-0 text-white" />
-}
-
 function RankItem({
   label,
   value,
   icon,
   className,
   valueClassName,
+  format,
 }: {
   label: string
   value?: number
   icon: ReactNode
   className?: string
   valueClassName?: string
+  format?: (value: number | undefined) => string
 }) {
   return (
     <span className={cn("inline-flex items-center gap-1", className)} title={label}>
       {icon}
-      <RankValue className="gap-0" value={value} valueClassName={valueClassName} />
+      <RankValue className="gap-0" value={value} valueClassName={valueClassName} format={format} />
     </span>
   )
 }
 
-export function WorldRank({
+export function RegionRank({
   data,
   visibility,
   showChallengerBadge = true,
+  iconSize = 14,
   className,
   valueClassName,
 }: {
   data: WidgetData
   visibility: WidgetVisibility
   showChallengerBadge?: boolean
+  iconSize?: number
   className?: string
   valueClassName?: string
 }) {
-  if (!visibility.worldRank) {
+  if (!visibility.regionRank) {
     return null
   }
 
   if (showChallengerBadge && visibility.challenger && isChallengerRank(data.rank)) {
-    return <ChallengerRankBadge value={data.rank.worldRank} showRankNumber={visibility.challengerRank} />
+    return (
+      <ChallengerRankBadge
+        value={data.rank.regionRank}
+        regionCode={data.profile.regionCode}
+        showRankNumber={visibility.challengerRank}
+      />
+    )
   }
 
   return (
     <RankItem
-      label="World rank"
-      value={data.rank.worldRank}
-      icon={<GlobeIcon />}
+      label={data.profile.regionCode
+        ? `Regional Ranking (${data.profile.regionCode.toUpperCase()})`
+        : "Regional Ranking"}
+      value={data.rank.regionRank}
+      icon={<RegionLogo region={data.profile.regionCode ?? ""} size={iconSize} />}
       className={className}
       valueClassName={valueClassName}
+      format={formatRankNumber}
     />
   )
 }

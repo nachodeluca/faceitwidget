@@ -34,7 +34,7 @@ describe("normalizeMatch", () => {
 })
 
 describe("fetchPlayerFacts", () => {
-  it("keeps one canonical ranking when FACEIT returns one ranking response", async () => {
+  it("keeps the regional ranking and region code from FACEIT", async () => {
     const getVerificationLevel = async () => 2
     const gateway = {
       getPlayerByNickname: async () => ({
@@ -47,15 +47,15 @@ describe("fetchPlayerFacts", () => {
       getMatchStats: async () => ({ items: [] }),
       getHistory: async () => ({ items: [] }),
       getVerificationLevel,
-      getRanking: async (_playerId: string, _region: string, country?: string) => ({
+      getRegionalRanking: async (_playerId: string, _region: string, country?: string) => ({
         position: country ? 38 : 2_350,
       }),
     } as unknown as FaceitGateway
 
     const facts = await fetchPlayerFacts(gateway, { kind: "nickname", value: "nachete" })
 
-    expect(facts.baseData.rank.worldRank).toBe(2_350)
-    expect(facts.baseData.rank.regionRank).toBeUndefined()
+    expect(facts.baseData.rank.regionRank).toBe(2_350)
+    expect(facts.baseData.profile.regionCode).toBe("SA")
     expect(facts.baseData.profile.verifiedBadge).toBe("verified")
   })
 
@@ -75,7 +75,7 @@ describe("fetchPlayerFacts", () => {
       getMatchStats: async () => ({ items: [] }),
       getHistory: async () => ({ items: [] }),
       getVerificationLevel,
-      getRanking: async () => ({ position: 10 }),
+      getRegionalRanking: async () => ({ position: 10 }),
     } as unknown as FaceitGateway
 
     const facts = await fetchPlayerFacts(gateway, { kind: "nickname", value: "nachete" })
@@ -120,7 +120,7 @@ describe("createWidgetSnapshot", () => {
       playerId: "player-1",
       baseData: {
         profile: { nickname: "donk666", countryCode: "ru" },
-        rank: { level: 10, elo: 4075, worldRank: 1, isChallenger: true },
+        rank: { level: 10, elo: 4075, regionRank: 1, isChallenger: true },
         lifetime: { kdr: 1.46 },
       },
       matches: [

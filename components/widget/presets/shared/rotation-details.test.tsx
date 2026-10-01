@@ -8,7 +8,7 @@ import { RotatingDetails } from "./rotation-details"
 
 const data = {
   profile: { nickname: "nachete", countryCode: "uy" },
-  rank: { level: 10, elo: 2_173, worldRank: 2_345, countryRank: 38 },
+  rank: { level: 10, elo: 2_173, regionRank: 2_345, countryRank: 38 },
   last30: { winRate: 50, avgKills: 17, adr: 84.8, avgKD: 1.09 },
 }
 

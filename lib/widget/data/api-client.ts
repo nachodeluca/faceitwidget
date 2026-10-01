@@ -9,17 +9,21 @@ const widgetDataSchema = z.object({
     nickname: z.string(),
     avatarUrl: z.string().optional(),
     countryCode: z.string().optional(),
+    regionCode: z.string().optional(),
     verifiedBadge: z.enum(["none", "verified", "gold"]).optional(),
   }),
   rank: z.object({
     level: z.number(),
     elo: z.number(),
     eloChange: z.number().optional(),
-    worldRank: z.number().optional(),
     regionRank: z.number().optional(),
+    worldRank: z.number().optional(),
     countryRank: z.number().optional(),
     isChallenger: z.boolean().optional(),
-  }),
+  }).transform(({ worldRank, ...rank }) => ({
+    ...rank,
+    regionRank: rank.regionRank ?? worldRank,
+  })),
   lifetime: z.object({
     avgKills: z.number().optional(),
     headshotRate: z.number().optional(),

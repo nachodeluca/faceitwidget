@@ -7,23 +7,23 @@ import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 import { RankEloPreset } from "./rank-elo"
 
 const data: WidgetData = {
-  profile: { nickname: "nachete", countryCode: "uy" },
-  rank: { level: 10, elo: 2_173, worldRank: 2_345, countryRank: 38 },
+  profile: { nickname: "nachete", countryCode: "uy", regionCode: "SA" },
+  rank: { level: 10, elo: 2_173, regionRank: 2_345, countryRank: 38 },
 }
 
 const challengerData: WidgetData = {
   ...data,
-  rank: { ...data.rank, worldRank: 174 },
+  rank: { ...data.rank, regionRank: 174 },
 }
 
 describe("RankEloPreset", () => {
-  it("places the world rank beside the country rank for non-Challengers", () => {
+  it("places Regional Ranking beside the country rank for non-Challengers", () => {
     const config = createDefaultConfig("rank-elo")
-    config.visibility.worldRank = true
+    config.visibility.regionRank = true
 
     const markup = renderToStaticMarkup(createElement(RankEloPreset, { data, config }))
 
-    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="World rank"'))
+    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="Regional Ranking (SA)"'))
   })
 
   it.each([
@@ -31,9 +31,9 @@ describe("RankEloPreset", () => {
     [true, false, false],
     [false, true, true],
     [true, true, true],
-  ])("keeps Challenger rank number state consistent (world rank: %s, rank number: %s)", (worldRank, challengerRank, showsRankNumber) => {
+  ])("keeps Challenger rank number state consistent (Regional Ranking: %s, rank number: %s)", (regionalRanking, challengerRank, showsRankNumber) => {
     const config = createDefaultConfig("rank-elo")
-    config.visibility.worldRank = worldRank
+    config.visibility.regionRank = regionalRanking
     config.visibility.challengerRank = challengerRank
 
     const markup = renderToStaticMarkup(createElement(RankEloPreset, { data: challengerData, config }))

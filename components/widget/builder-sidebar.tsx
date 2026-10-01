@@ -45,8 +45,9 @@ const visibilityLabels: Array<[WidgetVisibilityKey, string]> = [
   ["verifiedBadge", "Verification badge"],
   ["level", "Level"],
   ["elo", "ELO"],
+  ["eloIcon", "ELO icon"],
   ["eloChange", "ELO change"],
-  ["worldRank", "World rank"],
+  ["regionRank", "Regional Ranking"],
   ["countryRank", "Country rank"],
   ["challenger", "Challenger"],
   ["challengerRank", "Rank number"],
@@ -82,8 +83,9 @@ const visibilityGroupByKey: Partial<Record<WidgetVisibilityKey, VisibilityGroup>
   verifiedBadge: "Player",
   level: "Player",
   elo: "Rank",
+  eloIcon: "Rank",
   eloChange: "Rank",
-  worldRank: "Rank",
+  regionRank: "Rank",
   countryRank: "Rank",
   challenger: "Rank",
   challengerRank: "Rank",
@@ -206,6 +208,7 @@ function ContentTab({ config, rank, verifiedBadge, onPresetChange, onVisibilityC
                       onCheckedChange={(checked) => onVisibilityChange(key, checked)}
                       disabled={
                         (key === "eloChange" && !config.visibility.elo)
+                        || (key === "eloIcon" && !config.visibility.elo)
                         || (key === "recordLabels" && !config.visibility.todayStats)
                         || (key === "verifiedBadge" && !config.visibility.nickname)
                       }

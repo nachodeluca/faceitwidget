@@ -13,14 +13,14 @@ import {
 } from "../../parts"
 import type { PresetViewProps } from "../types"
 
-export function showsChallengerWorldRank(data: WidgetData, config: WidgetConfig) {
-  return config.visibility.worldRank
+export function showsChallengerRegionRank(data: WidgetData, config: WidgetConfig) {
+  return config.visibility.regionRank
     && config.visibility.challenger
     && isChallengerRank(data.rank)
 }
 
 export function showsChallengerFocusRank(data: WidgetData, config: WidgetConfig) {
-  return !config.visibility.worldRank
+  return !config.visibility.regionRank
     && config.visibility.challenger
     && config.visibility.challengerRank
     && isChallengerRank(data.rank)
@@ -51,7 +51,8 @@ export function CoreLine({
     <div className={cn("flex items-center gap-2", className)}>
       {showChallengerRankBadge ? (
         <ChallengerRankBadge
-          value={data.rank.worldRank}
+          value={data.rank.regionRank}
+          regionCode={data.profile.regionCode}
           showRankNumber={config.visibility.challengerRank}
         />
       ) : showLevelRankBadge ? (

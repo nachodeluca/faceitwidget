@@ -28,7 +28,7 @@ const hiddenStats: WidgetVisibility = {
   avatar: false,
   level: true,
   elo: true,
-  worldRank: false,
+  eloIcon: true,
   regionRank: false,
   countryRank: false,
   challenger: true,
@@ -53,7 +53,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Level and ELO",
     previewSize: "pill",
     supportsRotation: false,
-    defaultVisibility: { ...hiddenStats, challengerRank: false },
+    defaultVisibility: { ...hiddenStats, challengerRank: false, eloIcon: false },
     editableFields: ["level", "challenger", "challengerRank", "elo", "last5Results"],
   },
   {
@@ -62,20 +62,41 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     description: "Rank, KDR, level, ELO",
     previewSize: "pill",
     supportsRotation: false,
-    defaultVisibility: { ...hiddenStats, countryRank: true, kdr: true },
-    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr"],
+    defaultVisibility: { ...hiddenStats, countryRank: true, kdr: true, eloIcon: false },
+    editableFields: ["regionRank", "countryRank", "challengerRank", "elo", "kdr"],
   },
   {
     id: "rank-country",
     label: "Rank + Country",
-    description: "World and country rank",
+    description: "Regional and country rankings",
     previewSize: "pill",
     supportsRotation: false,
     defaultVisibility: {
       ...hiddenStats,
       countryRank: true,
+      eloIcon: false,
     },
-    editableFields: ["worldRank", "countryRank", "challengerRank", "elo"],
+    editableFields: ["regionRank", "countryRank", "challengerRank", "elo"],
+  },
+  {
+    id: "compact",
+    label: "Compact",
+    description: "ELO, regional and country ranks, and last-30 performance",
+    previewSize: "compact",
+    supportsRotation: false,
+    defaultVisibility: {
+      ...hiddenStats,
+      nickname: true,
+      verifiedBadge: false,
+      level: true,
+      elo: true,
+      regionRank: true,
+      countryRank: true,
+      last30Stats: true,
+      last5Results: true,
+    },
+    editableFields: ["nickname", "verifiedBadge", "elo", "regionRank", "countryRank", "last30Stats", "last5Results"],
+    defaultStyle: { density: "comfortable", radius: 8, borderEnabled: false },
   },
   {
     id: "today-stats",
@@ -113,14 +134,15 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     defaultRotationFields: ["today", "last30"],
     defaultVisibility: {
       ...hiddenStats,
-      worldRank: true,
+      eloIcon: false,
+      regionRank: true,
       countryRank: true,
       challenger: true,
       kdr: true,
       todayStats: true,
       last30Stats: true,
     },
-    editableFields: ["worldRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
+    editableFields: ["regionRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
     defaultStyle: { density: "comfortable", radius: 12 },
   },
   {
@@ -132,13 +154,14 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
     defaultVisibility: {
       ...hiddenStats,
       nickname: true,
+      regionRank: false,
       countryRank: true,
       challenger: true,
       challengerRank: false,
       elo: true,
       todayStats: true,
     },
-    editableFields: ["nickname", "verifiedBadge", "worldRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
+    editableFields: ["nickname", "verifiedBadge", "regionRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
     defaultStyle: { density: "comfortable", radius: 8 },
   },
   {
@@ -197,11 +220,10 @@ export function supportsWidgetRotation(preset: WidgetPresetId) {
 
 const levelOnlyFields = new Set<WidgetVisibilityKey>(["level"])
 const challengerOnlyFields = new Set<WidgetVisibilityKey>(["challenger", "challengerRank"])
-const challengerWorldRankRedundantPresets = new Set<WidgetPresetId>([
+const challengerRegionRankRedundantPresets = new Set<WidgetPresetId>([
   "rank-elo",
   "rank-country",
   "rich-profile",
-  "profile-card",
 ])
 const rankDependentFields = new Set<WidgetVisibilityKey>([
   ...levelOnlyFields,
@@ -215,8 +237,8 @@ function getUnavailableFields(presetId: WidgetPresetId, rank?: WidgetData["rank"
       ? new Set(levelOnlyFields)
       : new Set(challengerOnlyFields)
 
-  if (challengerWorldRankRedundantPresets.has(presetId) && rank && isChallengerRank(rank)) {
-    unavailableFields.add("worldRank")
+  if (challengerRegionRankRedundantPresets.has(presetId) && rank && isChallengerRank(rank)) {
+    unavailableFields.add("regionRank")
   }
 
   return unavailableFields
@@ -227,8 +249,12 @@ export function getEditableFields(
   rank?: WidgetData["rank"],
 ) {
   const unavailableFields = getUnavailableFields(presetId, rank)
+  const presetFields = WIDGET_PRESET_MAP[presetId].editableFields
+  const editableFields: WidgetVisibilityKey[] = presetFields.includes("elo") && !presetFields.includes("eloIcon")
+    ? [...presetFields, "eloIcon"]
+    : presetFields
 
-  return WIDGET_PRESET_MAP[presetId].editableFields.filter(
+  return editableFields.filter(
     (field) => !unavailableFields.has(field),
   )
 }

@@ -5,7 +5,7 @@ import {
   LevelMark,
   PlayerNickname,
   RecordStat,
-  WorldRank,
+  RegionRank,
 } from "../parts"
 import { isChallengerRank } from "@/lib/widget"
 import type { PresetViewProps } from "./types"
@@ -14,9 +14,9 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
   const challenger = isChallengerRank(data.rank)
   const showRankMark = challenger && config.visibility.challenger
   const showChallengerRank = challenger && config.visibility.challengerRank
-  const showWorldRank = config.visibility.worldRank && !challenger
+  const showRegionRank = config.visibility.regionRank
   const showCountryRank = config.visibility.countryRank
-  const showAnyRank = showCountryRank || showWorldRank
+  const showAnyRank = showCountryRank || showRegionRank
   const compactRankClass = "gap-1"
   const compactRankValueClass = "text-[9px] font-bold text-[color:var(--widget-muted)]"
 
@@ -25,7 +25,8 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
       <div className="flex min-w-0 items-center gap-2">
         {showRankMark ? (
           <ChallengerRankBadge
-            value={data.rank.worldRank}
+            value={data.rank.regionRank}
+            regionCode={data.profile.regionCode}
             showRankNumber={showChallengerRank}
           />
         ) : (
@@ -42,22 +43,22 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
             </div>
           ) : null}
           <div className="flex min-w-0 items-center gap-1 whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]">
+            {showRegionRank ? (
+              <RegionRank
+                data={data}
+                visibility={config.visibility}
+                showChallengerBadge={false}
+                className={compactRankClass}
+                valueClassName={compactRankValueClass}
+              />
+            ) : null}
+            {showRegionRank && showCountryRank ? <span>/</span> : null}
             {showCountryRank ? (
               <CountryRank
                 data={data}
                 visibility={config.visibility}
                 className={compactRankClass}
                 flagClassName="h-3 w-[17px]"
-                valueClassName={compactRankValueClass}
-              />
-            ) : null}
-            {showCountryRank && showWorldRank ? <span>/</span> : null}
-            {showWorldRank ? (
-              <WorldRank
-                data={data}
-                visibility={config.visibility}
-                showChallengerBadge={false}
-                className={compactRankClass}
                 valueClassName={compactRankValueClass}
               />
             ) : null}

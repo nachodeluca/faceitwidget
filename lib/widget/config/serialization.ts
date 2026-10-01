@@ -4,17 +4,19 @@ import {
   type WidgetBackdropConfig,
   type WidgetConfig,
   type WidgetPresetId,
+  type WidgetVisibilityKey,
 } from "../types"
 
-const COMPACT_PREFIX = "v2."
+const LEGACY_COMPACT_PREFIX = "v2."
+const COMPACT_PREFIX = "v3."
 
-const VISIBILITY_KEYS = [
+const VISIBILITY_MASK_KEYS = [
   "nickname",
   "avatar",
   "level",
   "elo",
-  "worldRank",
   "regionRank",
+  null,
   "countryRank",
   "challenger",
   "challengerRank",
@@ -29,7 +31,8 @@ const VISIBILITY_KEYS = [
   "winRate",
   "rankProgress",
   "verifiedBadge",
-] as const satisfies readonly (keyof WidgetConfig["visibility"])[]
+  "eloIcon",
+] as const satisfies readonly (WidgetVisibilityKey | null)[]
 
 const STYLE_FIELDS = [
   ["font", "f"],
@@ -61,7 +64,7 @@ type CompactBackdrop = {
 }
 
 type CompactConfig = {
-  v: 2
+  v: 3
   p: WidgetPresetId
   x?: string
   s?: Record<string, unknown>
@@ -93,8 +96,8 @@ function decodeBase64Url(value: string) {
 }
 
 function visibilityMask(visibility: WidgetConfig["visibility"]) {
-  return VISIBILITY_KEYS.reduce(
-    (mask, key, index) => mask | (visibility[key] ? 1 << index : 0),
+  return VISIBILITY_MASK_KEYS.reduce(
+    (mask, key, index) => mask | (key !== null && visibility[key] ? 1 << index : 0),
     0,
   )
 }
@@ -153,7 +156,7 @@ function compactBackdrop(
 function compactConfig(config: WidgetConfig): CompactConfig {
   const normalized = normalizeConfig(config)
   const defaults = createDefaultConfig(normalized.preset)
-  const compact: CompactConfig = { v: 2, p: normalized.preset }
+  const compact: CompactConfig = { v: 3, p: normalized.preset }
   const visibility = compactVisibility(normalized.visibility, defaults.visibility)
   const style = compactStyle(normalized.style, defaults.style)
   const rotation = compactRotation(normalized.rotation, defaults.rotation)
@@ -172,8 +175,8 @@ function expandVisibilityMask(value: unknown, defaults: WidgetConfig["visibility
   const mask = typeof value === "string" ? Number.parseInt(value, 36) : Number.NaN
 
   if (Number.isFinite(mask)) {
-    for (const [index, key] of VISIBILITY_KEYS.entries()) {
-      visibility[key] = (mask & (1 << index)) !== 0
+    for (const [index, key] of VISIBILITY_MASK_KEYS.entries()) {
+      if (key !== null) visibility[key] = (mask & (1 << index)) !== 0
     }
   }
   return visibility
@@ -214,14 +217,16 @@ function expandBackdropPatch(value: unknown) {
   return backdrop
 }
 
-function expandCompactConfig(value: unknown) {
-  const preset = isRecord(value) && value.v === 2 ? resolvePresetId(value.p) : undefined
+function expandCompactConfig(value: unknown, legacy = false) {
+  const expectedVersion = legacy ? 2 : 3
+  const preset = isRecord(value) && value.v === expectedVersion ? resolvePresetId(value.p) : undefined
 
-  if (!isRecord(value) || value.v !== 2 || !preset) {
+  if (!isRecord(value) || value.v !== expectedVersion || !preset) {
     return normalizeConfig(undefined)
   }
 
   const defaults = createDefaultConfig(preset)
+  if (legacy) defaults.visibility.eloIcon = false
   return normalizeConfig({
     ...defaults,
     visibility: expandVisibilityMask(value.x, defaults.visibility),
@@ -231,15 +236,30 @@ function expandCompactConfig(value: unknown) {
   })
 }
 
-function deserializeCompactValue(value: string) {
-  const payload = value.slice(COMPACT_PREFIX.length)
+function deserializeCompactValue(value: string, prefix: string, legacy = false) {
+  const payload = value.slice(prefix.length)
   const preset = resolvePresetId(payload)
 
   if (preset) {
-    return createDefaultConfig(preset)
+    const defaults = createDefaultConfig(preset)
+    if (legacy) defaults.visibility.eloIcon = false
+    return defaults
   }
 
-  return expandCompactConfig(JSON.parse(decodeBase64Url(payload)))
+  return expandCompactConfig(JSON.parse(decodeBase64Url(payload)), legacy)
+}
+
+function normalizeLegacyConfig(value: unknown) {
+  const config = isRecord(value) ? value : {}
+  const visibility = isRecord(config.visibility) ? config.visibility : {}
+
+  return normalizeConfig({
+    ...config,
+    visibility: {
+      ...visibility,
+      eloIcon: typeof visibility.eloIcon === "boolean" ? visibility.eloIcon : false,
+    },
+  })
 }
 
 export function serializeConfig(config: WidgetConfig) {
@@ -259,10 +279,13 @@ export function deserializeConfig(value?: string | string[]) {
 
   try {
     if (value.startsWith(COMPACT_PREFIX)) {
-      return deserializeCompactValue(value)
+      return deserializeCompactValue(value, COMPACT_PREFIX)
+    }
+    if (value.startsWith(LEGACY_COMPACT_PREFIX)) {
+      return deserializeCompactValue(value, LEGACY_COMPACT_PREFIX, true)
     }
 
-    return normalizeConfig(JSON.parse(decodeBase64Url(value)))
+    return normalizeLegacyConfig(JSON.parse(decodeBase64Url(value)))
   } catch {
     return normalizeConfig(undefined)
   }

@@ -59,7 +59,7 @@ export function hasEloChange(value: number | undefined): value is number {
 }
 
 export function isChallengerRank(rank: WidgetData["rank"]) {
-  const rankPosition = rank.worldRank ?? rank.regionRank
+  const rankPosition = rank.regionRank
 
   return rank.level === 10
     && rankPosition !== undefined
@@ -73,7 +73,7 @@ export function getRankProgress(rank: WidgetData["rank"]): RankProgress {
   if (isChallengerRank(rank)) {
     return {
       percentage: 100,
-      color: getChallengerRankColor(rank.worldRank ?? rank.regionRank),
+      color: getChallengerRankColor(rank.regionRank),
       label: "Challenger",
     }
   }

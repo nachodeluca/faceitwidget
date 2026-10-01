@@ -8,7 +8,7 @@ import { getPerformanceKills, PerformanceCardPreset } from "./performance-card"
 
 const data: WidgetData = {
   profile: { nickname: "n4me", countryCode: "kr" },
-  rank: { level: 8, elo: 1_640, eloChange: 27, worldRank: 2_500, countryRank: 1_337 },
+  rank: { level: 8, elo: 1_640, eloChange: 27, regionRank: 2_500, countryRank: 1_337 },
   lifetime: { avgKills: 20, kdr: 2, headshotRate: 50 },
   last30: { winRate: 50 },
   today: { wins: 2, losses: 0 },
@@ -84,7 +84,7 @@ describe("PerformanceCardPreset", () => {
   it("uses the Challenger color and a full bar for Challenger players", () => {
     const markup = renderPerformanceCard({}, {
       ...data,
-      rank: { ...data.rank, level: 10, worldRank: 174 },
+      rank: { ...data.rank, level: 10, regionRank: 174 },
     })
 
     expect(markup).toContain("--challenger-icon-color")
@@ -97,7 +97,7 @@ describe("PerformanceCardPreset", () => {
   it("keeps the Challenger icon while hiding its rank number when disabled", () => {
     const markup = renderPerformanceCard({ challengerRank: false }, {
       ...data,
-      rank: { ...data.rank, level: 10, worldRank: 174 },
+      rank: { ...data.rank, level: 10, regionRank: 174 },
     })
 
     expect(markup).toContain("--challenger-icon-color")

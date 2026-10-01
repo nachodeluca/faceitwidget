@@ -101,7 +101,7 @@ export class FaceitGateway {
     )
   }
 
-  getRanking(playerId: string, region: string, country?: string): Promise<FaceitRanking> {
+  getRegionalRanking(playerId: string, region: string, country?: string): Promise<FaceitRanking> {
     const suffix = country ? `?country=${encodeURIComponent(country)}` : ""
     return this.get(
       `/rankings/games/cs2/regions/${encodeURIComponent(region)}/players/${encodeURIComponent(playerId)}${suffix}`,

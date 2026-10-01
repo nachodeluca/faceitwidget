@@ -66,7 +66,7 @@ const VISIBILITY_KEYS = [
   "avatar",
   "level",
   "elo",
-  "worldRank",
+  "eloIcon",
   "regionRank",
   "countryRank",
   "challenger",
@@ -128,7 +128,14 @@ function normalizeVisibility(
   value: Record<string, unknown>,
   defaults: WidgetVisibility,
 ): WidgetVisibility {
-  return normalizeBooleanFields(value, defaults, VISIBILITY_KEYS)
+  // Older saved widget configs have no ELO icon option. Keep their rendering unchanged.
+  const visibility = normalizeBooleanFields(value, { ...defaults, eloIcon: false }, VISIBILITY_KEYS)
+
+  if (typeof value.worldRank === "boolean" || typeof value.regionRank === "boolean") {
+    visibility.regionRank = value.worldRank === true || value.regionRank === true
+  }
+
+  return visibility
 }
 
 function toggleRotationField(

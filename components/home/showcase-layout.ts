@@ -2,7 +2,7 @@ import type { WidgetPresetId } from "@/lib/widget"
 
 export type ShowcaseItem = {
   preset: WidgetPresetId
-  size: "pill" | "card"
+  size: "pill" | "card" | "compact"
   className: string
 }
 
@@ -26,7 +26,13 @@ export const SHOWCASE_ITEMS = [
       "absolute left-[14%] top-[29%] z-[2] -rotate-2 scale-[1.02] transition-[filter,opacity,transform] duration-250 ease-[var(--ease-out)] max-lg:left-[6%] max-lg:top-[31%] max-lg:scale-[0.66] [@media(hover:hover)_and_(pointer:fine)]:hover:rotate-0 [@media(hover:hover)_and_(pointer:fine)]:hover:brightness-[1.05]",
   },
   {
-    preset: "today-stats",
+    preset: "compact",
+    size: "compact",
+    className:
+      "absolute right-[4%] top-[42%] z-[4] origin-top-right scale-[0.72] transition-[filter,opacity,transform] duration-250 ease-[var(--ease-out)] max-lg:right-[3%] max-lg:top-[50%] max-lg:scale-[0.32] [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 [@media(hover:hover)_and_(pointer:fine)]:hover:brightness-[1.05]",
+  },
+  {
+    preset: "performance-card",
     size: "card",
     className:
       "absolute bottom-[5%] right-[7%] z-[3] rotate-2 opacity-90 transition-[filter,opacity,transform] duration-250 ease-[var(--ease-out)] max-lg:right-[2%] max-lg:bottom-[16%] max-lg:scale-[0.64] [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 [@media(hover:hover)_and_(pointer:fine)]:hover:brightness-[1.05] [@media(hover:hover)_and_(pointer:fine)]:hover:opacity-95",

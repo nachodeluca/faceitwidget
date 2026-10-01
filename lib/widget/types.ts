@@ -14,6 +14,7 @@ export const WIDGET_PRESET_IDS = [
   "elo-pill",
   "rank-elo",
   "rank-country",
+  "compact",
   "today-stats",
   "rich-profile",
   "profile-card",
@@ -29,7 +30,7 @@ export function isWidgetPresetId(value: unknown): value is WidgetPresetId {
 export type WidgetFontId = "outfit" | "system" | "mono"
 export type WidgetBackground = "solid" | "none"
 export type WidgetDensity = "compact" | "comfortable"
-export type WidgetPreviewSize = "pill" | "card"
+export type WidgetPreviewSize = "pill" | "card" | "compact"
 export type WidgetRotationField = "rank" | "today" | "last30" | "lifetime"
 export type VerifiedBadgeType = "none" | "verified" | "gold"
 
@@ -39,7 +40,7 @@ export type WidgetVisibility = {
   avatar: boolean
   level: boolean
   elo: boolean
-  worldRank: boolean
+  eloIcon: boolean
   regionRank: boolean
   countryRank: boolean
   challenger: boolean
@@ -94,13 +95,13 @@ export type WidgetData = {
     nickname: string
     avatarUrl?: string
     countryCode?: string
+    regionCode?: string
     verifiedBadge?: VerifiedBadgeType
   }
   rank: {
     level: number
     elo: number
     eloChange?: number
-    worldRank?: number
     regionRank?: number
     countryRank?: number
     isChallenger?: boolean

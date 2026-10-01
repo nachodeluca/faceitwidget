@@ -254,18 +254,18 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
     gateway.getLifetime(playerId),
     gateway.getMatchStats(playerId),
     gateway.getHistory(playerId),
-    region ? optionalRanking(gateway.getRanking(playerId, region)) : undefined,
-    region && country ? optionalRanking(gateway.getRanking(playerId, region, country)) : undefined,
+    region ? optionalRanking(gateway.getRegionalRanking(playerId, region)) : undefined,
+    region && country ? optionalRanking(gateway.getRegionalRanking(playerId, region, country)) : undefined,
     optionalVerificationBadge(gateway, playerId),
   ])
   const matches = matchStats.items.map((item) => normalizeMatch(item.stats))
-  const worldRank = ranking?.position
+  const regionRank = ranking?.position
   const latestMatchId = history.items[0]?.match_id ?? matches[0]?.matchId
   const normalizedLifetime = normalizeLifetime(lifetime.lifetime)
   const rank = {
     level: game.skill_level ?? 0,
     elo: game.faceit_elo ?? 0,
-    worldRank,
+    regionRank,
     countryRank: countryRanking?.position,
   }
 
@@ -276,6 +276,7 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
         nickname: player.nickname,
         avatarUrl: safeImageUrl(player.avatar),
         countryCode: country,
+        regionCode: region,
         verifiedBadge,
       },
       rank: { ...rank, isChallenger: isChallengerRank(rank) },

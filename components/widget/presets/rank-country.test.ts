@@ -7,30 +7,29 @@ import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 import { RankCountryPreset } from "./rank-country"
 
 const data: WidgetData = {
-  profile: { nickname: "nachete", countryCode: "uy" },
-  rank: { level: 10, elo: 2_173, worldRank: 2_345, countryRank: 38 },
+  profile: { nickname: "nachete", countryCode: "uy", regionCode: "SA" },
+  rank: { level: 10, elo: 2_173, regionRank: 2_345, countryRank: 38 },
 }
 
 describe("RankCountryPreset", () => {
-  it("keeps the world rank in the right-side rank group for non-Challengers", () => {
+  it("keeps Regional Ranking in the right-side rank group for non-Challengers", () => {
     const config = createDefaultConfig("rank-country")
-    config.visibility.worldRank = true
+    config.visibility.regionRank = true
 
     const markup = renderToStaticMarkup(createElement(RankCountryPreset, { data, config }))
 
-    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="World rank"'))
+    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="Regional Ranking (SA)"'))
   })
 
-  it("does not render the removed regional rank control", () => {
+  it("renders one Regional Ranking with its region logo", () => {
     const config = createDefaultConfig("rank-country")
-    config.visibility.worldRank = true
     config.visibility.regionRank = true
 
     const markup = renderToStaticMarkup(
       createElement(RankCountryPreset, { data, config }),
     )
 
-    expect(markup.match(/title="World rank"/g)).toHaveLength(1)
-    expect(markup).not.toContain('title="Region rank"')
+    expect(markup.match(/title="Regional Ranking \(SA\)"/g)).toHaveLength(1)
+    expect(markup).toContain("<title>SA</title>")
   })
 })

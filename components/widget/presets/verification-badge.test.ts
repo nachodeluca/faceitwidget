@@ -11,7 +11,7 @@ import type { PresetViewProps } from "./types"
 
 const data: WidgetData = {
   profile: { nickname: "nachete", countryCode: "uy", verifiedBadge: "verified" },
-  rank: { level: 10, elo: 2_173, worldRank: 2_345, countryRank: 38 },
+  rank: { level: 10, elo: 2_173, regionRank: 2_345, countryRank: 38 },
 }
 
 const nicknamePresets = {

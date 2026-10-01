@@ -7,7 +7,7 @@ FACEIT Widget is a free open-source browser-source overlay for public FACEIT CS2
 
 ## What it does
 
-Enter a FACEIT nickname, choose a layout, and copy a URL into an OBS Browser source. The builder can show ELO, FACEIT level or Challenger rank, country and world rankings, K/D, recent form, session results, and profile details. It also supports no-background overlays, colors, scale, borders, map backgrounds, and rotating statistics on larger presets.
+Enter a FACEIT nickname, choose a layout, and copy a URL into an OBS Browser source. The builder can show ELO, FACEIT level or Challenger rank, regional and country rankings, K/D, recent form, session results, and profile details. It also supports no-background overlays, colors, scale, borders, map backgrounds, and rotating statistics on larger presets.
 
 The widget reads public FACEIT data. It does not ask for a FACEIT password, OAuth token, or private account permission. When FACEIT publishes a completed match, the open widget checks for changed values about every two minutes and animates them when they are ready.
 

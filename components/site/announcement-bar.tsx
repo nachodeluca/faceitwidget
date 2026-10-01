@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
 import { APP_PATHS } from "@/lib/site-metadata"
+import { CompactPresetLink } from "./compact-preset-link"
 
 export function AnnouncementBar() {
   return (
@@ -16,12 +17,13 @@ export function AnnouncementBar() {
         >
           NEW
         </Badge>
-        <p className="text-center text-xs leading-5 text-secondary-foreground/85 sm:text-sm">
-          <span className="font-semibold text-secondary-foreground">New preset:</span> Performance Card is here with rank
-          progress and match performance stats.
-        </p>
+        <div className="text-center text-xs leading-5 text-secondary-foreground/85 sm:text-sm">
+          <span className="font-semibold text-secondary-foreground">New preset:</span>{" "}
+          <CompactPresetLink />{" "}
+          is here with ELO, regional and country ranks, and last-30 match stats.
+        </div>
         <Link
-          href={{ pathname: APP_PATHS.builder, query: { preset: "performance-card" } }}
+          href={{ pathname: APP_PATHS.builder, query: { preset: "compact" } }}
           className="shrink-0 text-xs font-semibold text-foreground underline decoration-white/25 underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:decoration-white/70 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:text-sm"
         >
           Try it
