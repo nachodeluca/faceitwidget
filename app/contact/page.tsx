@@ -33,7 +33,8 @@ export default function ContactPage() {
 
       <h2>Before opening an issue</h2>
       <ul>
-        <li>Check the <a href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</a> for browser-source settings.</li>
+        <li>Check the <a href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</a> or <a href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup guide</a> for browser-source settings.</li>
+        <li>Browse the <a href={SITE_PATHS.presets}>preset gallery</a> if you need a different layout.</li>
         <li>Check the <a href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</a> when a completed match is not visible yet.</li>
         <li>Confirm that the nickname resolves to the intended public FACEIT CS2 profile.</li>
       </ul>

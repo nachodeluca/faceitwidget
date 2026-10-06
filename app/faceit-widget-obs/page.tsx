@@ -87,6 +87,8 @@ export default function FaceitWidgetObsGuide() {
       </p>
       <p>
         Read the <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> to see what appears after a match.
+        Prefer Streamlabs Desktop? Follow the{" "}
+        <Link href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup guide</Link>.
       </p>
 
       <h2>Troubleshoot the widget</h2>

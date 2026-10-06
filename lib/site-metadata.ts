@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 
+import { WIDGET_PRESET_IDS } from "@/lib/widget/types"
+
 export const SITE_METADATA = {
   name: "FACEIT Widget",
   url: "https://faceitwidget.com",
@@ -8,7 +10,7 @@ export const SITE_METADATA = {
     "Create a free FACEIT Widget for OBS and Streamlabs. Show live CS2 ELO, level, rank, K/D, and recent matches in a browser source with no plugin or login.",
 } as const
 
-export const SITE_LAST_MODIFIED = "2026-09-20"
+export const SITE_LAST_MODIFIED = "2026-10-05"
 
 export const SITE_AUTHOR = {
   name: "Nacho",
@@ -25,7 +27,9 @@ export const SOCIAL_IMAGE = {
 export const SITE_PATHS = {
   home: "/",
   faceitWidgetObsGuide: "/faceit-widget-obs/",
+  faceitWidgetStreamlabsGuide: "/faceit-widget-streamlabs/",
   liveFaceitStatsGuide: "/live-faceit-stats/",
+  presets: "/presets/",
   about: "/about/",
   contact: "/contact/",
   privacy: "/privacy/",
@@ -36,11 +40,20 @@ export const APP_PATHS = {
   widget: "/widget/",
 } as const
 
+export function presetPath(presetId: string) {
+  return `${SITE_PATHS.presets}${presetId}/`
+}
+
+export const PRESET_PATHS = WIDGET_PRESET_IDS.map((presetId) => presetPath(presetId))
+
 export const INDEXABLE_PATHS = [
   SITE_PATHS.home,
   APP_PATHS.builder,
   SITE_PATHS.faceitWidgetObsGuide,
+  SITE_PATHS.faceitWidgetStreamlabsGuide,
   SITE_PATHS.liveFaceitStatsGuide,
+  SITE_PATHS.presets,
+  ...PRESET_PATHS,
   SITE_PATHS.about,
   SITE_PATHS.contact,
   SITE_PATHS.privacy,

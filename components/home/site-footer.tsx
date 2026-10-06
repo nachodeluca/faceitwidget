@@ -49,6 +49,9 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Site information" className="flex items-center gap-3 text-[10px] text-text-muted">
           <Link href={SITE_PATHS.about} className={SITE_NAV_LINK_CLASS}>About</Link>
+          <Link href={SITE_PATHS.faceitWidgetObsGuide} className={SITE_NAV_LINK_CLASS}>OBS</Link>
+          <Link href={SITE_PATHS.faceitWidgetStreamlabsGuide} className={SITE_NAV_LINK_CLASS}>Streamlabs</Link>
+          <Link href={SITE_PATHS.presets} className={SITE_NAV_LINK_CLASS}>Presets</Link>
           <Link href={SITE_PATHS.contact} className={SITE_NAV_LINK_CLASS}>Contact</Link>
           <Link href={SITE_PATHS.privacy} className={SITE_NAV_LINK_CLASS}>Privacy</Link>
         </nav>

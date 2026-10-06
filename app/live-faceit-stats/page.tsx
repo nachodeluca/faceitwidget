@@ -52,7 +52,9 @@ export default function LiveFaceitStatsGuide() {
 
       <h2>Use the widget on stream</h2>
       <p>
-        Follow the <Link href={SITE_PATHS.faceitWidgetObsGuide}>FACEIT Widget setup for OBS</Link> to add the generated URL as a browser source.
+        Follow the <Link href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</Link> or the{" "}
+        <Link href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup guide</Link> to add the generated URL as a
+        browser source. Browse the <Link href={SITE_PATHS.presets}>presets</Link> if you want a different layout.
       </p>
     </GuidePage>
   )
