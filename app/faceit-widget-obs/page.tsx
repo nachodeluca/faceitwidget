@@ -6,10 +6,10 @@ import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 
 const path = SITE_PATHS.faceitWidgetObsGuide
-const metadataTitle = "FACEIT Widget for OBS - Live ELO & Stats Overlay"
-const heading = "Add Streamlabs alongside OBS"
+const heading = "How to Add a FACEIT Widget to OBS & Streamlabs"
+const metadataTitle = heading
 const description =
-  "Live ELO, rank, and K/D for OBS Studio or Streamlabs Desktop. No login or plugin required. Build a free transparent FACEIT stats overlay for CS2."
+  "Step-by-step guide to adding a free FACEIT widget to OBS Studio or Streamlabs Desktop. Show live CS2 ELO, rank, and K/D with no plugin or login."
 
 export const metadata: Metadata = {
   ...createLandingMetadata({ title: metadataTitle, description, path }),
@@ -24,7 +24,7 @@ export default function FaceitWidgetObsGuide() {
       path={path}
     >
       <h2>Set up the widget</h2>
-      <p>Follow these steps to add an obs faceit widget to OBS Studio or Streamlabs Desktop.</p>
+      <p>Follow these steps to add a FACEIT widget to OBS Studio or Streamlabs Desktop.</p>
 
       <h3>Step 1: Enter the FACEIT nickname</h3>
       <p>Open the builder and enter the exact nickname from the FACEIT profile.</p>
