@@ -8,8 +8,8 @@ import {
   CUSTOM_UPLOAD_TYPES,
   type CustomUploadMedia,
 } from "../lib/widget/backgrounds/upload-contract"
-import { ApiError } from "./errors"
 import type { WorkerEnv } from "./env"
+import { ApiError } from "./errors"
 
 const PRESIGNED_URL_TTL = 900
 const S3_REGION = "auto"
@@ -22,7 +22,13 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:8787",
 ])
 
-type UploadRequest = { media: CustomUploadMedia; contentType: string; size: number; nickname?: string; widgetInstanceId?: string }
+type UploadRequest = {
+  media: CustomUploadMedia
+  contentType: string
+  size: number
+  nickname?: string
+  widgetInstanceId?: string
+}
 type CompleteRequest = { id: CustomWidgetBackdropId; media: CustomUploadMedia }
 
 const CONTENT_TYPES = {
@@ -49,15 +55,15 @@ function jsonResponse(request: Request, body: unknown, status = 200) {
 }
 
 function requireMethod(request: Request, method: string) {
-  if (request.method !== method) throw new ApiError(405, `This endpoint only accepts ${method} requests.`)
+  if (request.method !== method)
+    throw new ApiError(405, `This endpoint only accepts ${method} requests.`)
 }
 
 async function requestBody(request: Request) {
   try {
     const value: unknown = await request.json()
     if (isRecord(value)) return value
-  } catch {
-  }
+  } catch {}
   throw new ApiError(400, "Send a valid JSON request body.")
 }
 
@@ -83,7 +89,10 @@ function uploadContentType(value: unknown, media: CustomUploadMedia) {
 
 function optionalMetadata(value: unknown, max: number) {
   if (typeof value !== "string") return undefined
-  const cleaned = value.replace(/[^\x20-\x7e]/g, "").trim().slice(0, max)
+  const cleaned = value
+    .replace(/[^\x20-\x7e]/g, "")
+    .trim()
+    .slice(0, max)
   return cleaned || undefined
 }
 
@@ -129,7 +138,12 @@ function signer(env: WorkerEnv) {
   })
 }
 
-async function signedUpload(env: WorkerEnv, key: string, contentType: string, metadata: Record<string, string | undefined> = {}) {
+async function signedUpload(
+  env: WorkerEnv,
+  key: string,
+  contentType: string,
+  metadata: Record<string, string | undefined> = {},
+) {
   const target = new URL(objectUrl(env, key))
   target.searchParams.set("X-Amz-Expires", String(PRESIGNED_URL_TTL))
   const headers: Record<string, string> = { "Content-Type": contentType }
@@ -160,7 +174,8 @@ function assetResponse(env: WorkerEnv, id: CustomWidgetBackdropId, media: Custom
 async function enforceBackgroundRateLimit(request: Request, env: WorkerEnv) {
   const ip = request.headers.get("CF-Connecting-IP") ?? "local"
   const result = await env.BACKGROUND_RATE_LIMIT.limit({ key: ip })
-  if (!result.success) throw new ApiError(429, "Too many background uploads. Try again in a minute.", 60_000)
+  if (!result.success)
+    throw new ApiError(429, "Too many background uploads. Try again in a minute.", 60_000)
 }
 
 async function createIntent(request: Request, env: WorkerEnv) {
@@ -177,7 +192,8 @@ async function createIntent(request: Request, env: WorkerEnv) {
     "widget-instance": upload.widgetInstanceId,
   }
   const source = await signedUpload(env, sourceKey, upload.contentType, metadata)
-  const poster = upload.media === "video" ? await signedUpload(env, posterKey, "image/webp", metadata) : null
+  const poster =
+    upload.media === "video" ? await signedUpload(env, posterKey, "image/webp", metadata) : null
 
   return jsonResponse(request, {
     asset: assetResponse(env, id, upload.media),
@@ -199,7 +215,8 @@ async function completeUpload(request: Request, env: WorkerEnv) {
   const body = parseCompleteRequest(await requestBody(request))
   const sourceKey = `custom/${body.id}/source`
   const source = await env.USER_BACKGROUNDS.head(sourceKey)
-  const sourceLimit = body.media === "video" ? CUSTOM_UPLOAD_LIMITS.video : CUSTOM_UPLOAD_LIMITS.image
+  const sourceLimit =
+    body.media === "video" ? CUSTOM_UPLOAD_LIMITS.video : CUSTOM_UPLOAD_LIMITS.image
   if (!isValidObject(source, sourceLimit, CONTENT_TYPES[body.media])) {
     await env.USER_BACKGROUNDS.delete(sourceKey)
     throw new ApiError(400, "The uploaded background could not be verified.")
@@ -222,7 +239,8 @@ export function isBackgroundRoute(pathname: string) {
 }
 
 export async function backgroundRequest(request: Request, env: WorkerEnv) {
-  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(request) })
+  if (request.method === "OPTIONS")
+    return new Response(null, { status: 204, headers: corsHeaders(request) })
   if (new URL(request.url).pathname.endsWith("/intents")) return createIntent(request, env)
   return completeUpload(request, env)
 }

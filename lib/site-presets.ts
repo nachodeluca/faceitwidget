@@ -1,7 +1,7 @@
+import { APP_PATHS, presetPath } from "@/lib/site-metadata"
 import { WIDGET_PRESETS, type WidgetPreset } from "@/lib/widget/config/presets"
 import type { WidgetVisibilityKey } from "@/lib/widget/types"
 import { visibilityLabel } from "@/lib/widget/visibility-labels"
-import { APP_PATHS, presetPath } from "@/lib/site-metadata"
 
 const capturePriority: WidgetVisibilityKey[] = [
   "elo",

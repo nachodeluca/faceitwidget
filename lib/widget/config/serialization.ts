@@ -1,11 +1,11 @@
 import { isRecord } from "../../utils"
-import { createDefaultConfig, normalizeConfig, resolvePresetId } from "./config"
-import {
-  type WidgetBackdropConfig,
-  type WidgetConfig,
-  type WidgetPresetId,
-  type WidgetVisibilityKey,
+import type {
+  WidgetBackdropConfig,
+  WidgetConfig,
+  WidgetPresetId,
+  WidgetVisibilityKey,
 } from "../types"
+import { createDefaultConfig, normalizeConfig, resolvePresetId } from "./config"
 
 const LEGACY_COMPACT_PREFIX = "v2."
 const COMPACT_PREFIX = "v3."
@@ -80,11 +80,7 @@ function encodeBase64Url(value: string) {
     binary += String.fromCharCode(byte)
   }
 
-  return globalThis
-    .btoa(binary)
-    .replaceAll("+", "-")
-    .replaceAll("/", "_")
-    .replace(/=+$/, "")
+  return globalThis.btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "")
 }
 
 function decodeBase64Url(value: string) {
@@ -110,10 +106,7 @@ function compactVisibility(
   return currentMask === visibilityMask(defaults) ? undefined : currentMask.toString(36)
 }
 
-function compactStyle(
-  current: WidgetConfig["style"],
-  defaults: WidgetConfig["style"],
-) {
+function compactStyle(current: WidgetConfig["style"], defaults: WidgetConfig["style"]) {
   const style: Record<string, unknown> = {}
   for (const [field, key] of STYLE_FIELDS) {
     if (current[field] !== defaults[field]) {
@@ -219,7 +212,8 @@ function expandBackdropPatch(value: unknown) {
 
 function expandCompactConfig(value: unknown, legacy = false) {
   const expectedVersion = legacy ? 2 : 3
-  const preset = isRecord(value) && value.v === expectedVersion ? resolvePresetId(value.p) : undefined
+  const preset =
+    isRecord(value) && value.v === expectedVersion ? resolvePresetId(value.p) : undefined
 
   if (!isRecord(value) || value.v !== expectedVersion || !preset) {
     return normalizeConfig(undefined)

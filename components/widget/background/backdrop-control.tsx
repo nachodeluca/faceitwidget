@@ -1,26 +1,24 @@
 "use client"
 
-import Image from "next/image"
 import { Check, RotateCcw, Upload } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
-
-import {
-  createCustomBackdropAsset,
-  WIDGET_BACKDROPS,
-  type CustomBackdropRecord,
-  type WidgetBackdropAsset,
-  type WidgetBackdropConfig,
-  type WidgetBackdropPosition,
-} from "@/lib/widget"
-import { uploadCustomBackdrop } from "@/lib/widget/backgrounds/upload-client"
-
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import {
+  type CustomBackdropRecord,
+  createCustomBackdropAsset,
+  WIDGET_BACKDROPS,
+  type WidgetBackdropAsset,
+  type WidgetBackdropConfig,
+  type WidgetBackdropPosition,
+} from "@/lib/widget"
+import { uploadCustomBackdrop } from "@/lib/widget/backgrounds/upload-client"
 
 import { useCustomBackdrops } from "./use-custom-backdrops"
 
@@ -31,9 +29,14 @@ type BackdropControlProps = {
 }
 
 const fieldLabelClass = "text-[12px] font-medium text-muted-foreground"
-const sectionHeadingClass = "text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80"
+const sectionHeadingClass =
+  "text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/80"
 
-function BackdropCard({ backdrop, selected, onSelect }: {
+function BackdropCard({
+  backdrop,
+  selected,
+  onSelect,
+}: {
   backdrop: WidgetBackdropAsset
   selected: boolean
   onSelect: () => void
@@ -98,7 +101,11 @@ function selectBackdrop(backdrop: WidgetBackdropAsset, onChange: BackdropControl
   })
 }
 
-function BackdropPicker({ value, customBackdrops, onChange }: BackdropControlProps & {
+function BackdropPicker({
+  value,
+  customBackdrops,
+  onChange,
+}: BackdropControlProps & {
   customBackdrops: CustomBackdropRecord[]
 }) {
   const customAssets = customBackdrops.map((backdrop) =>
@@ -120,7 +127,12 @@ function BackdropPicker({ value, customBackdrops, onChange }: BackdropControlPro
   )
 }
 
-function UploadCard({ uploading, progress, error, onFile }: {
+function UploadCard({
+  uploading,
+  progress,
+  error,
+  onFile,
+}: {
   uploading: boolean
   progress: number
   error: string | null
@@ -134,7 +146,9 @@ function UploadCard({ uploading, progress, error, onFile }: {
         </span>
         <span className="min-w-0">
           <span className="block text-xs font-semibold text-foreground">Upload a background</span>
-          <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">WebP, PNG, JPG, or MP4</span>
+          <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">
+            WebP, PNG, JPG, or MP4
+          </span>
         </span>
         <input
           className="sr-only"
@@ -159,7 +173,11 @@ function UploadCard({ uploading, progress, error, onFile }: {
   )
 }
 
-function PositionSlider({ axis, value, onChange }: {
+function PositionSlider({
+  axis,
+  value,
+  onChange,
+}: {
   axis: "x" | "y"
   value: number
   onChange: (value: number) => void
@@ -177,7 +195,9 @@ function PositionSlider({ axis, value, onChange }: {
         max={100}
         step={1}
         value={[value]}
-        onValueChange={(nextValue) => onChange(typeof nextValue === "number" ? nextValue : nextValue[0])}
+        onValueChange={(nextValue) =>
+          onChange(typeof nextValue === "number" ? nextValue : nextValue[0])
+        }
         aria-label={`${label} background position`}
       />
     </div>
@@ -196,7 +216,9 @@ function PositionControls({ value, onChange }: BackdropControlProps) {
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold text-foreground">Position</p>
-          <p className="mt-1 text-[11px] leading-4 text-muted-foreground">Drag the preview to reframe it.</p>
+          <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+            Drag the preview to reframe it.
+          </p>
         </div>
         <Tooltip>
           <TooltipTrigger
@@ -235,9 +257,14 @@ export function BackdropControl({ value, onChange, nickname }: BackdropControlPr
     try {
       const asset = await uploadCustomBackdrop(file, { onProgress: setProgress, nickname })
       addBackdrop(asset)
-      selectBackdrop(createCustomBackdropAsset(asset.id, asset.media, asset.sourceUrl, asset.posterUrl), onChange)
+      selectBackdrop(
+        createCustomBackdropAsset(asset.id, asset.media, asset.sourceUrl, asset.posterUrl),
+        onChange,
+      )
     } catch (uploadFailure) {
-      setError(uploadFailure instanceof Error ? uploadFailure.message : "The background upload failed.")
+      setError(
+        uploadFailure instanceof Error ? uploadFailure.message : "The background upload failed.",
+      )
     } finally {
       setUploading(false)
     }
@@ -247,7 +274,9 @@ export function BackdropControl({ value, onChange, nickname }: BackdropControlPr
     <div className="flex flex-col gap-4">
       <div>
         <p className={sectionHeadingClass}>Backgrounds</p>
-        <p className="mt-1 text-[11px] leading-4 text-muted-foreground">A subtle layer behind the stats.</p>
+        <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+          A subtle layer behind the stats.
+        </p>
       </div>
       <UploadCard uploading={uploading} progress={progress} error={error} onFile={handleFile} />
       <BackdropPicker value={value} customBackdrops={backdrops} onChange={onChange} />

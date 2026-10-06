@@ -1,6 +1,6 @@
 import {
-  WIDGET_PRESET_MAP,
   getRotationFields,
+  WIDGET_PRESET_MAP,
   type WidgetConfig,
   type WidgetData,
 } from "@/lib/widget"

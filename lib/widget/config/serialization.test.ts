@@ -68,7 +68,9 @@ describe("widget config serialization", () => {
     const oldMask = [2, 3, 4, 6, 7, 8, 9, 10, 11].reduce((mask, bit) => mask | (1 << bit), 0)
 
     const oldFullConfig = deserializeConfig(legacyToken(legacyConfig))
-    const oldMaskedConfig = deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-profile", x: oldMask.toString(36) })}`)
+    const oldMaskedConfig = deserializeConfig(
+      `v2.${legacyToken({ v: 2, p: "rich-profile", x: oldMask.toString(36) })}`,
+    )
     const oldPresetConfig = deserializeConfig("v2.rich-profile")
 
     expect(oldFullConfig.visibility.eloIcon).toBe(false)
@@ -137,8 +139,12 @@ describe("widget config serialization", () => {
 
     expect(deserializeConfig("v2.rich-history").preset).toBe("rich-profile")
     expect(deserializeConfig("v2.rich-history").visibility.eloIcon).toBe(false)
-    expect(deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-history" })}`).preset).toBe("rich-profile")
-    expect(deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-history" })}`).visibility.eloIcon).toBe(false)
+    expect(deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-history" })}`).preset).toBe(
+      "rich-profile",
+    )
+    expect(
+      deserializeConfig(`v2.${legacyToken({ v: 2, p: "rich-history" })}`).visibility.eloIcon,
+    ).toBe(false)
     expect(normalizeConfig({ ...config, preset: "rich-history" }).preset).toBe("rich-profile")
   })
 })

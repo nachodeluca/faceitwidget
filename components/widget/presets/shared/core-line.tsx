@@ -1,29 +1,20 @@
-import {
-  isChallengerRank,
-  type WidgetConfig,
-  type WidgetData,
-} from "@/lib/widget"
 import { cn } from "@/lib/utils"
+import { isChallengerRank, type WidgetConfig, type WidgetData } from "@/lib/widget"
 
-import {
-  ChallengerRankBadge,
-  EloValue,
-  LevelMark,
-  LevelRankBadge,
-} from "../../parts"
+import { ChallengerRankBadge, EloValue, LevelMark, LevelRankBadge } from "../../parts"
 import type { PresetViewProps } from "../types"
 
 export function showsChallengerRegionRank(data: WidgetData, config: WidgetConfig) {
-  return config.visibility.regionRank
-    && config.visibility.challenger
-    && isChallengerRank(data.rank)
+  return config.visibility.regionRank && config.visibility.challenger && isChallengerRank(data.rank)
 }
 
 export function showsChallengerFocusRank(data: WidgetData, config: WidgetConfig) {
-  return !config.visibility.regionRank
-    && config.visibility.challenger
-    && config.visibility.challengerRank
-    && isChallengerRank(data.rank)
+  return (
+    !config.visibility.regionRank &&
+    config.visibility.challenger &&
+    config.visibility.challengerRank &&
+    isChallengerRank(data.rank)
+  )
 }
 
 type CoreLineProps = PresetViewProps & {

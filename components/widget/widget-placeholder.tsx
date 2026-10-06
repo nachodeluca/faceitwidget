@@ -34,7 +34,10 @@ type WidgetDataStatusProps = {
 
 export function WidgetDataStatus({ message, loading = false }: WidgetDataStatusProps) {
   return (
-    <div className="flex max-w-[280px] flex-col items-center gap-2 text-center text-sm text-muted-foreground" role="status">
+    <div
+      className="flex max-w-[280px] flex-col items-center gap-2 text-center text-sm text-muted-foreground"
+      role="status"
+    >
       {loading ? <DotsRing decorative /> : <span>{message}</span>}
     </div>
   )

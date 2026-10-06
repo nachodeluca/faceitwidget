@@ -2,9 +2,8 @@
 
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
-
-import { Builder } from "@/components/widget/builder"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { Builder } from "@/components/widget/builder"
 import { trackEvent } from "@/lib/analytics"
 import {
   createDefaultConfig,

@@ -43,5 +43,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Biome
+        run: pnpm exec biome ci .
+
       - name: Build
         run: pnpm build

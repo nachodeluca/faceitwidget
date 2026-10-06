@@ -3,9 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 
 import { createDefaultConfig, type WidgetData } from "@/lib/widget"
-
-import { PresetView } from "../preset-view"
 import { WIDGET_PRESETS } from "@/lib/widget/config/presets"
+import { PresetView } from "../preset-view"
 
 const data: WidgetData = {
   profile: { nickname: "nachete", countryCode: "uy", regionCode: "SA" },
@@ -32,7 +31,10 @@ describe("ELO icon preset setting", () => {
     expect(hiddenMarkup).not.toContain('d="M12 3c0 .463')
   })
 
-  it.each(["performance-card", "profile-card"] as const)("aligns the ELO value and label in %s", (preset) => {
-    expect(renderPreset(preset, true)).toContain("inline-flex min-w-0 items-center gap-[3px]")
-  })
+  it.each(["performance-card", "profile-card"] as const)(
+    "aligns the ELO value and label in %s",
+    (preset) => {
+      expect(renderPreset(preset, true)).toContain("inline-flex min-w-0 items-center gap-[3px]")
+    },
+  )
 })

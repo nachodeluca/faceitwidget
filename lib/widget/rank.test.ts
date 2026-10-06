@@ -8,6 +8,7 @@ import {
   getRankProgress,
   hasEloChange,
   isChallengerRank,
+  isUnrankedRank,
 } from "./rank"
 import type { WidgetData } from "./types"
 
@@ -21,6 +22,9 @@ function rank(overrides: Partial<WidgetData["rank"]> = {}): WidgetData["rank"] {
 }
 
 describe("isChallengerRank", () => {
+  it("does not treat a stale top-ranked position as Challenger during placements", () => {
+    expect(isChallengerRank(rank({ status: "unranked" }))).toBe(false)
+  })
   it("includes level 10 players through regional rank 1000", () => {
     expect(isChallengerRank(rank())).toBe(true)
   })
@@ -62,6 +66,18 @@ describe("isChallengerRank", () => {
     const fields = getEditableFields("rank-country", rank({ regionRank: 2_486 }))
 
     expect(fields).toContain("regionRank")
+  })
+})
+
+describe("isUnrankedRank", () => {
+  it("recognizes older snapshots with the Data API's hidden values", () => {
+    expect(isUnrankedRank(rank({ level: 0, elo: 0 }))).toBe(true)
+    expect(isUnrankedRank(rank({ level: 1, elo: 100 }))).toBe(false)
+    expect(isUnrankedRank(rank({ level: 1, elo: 0 }))).toBe(false)
+  })
+
+  it("uses the explicit placement status even when older numeric fields are present", () => {
+    expect(isUnrankedRank(rank({ status: "unranked" }))).toBe(true)
   })
 })
 
@@ -148,15 +164,17 @@ describe("rank preset defaults", () => {
       winRate: true,
       rankProgress: true,
     })
-    expect(getEditableFields("performance-card")).toEqual(expect.arrayContaining([
-      "eloChange",
-      "countryRank",
-      "recordLabels",
-      "avgKills",
-      "headshotRate",
-      "winRate",
-      "rankProgress",
-    ]))
+    expect(getEditableFields("performance-card")).toEqual(
+      expect.arrayContaining([
+        "eloChange",
+        "countryRank",
+        "recordLabels",
+        "avgKills",
+        "headshotRate",
+        "winRate",
+        "rankProgress",
+      ]),
+    )
   })
 
   it("keeps Regional Ranking configurable for Challenger Profile Card", () => {

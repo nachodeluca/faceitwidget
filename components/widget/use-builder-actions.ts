@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type RefObject } from "react"
+import { type RefObject, useState } from "react"
 
 import { buildWidgetUrl, getBrowserTimezone, type WidgetConfig } from "@/lib/widget"
 import { createWidgetPng, downloadWidgetPng } from "@/lib/widget/export-image"
@@ -60,7 +60,11 @@ function useWidgetShare({ config, nickname, previewWidgetRef }: PreviewActionOpt
     const node = previewWidgetRef.current
     if (!node || shareStatus === "preparing") return
 
-    const shareWindow = window.open("about:blank", "faceit-widget-share", "popup,width=720,height=640")
+    const shareWindow = window.open(
+      "about:blank",
+      "faceit-widget-share",
+      "popup,width=720,height=640",
+    )
     if (shareWindow) shareWindow.opener = null
 
     setShareStatus("preparing")
@@ -86,7 +90,12 @@ function useWidgetShare({ config, nickname, previewWidgetRef }: PreviewActionOpt
   return { shareStatus, shareOnX }
 }
 
-export function useBuilderActions({ config, nickname, playerId, previewWidgetRef }: PreviewActionOptions) {
+export function useBuilderActions({
+  config,
+  nickname,
+  playerId,
+  previewWidgetRef,
+}: PreviewActionOptions) {
   const [copyDialogOpen, setCopyDialogOpen] = useState(false)
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false)
   const [widgetUrl, setWidgetUrl] = useState("")

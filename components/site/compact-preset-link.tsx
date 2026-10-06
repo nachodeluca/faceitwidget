@@ -1,11 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, useState, type FocusEvent, type PointerEvent } from "react"
+import { type FocusEvent, type PointerEvent, useEffect, useRef, useState } from "react"
 
 import { Widget } from "@/components/widget/widget"
-import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 import { APP_PATHS } from "@/lib/site-metadata"
+import { createDefaultConfig, type WidgetData } from "@/lib/widget"
 
 const previewData: WidgetData = {
   profile: {
@@ -45,9 +45,12 @@ export function CompactPresetLink() {
   const [isClosing, setIsClosing] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-  }, [])
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+    },
+    [],
+  )
 
   function openDropdown() {
     if (closeTimer.current) clearTimeout(closeTimer.current)
@@ -69,7 +72,8 @@ export function CompactPresetLink() {
 
   function handleBlur(event: FocusEvent<HTMLDivElement>) {
     const nextTarget = event.relatedTarget
-    const focusRemainsInside = nextTarget instanceof Node && event.currentTarget.contains(nextTarget)
+    const focusRemainsInside =
+      nextTarget instanceof Node && event.currentTarget.contains(nextTarget)
 
     if (!focusRemainsInside && !event.currentTarget.matches(":hover")) closeDropdown()
   }

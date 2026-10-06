@@ -44,7 +44,10 @@ describe("verification badge visibility", () => {
 
   it("defaults the option off and normalizes missing values to off", () => {
     expect(createDefaultConfig("profile-card").visibility.verifiedBadge).toBe(false)
-    expect(normalizeConfig({ preset: "profile-card", visibility: { nickname: true } }).visibility.verifiedBadge).toBe(false)
+    expect(
+      normalizeConfig({ preset: "profile-card", visibility: { nickname: true } }).visibility
+        .verifiedBadge,
+    ).toBe(false)
   })
 })
 
@@ -53,21 +56,27 @@ describe("ELO icon visibility", () => {
     const disabledByDefault = new Set(["rank-elo", "elo-pill", "rank-country", "rich-profile"])
 
     for (const preset of WIDGET_PRESETS) {
-      expect(createDefaultConfig(preset.id).visibility.eloIcon).toBe(!disabledByDefault.has(preset.id))
+      expect(createDefaultConfig(preset.id).visibility.eloIcon).toBe(
+        !disabledByDefault.has(preset.id),
+      )
       expect(getEditableFields(preset.id)).toContain("eloIcon")
     }
   })
 
   it("normalizes an explicit ELO icon setting", () => {
-    expect(normalizeConfig({
-      preset: "compact",
-      visibility: { elo: true, eloIcon: false },
-    }).visibility.eloIcon).toBe(false)
+    expect(
+      normalizeConfig({
+        preset: "compact",
+        visibility: { elo: true, eloIcon: false },
+      }).visibility.eloIcon,
+    ).toBe(false)
   })
 
   it("keeps the ELO icon off in saved configs that predate the option", () => {
     for (const preset of WIDGET_PRESETS) {
-      expect(normalizeConfig({ preset: preset.id, visibility: { elo: true } }).visibility.eloIcon).toBe(false)
+      expect(
+        normalizeConfig({ preset: preset.id, visibility: { elo: true } }).visibility.eloIcon,
+      ).toBe(false)
     }
   })
 })

@@ -26,11 +26,13 @@ function renderPerformanceCard(
 
 describe("PerformanceCardPreset", () => {
   it("falls back to recent match kills when lifetime kills are missing", () => {
-    expect(getPerformanceKills({
-      ...data,
-      lifetime: { kdr: 2, headshotRate: 50 },
-      last30: { avgKills: 18, winRate: 50 },
-    })).toBe(18)
+    expect(
+      getPerformanceKills({
+        ...data,
+        lifetime: { kdr: 2, headshotRate: 50 },
+        last30: { avgKills: 18, winRate: 50 },
+      }),
+    ).toBe(18)
   })
 
   it("renders the performance metrics and level progress bar", () => {
@@ -82,10 +84,13 @@ describe("PerformanceCardPreset", () => {
   })
 
   it("uses the Challenger color and a full bar for Challenger players", () => {
-    const markup = renderPerformanceCard({}, {
-      ...data,
-      rank: { ...data.rank, level: 10, regionRank: 174 },
-    })
+    const markup = renderPerformanceCard(
+      {},
+      {
+        ...data,
+        rank: { ...data.rank, level: 10, regionRank: 174 },
+      },
+    )
 
     expect(markup).toContain("--challenger-icon-color")
     expect(markup).toContain(">#174<")
@@ -95,10 +100,13 @@ describe("PerformanceCardPreset", () => {
   })
 
   it("keeps the Challenger icon while hiding its rank number when disabled", () => {
-    const markup = renderPerformanceCard({ challengerRank: false }, {
-      ...data,
-      rank: { ...data.rank, level: 10, regionRank: 174 },
-    })
+    const markup = renderPerformanceCard(
+      { challengerRank: false },
+      {
+        ...data,
+        rank: { ...data.rank, level: 10, regionRank: 174 },
+      },
+    )
 
     expect(markup).toContain("--challenger-icon-color")
     expect(markup).toContain("size-8")

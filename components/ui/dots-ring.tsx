@@ -10,17 +10,13 @@ type DotsRingProps = {
   decorative?: boolean
 }
 
-export function DotsRing({
-  className,
-  label = "Loading",
-  decorative = false,
-}: DotsRingProps) {
+export function DotsRing({ className, label = "Loading", decorative = false }: DotsRingProps) {
   return (
     <span
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : label}
       className={cn("relative block size-12", className)}
-      role={decorative ? undefined : "status"}
+      role="status"
     >
       {Array.from({ length: DOT_COUNT }, (_, index) => (
         <span

@@ -1,9 +1,5 @@
-import type {
-  CustomWidgetBackdropId,
-  WidgetBackdropAsset,
-  WidgetBackdropMedia,
-} from "./types"
 import { isCustomBackdropId } from "./custom-contract"
+import type { CustomWidgetBackdropId, WidgetBackdropAsset, WidgetBackdropMedia } from "./types"
 
 export const CUSTOM_BACKDROP_STORAGE_KEY = "faceitwidget.custom-backgrounds.v1"
 export const CUSTOM_BACKDROP_LIMIT = 10
@@ -21,9 +17,8 @@ export type CustomBackdropRecord = {
 type StorageLike = Pick<Storage, "getItem" | "setItem">
 
 function publicBaseUrl() {
-  const configured = typeof process !== "undefined"
-    ? process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL?.trim()
-    : undefined
+  const configured =
+    typeof process !== "undefined" ? process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL?.trim() : undefined
   return (configured || DEFAULT_PUBLIC_BASE_URL).replace(/\/$/, "")
 }
 
@@ -50,7 +45,7 @@ export function createCustomBackdropAsset(
     label: "Custom background",
     media,
     src: sourceUrl,
-    posterSrc: media === "video" ? posterUrl ?? backdropUrl(id, "poster.webp") : sourceUrl,
+    posterSrc: media === "video" ? (posterUrl ?? backdropUrl(id, "poster.webp")) : sourceUrl,
     custom: true,
   }
 }
@@ -100,8 +95,7 @@ export function readCustomBackdrops(storage?: StorageLike): CustomBackdropRecord
   if (normalized !== serialized) {
     try {
       target.setItem(CUSTOM_BACKDROP_STORAGE_KEY, normalized)
-    } catch {
-    }
+    } catch {}
   }
 
   return records
@@ -122,7 +116,10 @@ export function saveCustomBackdrops(records: CustomBackdropRecord[], storage?: S
   const target = browserStorage(storage)
   if (!target) return records
 
-  const next = records.filter(isCustomBackdropRecord).map(normalizeRecord).slice(-CUSTOM_BACKDROP_LIMIT)
+  const next = records
+    .filter(isCustomBackdropRecord)
+    .map(normalizeRecord)
+    .slice(-CUSTOM_BACKDROP_LIMIT)
   try {
     target.setItem(CUSTOM_BACKDROP_STORAGE_KEY, JSON.stringify(next))
   } catch {

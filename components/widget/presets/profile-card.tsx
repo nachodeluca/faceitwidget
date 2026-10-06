@@ -1,3 +1,4 @@
+import { isChallengerRank } from "@/lib/widget"
 import {
   ChallengerRankBadge,
   CountryRank,
@@ -7,7 +8,6 @@ import {
   RecordStat,
   RegionRank,
 } from "../parts"
-import { isChallengerRank } from "@/lib/widget"
 import type { PresetViewProps } from "./types"
 
 export function ProfileCardPreset({ data, config }: PresetViewProps) {
@@ -69,7 +69,11 @@ export function ProfileCardPreset({ data, config }: PresetViewProps) {
         </div>
       </div>
       {config.visibility.todayStats ? (
-        <div className="grid shrink-0 grid-cols-[repeat(2,34px)] gap-[5px]" aria-label="Wins and losses">
+        <div
+          className="grid shrink-0 grid-cols-[repeat(2,34px)] gap-[5px]"
+          aria-label="Wins and losses"
+          role="group"
+        >
           <RecordStat label="wins" value={data.today?.wins} tone="positive" />
           <RecordStat label="losses" value={data.today?.losses} tone="negative" />
         </div>

@@ -1,9 +1,14 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-
-import { MapIconPreloads } from "@/components/widget/map-icon-preloads"
 import { AnnouncementBar } from "@/components/site/announcement-bar"
-import { absoluteSiteUrl, APP_PATHS, createLandingMetadata, SITE_LAST_MODIFIED, SITE_METADATA } from "@/lib/site-metadata"
+import { MapIconPreloads } from "@/components/widget/map-icon-preloads"
+import {
+  APP_PATHS,
+  absoluteSiteUrl,
+  createLandingMetadata,
+  SITE_LAST_MODIFIED,
+  SITE_METADATA,
+} from "@/lib/site-metadata"
 
 import { BuilderClient } from "./builder-client"
 
@@ -86,7 +91,10 @@ export default function BuilderPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD escapes < before embedding it into the script.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c"),
+        }}
       />
       <AnnouncementBar />
       <MapIconPreloads />

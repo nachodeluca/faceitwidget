@@ -1,9 +1,8 @@
 import type { WidgetPresetId } from "@/lib/widget"
-
-import { EloPillPreset } from "./elo-pill"
-import { ProfileCardPreset } from "./profile-card"
-import { PerformanceCardPreset } from "./performance-card"
 import { CompactPreset } from "./compact"
+import { EloPillPreset } from "./elo-pill"
+import { PerformanceCardPreset } from "./performance-card"
+import { ProfileCardPreset } from "./profile-card"
 import { RankCountryPreset } from "./rank-country"
 import { RankEloPreset } from "./rank-elo"
 import { RichStatsPreset } from "./rich-stats"

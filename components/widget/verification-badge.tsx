@@ -1,7 +1,6 @@
 import { useId } from "react"
-
-import type { VerifiedBadgeType } from "@/lib/widget"
 import { cn } from "@/lib/utils"
+import type { VerifiedBadgeType } from "@/lib/widget"
 
 type BadgeIconProps = {
   className?: string
@@ -11,12 +10,15 @@ type VerificationBadgeProps = BadgeIconProps & {
   type: Exclude<VerifiedBadgeType, "none">
 }
 
-const badgePath = "M5 5h4l3-3 3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H5v-4l-3-3 3-3zm6.098 11.737-5.414-5.684 5.414 1.894 7.218-5.684z"
+const badgePath =
+  "M5 5h4l3-3 3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H5v-4l-3-3 3-3zm6.098 11.737-5.414-5.684 5.414 1.894 7.218-5.684z"
 
 export function VerificationBadge({ type, className }: VerificationBadgeProps) {
-  return type === "gold"
-    ? <GoldVerificationBadge className={className} />
-    : <WhiteVerificationBadge className={className} />
+  return type === "gold" ? (
+    <GoldVerificationBadge className={className} />
+  ) : (
+    <WhiteVerificationBadge className={className} />
+  )
 }
 
 export function WhiteVerificationBadge({ className }: BadgeIconProps) {
@@ -28,12 +30,7 @@ export function WhiteVerificationBadge({ className }: BadgeIconProps) {
       aria-label="FACEIT verified badge"
       className={cn("size-3.5 shrink-0 text-white", className)}
     >
-      <path
-        fill="currentColor"
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d={badgePath}
-      />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d={badgePath} />
     </svg>
   )
 }
@@ -53,12 +50,7 @@ export function GoldVerificationBadge({ className }: BadgeIconProps) {
       aria-label="FACEIT gold verification badge"
       className={cn("size-3.5 shrink-0", className)}
     >
-      <path
-        fill={`url(#${baseGradientId})`}
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d={badgePath}
-      />
+      <path fill={`url(#${baseGradientId})`} fillRule="evenodd" clipRule="evenodd" d={badgePath} />
       <mask
         id={maskId}
         width="20"

@@ -108,7 +108,13 @@ public/              Level icons, flags, maps, and static assets
 | `pnpm test` | Run the Vitest suite. |
 | `pnpm typecheck` | Check TypeScript without emitting files. |
 | `pnpm lint` | Run ESLint. |
+| `pnpm check` | Check formatting, lint rules, and imports across the project with Biome. |
+| `pnpm check:fix` | Apply Biome formatting, import organization, and safe lint fixes. |
+| `pnpm format` | Format the project with Biome. |
+| `pnpm format:check` | Check formatting across the project. |
 | `pnpm cf:typegen` | Regenerate Cloudflare binding types. |
+
+Biome uses two-space indentation, double quotes, and no optional semicolons. CI checks the whole project. Generated files, static assets, build output, and local secrets are excluded. ESLint keeps the Next.js rules. The configuration allows explicit ARIA roles, reduced-motion CSS overrides, labels around reusable controls, and position keys for stateless dots, slider thumbs, and match-result slots.
 
 ## Contributing
 

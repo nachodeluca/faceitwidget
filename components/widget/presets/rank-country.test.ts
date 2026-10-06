@@ -18,16 +18,16 @@ describe("RankCountryPreset", () => {
 
     const markup = renderToStaticMarkup(createElement(RankCountryPreset, { data, config }))
 
-    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="Regional Ranking (SA)"'))
+    expect(markup.indexOf('title="Country rank"')).toBeLessThan(
+      markup.indexOf('title="Regional Ranking (SA)"'),
+    )
   })
 
   it("renders one Regional Ranking with its region logo", () => {
     const config = createDefaultConfig("rank-country")
     config.visibility.regionRank = true
 
-    const markup = renderToStaticMarkup(
-      createElement(RankCountryPreset, { data, config }),
-    )
+    const markup = renderToStaticMarkup(createElement(RankCountryPreset, { data, config }))
 
     expect(markup.match(/title="Regional Ranking \(SA\)"/g)).toHaveLength(1)
     expect(markup).toContain("<title>SA</title>")

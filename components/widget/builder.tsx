@@ -1,9 +1,8 @@
 "use client"
 
 import { useRef } from "react"
-
-import { supportsWidgetRotation, usePlayerSnapshot, type WidgetConfig } from "@/lib/widget"
 import { trackEvent } from "@/lib/analytics"
+import { supportsWidgetRotation, usePlayerSnapshot, type WidgetConfig } from "@/lib/widget"
 
 import { BuilderDialogs } from "./builder-dialogs"
 import { BuilderPreview } from "./builder-preview"

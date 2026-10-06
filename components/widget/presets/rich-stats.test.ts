@@ -23,7 +23,9 @@ describe("RichStatsPreset", () => {
 
     const markup = renderToStaticMarkup(createElement(RichStatsPreset, { data, config }))
 
-    expect(markup.indexOf('title="Country rank"')).toBeLessThan(markup.indexOf('title="Regional Ranking (SA)"'))
+    expect(markup.indexOf('title="Country rank"')).toBeLessThan(
+      markup.indexOf('title="Regional Ranking (SA)"'),
+    )
   })
 
   it.each([
@@ -31,13 +33,18 @@ describe("RichStatsPreset", () => {
     [true, false],
     [false, true],
     [true, true],
-  ])("keeps Challenger rank number independent from Regional Ranking (%s, %s)", (regionalRanking, challengerRank) => {
-    const config = createDefaultConfig("rich-profile")
-    config.visibility.regionRank = regionalRanking
-    config.visibility.challengerRank = challengerRank
+  ])(
+    "keeps Challenger rank number independent from Regional Ranking (%s, %s)",
+    (regionalRanking, challengerRank) => {
+      const config = createDefaultConfig("rich-profile")
+      config.visibility.regionRank = regionalRanking
+      config.visibility.challengerRank = challengerRank
 
-    const markup = renderToStaticMarkup(createElement(RichStatsPreset, { data: challengerData, config }))
+      const markup = renderToStaticMarkup(
+        createElement(RichStatsPreset, { data: challengerData, config }),
+      )
 
-    expect(markup.includes(">#174<")).toBe(challengerRank)
-  })
+      expect(markup.includes(">#174<")).toBe(challengerRank)
+    },
+  )
 })

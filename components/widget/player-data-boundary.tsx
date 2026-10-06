@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
-
-import type { PlayerSnapshotState } from "@/lib/widget/data/use-player-snapshot"
 import type { WidgetData } from "@/lib/widget"
+import type { PlayerSnapshotState } from "@/lib/widget/data/use-player-snapshot"
 
 type PlayerDataBoundaryProps = {
   state: PlayerSnapshotState

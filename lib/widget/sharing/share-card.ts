@@ -16,7 +16,7 @@ export async function createWidgetShare(
     throw new Error("The shared widget image could not be published.")
   }
 
-  const payload = await response.json() as { shareUrl?: unknown }
+  const payload = (await response.json()) as { shareUrl?: unknown }
   if (typeof payload.shareUrl !== "string") {
     throw new Error("The share service returned an invalid URL.")
   }

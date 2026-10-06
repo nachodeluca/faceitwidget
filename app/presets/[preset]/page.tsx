@@ -4,23 +4,19 @@ import { notFound } from "next/navigation"
 
 import { PresetLivePreview } from "@/components/site/preset-live-preview"
 import { SitePage } from "@/components/site/site-page"
-import { WIDGET_PRESETS } from "@/lib/widget/config/presets"
-import { isWidgetPresetId } from "@/lib/widget/types"
-import {
-  createLandingMetadata,
-  presetPath,
-  SITE_PATHS,
-} from "@/lib/site-metadata"
+import { createLandingMetadata, presetPath, SITE_PATHS } from "@/lib/site-metadata"
 import {
   builderPresetHref,
   getCaptureSummary,
   getEditableFieldLabels,
   getPresetById,
   getVisibleFieldKeys,
+  PRESET_PREVIEW_NICKNAME,
   presetLandingDescription,
   presetLandingTitle,
-  PRESET_PREVIEW_NICKNAME,
 } from "@/lib/site-presets"
+import { WIDGET_PRESETS } from "@/lib/widget/config/presets"
+import { isWidgetPresetId } from "@/lib/widget/types"
 import { visibilityLabel } from "@/lib/widget/visibility-labels"
 
 type PresetPageProps = {
@@ -87,8 +83,8 @@ export default async function PresetLandingPage({ params }: PresetPageProps) {
       </ul>
       {preset.supportsRotation ? (
         <p>
-          This preset also supports rotating stats panels so viewers can see more than one block of match data over
-          time.
+          This preset also supports rotating stats panels so viewers can see more than one block of
+          match data over time.
         </p>
       ) : null}
 

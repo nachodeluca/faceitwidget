@@ -5,8 +5,8 @@ import { useCallback, useMemo, useSyncExternalStore } from "react"
 import {
   addCustomBackdrop,
   CUSTOM_BACKDROP_STORAGE_KEY,
-  parseCustomBackdrops,
   type CustomBackdropRecord,
+  parseCustomBackdrops,
 } from "@/lib/widget"
 
 const CHANGE_EVENT = "faceitwidget:custom-backgrounds"
