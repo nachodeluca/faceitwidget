@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { GuideImage, GUIDE_IMAGES } from "@/components/guides/guide-image"
+import { GUIDE_IMAGES, GuideImage } from "@/components/guides/guide-image"
 import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_METADATA, SITE_PATHS } from "@/lib/site-metadata"
 
@@ -58,7 +58,10 @@ export default function FaceitWidgetStreamlabsGuide() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredFaq).replaceAll("<", "\\u003c") }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD escapes < before embedding it into the script.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredFaq).replaceAll("<", "\\u003c"),
+        }}
       />
       <GuidePage
         title={title}
@@ -67,7 +70,8 @@ export default function FaceitWidgetStreamlabsGuide() {
       >
         <h2>Set up FACEIT Widget in Streamlabs</h2>
         <p>
-          Follow these steps to add a FACEIT stats overlay to Streamlabs Desktop. The same browser-source URL also works in{" "}
+          Follow these steps to add a FACEIT stats overlay to Streamlabs Desktop. The same
+          browser-source URL also works in{" "}
           <Link href={SITE_PATHS.faceitWidgetObsGuide}>OBS Studio</Link>.
         </p>
 
@@ -76,7 +80,8 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h3>Step 2: Choose a layout and stats</h3>
         <p>
-          Pick a <Link href={SITE_PATHS.presets}>preset</Link> and keep only the stats you want viewers to see.
+          Pick a <Link href={SITE_PATHS.presets}>preset</Link> and keep only the stats you want
+          viewers to see.
         </p>
         <GuideImage
           image={GUIDE_IMAGES.builderSettings}
@@ -87,8 +92,8 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h3>Step 3: Set a transparent background</h3>
         <p>
-          Select <strong>Transparent</strong> to keep the game visible behind the stats. The border and shadow stay
-          disabled, so you do not need custom CSS in Streamlabs.
+          Select <strong>Transparent</strong> to keep the game visible behind the stats. The border
+          and shadow stay disabled, so you do not need custom CSS in Streamlabs.
         </p>
         <GuideImage
           image={GUIDE_IMAGES.widgetOverlay}
@@ -108,8 +113,9 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h3>Step 5: Add a Browser Source in Streamlabs Desktop</h3>
         <p>
-          In Streamlabs Desktop, open the <strong>Sources</strong> panel in the editor and click <strong>+</strong>.
-          Choose <strong>Browser Source</strong>, name it, and click <strong>Add Source</strong>.
+          In Streamlabs Desktop, open the <strong>Sources</strong> panel in the editor and click{" "}
+          <strong>+</strong>. Choose <strong>Browser Source</strong>, name it, and click{" "}
+          <strong>Add Source</strong>.
         </p>
         <GuideImage
           image={GUIDE_IMAGES.addBrowserSource}
@@ -119,8 +125,8 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h3>Step 6: Paste the URL and set the source size</h3>
         <p>
-          Paste the copied URL and start with a width of 800 and a height of 300. Adjust the size or crop empty space if
-          needed.
+          Paste the copied URL and start with a width of 800 and a height of 300. Adjust the size or
+          crop empty space if needed.
         </p>
         <GuideImage
           image={GUIDE_IMAGES.browserSettings}
@@ -130,12 +136,12 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h3>Step 7: Position the overlay</h3>
         <p>
-          Move the source into place and scale it without stretching. Keep the Browser Source active if you want its
-          values to update outside the current scene.
+          Move the source into place and scale it without stretching. Keep the Browser Source active
+          if you want its values to update outside the current scene.
         </p>
         <p>
-          Read the <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> to see what appears after a
-          match.
+          Read the <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> to see what
+          appears after a match.
         </p>
 
         <h2>Streamlabs FAQ</h2>
@@ -148,8 +154,9 @@ export default function FaceitWidgetStreamlabsGuide() {
 
         <h2>Also using OBS?</h2>
         <p>
-          The same URL works in OBS Studio. Follow the <Link href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</Link>{" "}
-          for OBS-specific Browser source steps.
+          The same URL works in OBS Studio. Follow the{" "}
+          <Link href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</Link> for OBS-specific
+          Browser source steps.
         </p>
       </GuidePage>
     </>

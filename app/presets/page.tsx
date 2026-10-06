@@ -2,14 +2,9 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { SitePage } from "@/components/site/site-page"
-import { WIDGET_PRESETS } from "@/lib/widget/config/presets"
-import {
-  APP_PATHS,
-  createLandingMetadata,
-  presetPath,
-  SITE_PATHS,
-} from "@/lib/site-metadata"
+import { APP_PATHS, createLandingMetadata, presetPath, SITE_PATHS } from "@/lib/site-metadata"
 import { builderPresetHref, getCaptureSummary } from "@/lib/site-presets"
+import { WIDGET_PRESETS } from "@/lib/widget/config/presets"
 
 const path = SITE_PATHS.presets
 const title = "FACEIT Widget Presets - ELO, Rank, Compact & More"
@@ -32,8 +27,8 @@ export default function PresetsIndexPage() {
     >
       <h2>Available presets</h2>
       <p>
-        Each preset starts with a different mix of FACEIT ELO, rank, and match statistics. You can turn fields on or
-        off in the builder before you copy the Browser Source URL for{" "}
+        Each preset starts with a different mix of FACEIT ELO, rank, and match statistics. You can
+        turn fields on or off in the builder before you copy the Browser Source URL for{" "}
         <Link href={SITE_PATHS.faceitWidgetObsGuide}>OBS</Link> or{" "}
         <Link href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs</Link>.
       </p>

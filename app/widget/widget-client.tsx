@@ -1,9 +1,8 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-
-import { Widget } from "@/components/widget/widget"
 import { PlayerDataBoundary } from "@/components/widget/player-data-boundary"
+import { Widget } from "@/components/widget/widget"
 import {
   deserializeConfig,
   getBrowserTimezone,

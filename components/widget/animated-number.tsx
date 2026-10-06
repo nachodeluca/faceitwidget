@@ -80,10 +80,12 @@ export function AnimatedNumber({
   }, [duration, reduceMotion, target])
 
   const renderedValue = reduceMotion && target !== undefined ? target : displayValue
-  const formattedValue = formatNumber(target === undefined ? undefined : renderedValue, maximumFractionDigits)
-  const signedValue = signed && target !== undefined && renderedValue > 0
-    ? `+${formattedValue}`
-    : formattedValue
+  const formattedValue = formatNumber(
+    target === undefined ? undefined : renderedValue,
+    maximumFractionDigits,
+  )
+  const signedValue =
+    signed && target !== undefined && renderedValue > 0 ? `+${formattedValue}` : formattedValue
 
   return <>{signedValue}</>
 }

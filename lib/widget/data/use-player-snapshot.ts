@@ -1,10 +1,9 @@
 "use client"
 
 import { useEffect, useReducer } from "react"
-
-import { widgetApiClient, WidgetApiError } from "./api-client"
-import { getBrowserTimezone, parsePlayerLookup, playerLookupKey } from "./player-lookup"
 import type { WidgetData, WidgetSnapshot } from "../types"
+import { WidgetApiError, widgetApiClient } from "./api-client"
+import { getBrowserTimezone, parsePlayerLookup, playerLookupKey } from "./player-lookup"
 
 const DEFAULT_REFRESH_INTERVAL_MS = 120_000
 
@@ -53,7 +52,12 @@ function snapshotReducer(
     const retainedPlayerId = sameLookup ? state.playerId : undefined
 
     return retainedData && retainedPlayerId
-      ? { data: retainedData, playerId: retainedPlayerId, status: "stale", lookupKey: action.lookupKey }
+      ? {
+          data: retainedData,
+          playerId: retainedPlayerId,
+          status: "stale",
+          lookupKey: action.lookupKey,
+        }
       : { data: null, status: "loading", lookupKey: action.lookupKey }
   }
 
@@ -74,9 +78,7 @@ function snapshotReducer(
 }
 
 function errorMessage(error: unknown) {
-  return error instanceof WidgetApiError
-    ? error.message
-    : "Unable to load FACEIT stats."
+  return error instanceof WidgetApiError ? error.message : "Unable to load FACEIT stats."
 }
 
 function shouldRetry(error: unknown) {

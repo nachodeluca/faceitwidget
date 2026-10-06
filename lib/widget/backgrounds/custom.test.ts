@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import {
-  addCustomBackdrop,
-  createCustomBackdropAsset,
-  readCustomBackdrops,
-} from "./custom"
+import { addCustomBackdrop, createCustomBackdropAsset, readCustomBackdrops } from "./custom"
 import type { CustomWidgetBackdropId } from "./types"
 
 function storage() {
@@ -16,7 +12,8 @@ function storage() {
 }
 
 function record(index: number) {
-  const id = `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}` as CustomWidgetBackdropId
+  const id =
+    `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}` as CustomWidgetBackdropId
   return {
     id,
     media: "image" as const,
@@ -42,7 +39,8 @@ describe("custom background catalog", () => {
     expect(asset).toMatchObject({
       media: "video",
       src: "https://assets.faceitwidget.com/custom/00000000-0000-4000-8000-000000000001/source",
-      posterSrc: "https://assets.faceitwidget.com/custom/00000000-0000-4000-8000-000000000001/poster.webp",
+      posterSrc:
+        "https://assets.faceitwidget.com/custom/00000000-0000-4000-8000-000000000001/poster.webp",
     })
   })
 

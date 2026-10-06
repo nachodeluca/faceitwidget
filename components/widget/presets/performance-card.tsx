@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react"
 
-import { getRankProgress, isChallengerRank } from "@/lib/widget"
+import { getRankProgress, isChallengerRank, isUnrankedRank } from "@/lib/widget"
 
 import {
+  ChallengerRankBadge,
   CountryRank,
   EloSummary,
-  ChallengerRankBadge,
   LevelMark,
   PlayerNickname,
   RecordStat,
@@ -18,24 +18,35 @@ export function getPerformanceKills(data: PresetViewProps["data"]) {
 }
 
 function RankProgressBar({ data }: Pick<PresetViewProps, "data">) {
+  const unranked = isUnrankedRank(data.rank)
+  if (unranked && !data.rank.placements) return null
+
   const progress = getRankProgress(data.rank)
   const width = `${progress.percentage}%`
   const style = { "--performance-progress-color": progress.color } as CSSProperties
 
   return (
-    <div
-      className="h-[3px] w-full overflow-hidden rounded-full bg-[color:var(--widget-surface-muted)]"
-      role="progressbar"
-      aria-label={`${progress.label} progress`}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(progress.percentage)}
-      style={style}
-    >
+    <div className="flex w-full flex-col gap-1">
+      {unranked ? (
+        <span className="text-[9px] font-medium leading-none text-[color:var(--widget-muted)] tabular-nums">
+          {progress.label}
+        </span>
+      ) : null}
       <div
-        className="h-full rounded-full bg-[color:var(--performance-progress-color)] transition-[width,background-color] duration-200 ease-[var(--ease-out)]"
-        style={{ width }}
-      />
+        className="h-[3px] w-full overflow-hidden rounded-full bg-[color:var(--widget-surface-muted)]"
+        role="progressbar"
+        aria-label={`${progress.label} progress`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(progress.percentage)}
+        aria-valuetext={unranked ? progress.label : undefined}
+        style={style}
+      >
+        <div
+          className="h-full rounded-full bg-[color:var(--performance-progress-color)] transition-[width,background-color] duration-200 ease-[var(--ease-out)] motion-reduce:transition-none"
+          style={{ width }}
+        />
+      </div>
     </div>
   )
 }
@@ -61,13 +72,19 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
 
   return (
     <div className="flex min-w-[320px] max-w-full flex-col gap-[var(--widget-layout-gap)]">
-      <div className={config.visibility.todayStats
-        ? "grid min-w-0 grid-cols-[repeat(4,minmax(0,1fr))] gap-2"
-        : "flex min-w-0 items-center"}
+      <div
+        className={
+          config.visibility.todayStats
+            ? "grid min-w-0 grid-cols-[repeat(4,minmax(0,1fr))] gap-2"
+            : "flex min-w-0 items-center"
+        }
       >
-        <div className={config.visibility.todayStats
-          ? "col-span-3 flex min-w-0 items-center gap-2"
-          : "flex min-w-0 items-center gap-2"}
+        <div
+          className={
+            config.visibility.todayStats
+              ? "col-span-3 flex min-w-0 items-center gap-2"
+              : "flex min-w-0 items-center gap-2"
+          }
         >
           {showChallenger ? (
             <ChallengerRankBadge
@@ -105,7 +122,11 @@ export function PerformanceCardPreset({ data, config }: PresetViewProps) {
         </div>
 
         {config.visibility.todayStats ? (
-          <div className="col-start-4 flex shrink-0 items-start justify-start gap-[5px]" aria-label="Wins and losses">
+          <div
+            className="col-start-4 flex shrink-0 items-start justify-start gap-[5px]"
+            aria-label="Wins and losses"
+            role="group"
+          >
             <RecordStat
               label="wins"
               value={data.today?.wins}

@@ -1,14 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import { useState, type PointerEvent } from "react"
-
+import { type PointerEvent, useState } from "react"
+import { cn } from "@/lib/utils"
 import {
   getWidgetBackdrop,
   type WidgetBackdropConfig,
   type WidgetBackdropPosition,
 } from "@/lib/widget"
-import { cn } from "@/lib/utils"
 
 type BackdropLayerProps = {
   config: WidgetBackdropConfig
@@ -58,6 +57,8 @@ export function BackdropLayer({ config, interaction }: BackdropLayerProps) {
   return (
     <div
       aria-label={draggable ? "Drag to reposition the widget background" : undefined}
+      aria-hidden={!draggable}
+      role="img"
       className={cn(
         "absolute inset-0 z-0 overflow-hidden rounded-[inherit]",
         draggable ? "touch-none cursor-grab" : "pointer-events-none",
@@ -102,6 +103,7 @@ export function BackdropLayer({ config, interaction }: BackdropLayerProps) {
             preload="auto"
             poster={backdrop.posterSrc}
             aria-hidden="true"
+            tabIndex={-1}
             className={cn(
               "absolute inset-0 size-full object-cover",
               readyBackdropKey === backdropKey ? "opacity-100" : "opacity-0",

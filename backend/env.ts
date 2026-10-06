@@ -1,5 +1,5 @@
-import type { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
 import type { SharedWidgetCard } from "./shared-widget-card"
+import type { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
 
 export interface WorkerEnv {
   ASSETS: Fetcher

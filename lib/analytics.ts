@@ -29,6 +29,8 @@ export function cleanCampaignParams() {
 
   if (!hadCampaignParams) return
 
-  campaignParams.forEach((param) => url.searchParams.delete(param))
+  campaignParams.forEach((param) => {
+    url.searchParams.delete(param)
+  })
   window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`)
 }

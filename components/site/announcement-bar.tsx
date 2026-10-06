@@ -23,8 +23,8 @@ export function AnnouncementBar() {
         </Badge>
         <div className="text-center text-xs leading-5 text-secondary-foreground/85 sm:text-sm">
           <span className="font-semibold text-secondary-foreground">New preset:</span>{" "}
-          <CompactPresetLink />{" "}
-          is here with ELO, regional and country ranks, and last-30 match stats.
+          <CompactPresetLink /> is here with ELO, regional and country ranks, and last-30 match
+          stats.
         </div>
         <Link
           href={{ pathname: APP_PATHS.builder, query: { preset: "compact" } }}

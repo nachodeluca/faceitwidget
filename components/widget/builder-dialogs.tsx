@@ -49,7 +49,10 @@ function CopyDialog({ open, widgetUrl, copied, onOpenChange, onCopy }: CopyDialo
         </DialogHeader>
 
         <div className="flex flex-col gap-2">
-          <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground" htmlFor="widget-url">
+          <Label
+            className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+            htmlFor="widget-url"
+          >
             Widget URL
           </Label>
           <div className="flex min-w-0 gap-2">

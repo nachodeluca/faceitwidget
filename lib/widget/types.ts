@@ -1,6 +1,4 @@
-import type {
-  WidgetBackdropConfig,
-} from "./backgrounds/types"
+import type { WidgetBackdropConfig } from "./backgrounds/types"
 
 export type {
   CustomWidgetBackdropId,
@@ -101,6 +99,8 @@ export type WidgetData = {
   rank: {
     level: number
     elo: number
+    status?: "ranked" | "unranked"
+    placements?: { played: number; total: number }
     eloChange?: number
     regionRank?: number
     countryRank?: number
@@ -130,9 +130,7 @@ export type WidgetData = {
   }
 }
 
-export type PlayerLookup =
-  | { kind: "nickname"; value: string }
-  | { kind: "id"; value: string }
+export type PlayerLookup = { kind: "nickname"; value: string } | { kind: "id"; value: string }
 
 export type WidgetSnapshot = {
   data: WidgetData

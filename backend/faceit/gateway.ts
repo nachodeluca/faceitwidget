@@ -1,28 +1,28 @@
-import { z, type ZodType } from "zod"
+import { type ZodType, z } from "zod"
 
 import { ApiError } from "../errors"
 import {
-  faceitHistorySchema,
-  faceitLifetimeSchema,
-  faceitMatchStatsSchema,
-  faceitPlayerSchema,
-  faceitRankingSchema,
-  faceitVerificationLevelSchema,
   type FaceitHistory,
   type FaceitLifetime,
   type FaceitMatchStats,
   type FaceitPlayer,
   type FaceitRanking,
+  type FaceitSkill,
+  faceitHistorySchema,
+  faceitLifetimeSchema,
+  faceitMatchStatsSchema,
+  faceitPlayerSchema,
+  faceitRankingSchema,
+  faceitSkillsSchema,
+  faceitVerificationLevelSchema,
 } from "./schemas"
 
 const FACEIT_API_URL = "https://open.faceit.com/data/v4"
 const FACEIT_VERIFICATION_API_URL = "https://www.faceit.com/api/verifications/v1/users"
+const FACEIT_SKILLS_API_URL = "https://www.faceit.com/api/skills/v4/skills"
 const DEFAULT_TIMEOUT_MS = 5_000
 
-export type HttpFetcher = (
-  input: RequestInfo | URL,
-  init?: RequestInit,
-) => Promise<Response>
+export type HttpFetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 
 const globalFetcher: HttpFetcher = (input, init) => fetch(input, init)
 
@@ -109,6 +109,27 @@ export class FaceitGateway {
     )
   }
 
+  async getSkill(playerId: string): Promise<FaceitSkill | undefined> {
+    const params = new URLSearchParams({ "user_ids[]": playerId, game: "cs2" })
+    const response = await this.fetcher(`${FACEIT_SKILLS_API_URL}?${params}`, {
+      headers: { Accept: "application/json", "User-Agent": "faceitwidget.com" },
+      signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
+    }).catch((cause) => {
+      throw new ApiError(503, "FACEIT skill data did not respond in time.", 15_000, { cause })
+    })
+
+    if (!response.ok) {
+      throw new ApiError(503, "FACEIT rejected the skill request.", retryAfterMs(response))
+    }
+
+    try {
+      const skills = faceitSkillsSchema.parse(await response.json())
+      return skills.payload.find((skill) => skill.playerId === playerId)
+    } catch (cause) {
+      throw new ApiError(503, "FACEIT returned an unsupported skill response.", 30_000, { cause })
+    }
+  }
+
   async getVerificationLevel(playerId: string): Promise<number> {
     const url = `${FACEIT_VERIFICATION_API_URL}/${encodeURIComponent(playerId)}/level`
     const response = await this.fetcher(url, {
@@ -118,7 +139,9 @@ export class FaceitGateway {
       },
       signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
     }).catch((cause) => {
-      throw new ApiError(503, "FACEIT verification data did not respond in time.", 15_000, { cause })
+      throw new ApiError(503, "FACEIT verification data did not respond in time.", 15_000, {
+        cause,
+      })
     })
 
     if (!response.ok) {
@@ -135,7 +158,9 @@ export class FaceitGateway {
       return verification.payload.current
     } catch (cause) {
       if (cause instanceof z.ZodError) {
-        throw new ApiError(503, "FACEIT returned an unsupported verification response.", 30_000, { cause })
+        throw new ApiError(503, "FACEIT returned an unsupported verification response.", 30_000, {
+          cause,
+        })
       }
       throw cause
     }

@@ -1,9 +1,15 @@
-import type { PlayerLookup, VerifiedBadgeType, WidgetData, WidgetSnapshot } from "../../lib/widget/types"
-import { isChallengerRank } from "../../lib/widget/rank"
+import { isChallengerRank, isUnrankedRank } from "../../lib/widget/rank"
+import type {
+  PlayerLookup,
+  VerifiedBadgeType,
+  WidgetData,
+  WidgetSnapshot,
+} from "../../lib/widget/types"
 import { ApiError } from "../errors"
-import { FaceitGateway } from "./gateway"
 import { calendarDay, dailyEloChange, type EloObservation } from "./elo"
-import type { FaceitPlayer, FaceitRanking } from "./schemas"
+import type { FaceitGateway } from "./gateway"
+import type { FaceitPlayer, FaceitRanking, FaceitSkill } from "./schemas"
+import { normalizeSkill } from "./skill"
 import { verificationBadgeFromLevel } from "./verification"
 
 type StatRecord = Record<string, unknown>
@@ -69,9 +75,7 @@ function numberValue(value: unknown) {
 
 function boundedNumberValue(value: unknown, minimum: number, maximum: number) {
   const number = numberValue(value)
-  return number !== undefined && number >= minimum && number <= maximum
-    ? number
-    : undefined
+  return number !== undefined && number >= minimum && number <= maximum ? number : undefined
 }
 
 function stringValue(value: unknown) {
@@ -166,17 +170,20 @@ export function createWidgetSnapshot(
   const todayKey = calendarDay(now, timezone)
   const today = aggregateMatches(
     sortedMatches.filter(
-      (match) => match.finishedAt !== undefined && calendarDay(match.finishedAt, timezone) === todayKey,
+      (match) =>
+        match.finishedAt !== undefined && calendarDay(match.finishedAt, timezone) === todayKey,
     ),
   )
-  const eloChange = dailyEloChange(options.eloHistory, facts.baseData.rank.elo, now, timezone)
+  const eloChange = isUnrankedRank(facts.baseData.rank)
+    ? undefined
+    : dailyEloChange(options.eloHistory, facts.baseData.rank.elo, now, timezone)
 
   return {
     data: {
       ...facts.baseData,
       rank: {
         ...facts.baseData.rank,
-        ...(eloChange === undefined ? {} : { eloChange }),
+        eloChange,
       },
       last30: {
         winRate: last30.winRate,
@@ -215,11 +222,25 @@ async function optionalRanking(request: Promise<FaceitRanking>) {
   }
 }
 
-async function optionalVerificationBadge(gateway: FaceitGateway, playerId: string): Promise<VerifiedBadgeType> {
+async function optionalVerificationBadge(
+  gateway: FaceitGateway,
+  playerId: string,
+): Promise<VerifiedBadgeType> {
   try {
     return verificationBadgeFromLevel(await gateway.getVerificationLevel(playerId))
   } catch {
     return "none"
+  }
+}
+
+async function optionalSkill(
+  gateway: FaceitGateway,
+  playerId: string,
+): Promise<FaceitSkill | undefined> {
+  try {
+    return await gateway.getSkill(playerId)
+  } catch {
+    return undefined
   }
 }
 
@@ -239,7 +260,10 @@ function safeImageUrl(value: string | undefined) {
   }
 }
 
-export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLookup): Promise<PlayerFacts> {
+export async function fetchPlayerFacts(
+  gateway: FaceitGateway,
+  lookup: PlayerLookup,
+): Promise<PlayerFacts> {
   const player: FaceitPlayer = await resolvePlayer(gateway, lookup)
   const game = player.games.cs2
 
@@ -250,21 +274,27 @@ export async function fetchPlayerFacts(gateway: FaceitGateway, lookup: PlayerLoo
   const playerId = player.player_id
   const region = game.region?.toUpperCase()
   const country = player.country?.toLowerCase()
-  const [lifetime, matchStats, history, ranking, countryRanking, verifiedBadge] = await Promise.all([
+  const [lifetime, matchStats, history, skill, verifiedBadge] = await Promise.all([
     gateway.getLifetime(playerId),
     gateway.getMatchStats(playerId),
     gateway.getHistory(playerId),
-    region ? optionalRanking(gateway.getRegionalRanking(playerId, region)) : undefined,
-    region && country ? optionalRanking(gateway.getRegionalRanking(playerId, region, country)) : undefined,
+    optionalSkill(gateway, playerId),
     optionalVerificationBadge(gateway, playerId),
+  ])
+  const skillRank = normalizeSkill(game, skill)
+  const unranked = isUnrankedRank(skillRank)
+  const [ranking, countryRanking] = await Promise.all([
+    !unranked && region ? optionalRanking(gateway.getRegionalRanking(playerId, region)) : undefined,
+    !unranked && region && country
+      ? optionalRanking(gateway.getRegionalRanking(playerId, region, country))
+      : undefined,
   ])
   const matches = matchStats.items.map((item) => normalizeMatch(item.stats))
   const regionRank = ranking?.position
   const latestMatchId = history.items[0]?.match_id ?? matches[0]?.matchId
   const normalizedLifetime = normalizeLifetime(lifetime.lifetime)
   const rank = {
-    level: game.skill_level ?? 0,
-    elo: game.faceit_elo ?? 0,
+    ...skillRank,
     regionRank,
     countryRank: countryRanking?.position,
   }

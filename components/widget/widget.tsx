@@ -1,9 +1,8 @@
 "use client"
 
 import type { CSSProperties, Ref } from "react"
-
-import { getWidgetZoom, normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
 import { cn } from "@/lib/utils"
+import { getWidgetZoom, normalizeConfig, type WidgetConfig, type WidgetData } from "@/lib/widget"
 
 import { BackdropLayer } from "./background"
 import { PresetView } from "./preset-view"
@@ -56,12 +55,12 @@ export function Widget({
       ? "border-transparent"
       : "border-[color:var(--widget-border)]"
   const surfaceBackgroundClass =
-    config.style.background === "none"
-      ? "bg-transparent"
-      : "bg-[color:var(--widget-surface)]"
+    config.style.background === "none" ? "bg-transparent" : "bg-[color:var(--widget-surface)]"
   const surfaceStyle: CSSProperties | undefined =
     config.style.background === "none"
-      ? { backgroundColor: `rgb(12 12 12 / ${config.style.opacity * transparentSurfaceBaseOpacity})` }
+      ? {
+          backgroundColor: `rgb(12 12 12 / ${config.style.opacity * transparentSurfaceBaseOpacity})`,
+        }
       : undefined
   const surfaceShadowClass =
     config.style.background === "none" || shadow === "none"
@@ -81,6 +80,7 @@ export function Widget({
       style={style}
       data-background={config.style.background}
       aria-label={`${data.profile.nickname} FACEIT stats`}
+      role="group"
     >
       <div
         data-widget-surface

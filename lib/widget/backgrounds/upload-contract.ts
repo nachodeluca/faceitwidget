@@ -13,10 +13,14 @@ export const CUSTOM_UPLOAD_TYPES = {
 } as const
 
 export function uploadMediaForType(contentType: string): CustomUploadMedia | null {
-  if (CUSTOM_UPLOAD_TYPES.image.includes(contentType as (typeof CUSTOM_UPLOAD_TYPES.image)[number])) {
+  if (
+    CUSTOM_UPLOAD_TYPES.image.includes(contentType as (typeof CUSTOM_UPLOAD_TYPES.image)[number])
+  ) {
     return "image"
   }
-  return CUSTOM_UPLOAD_TYPES.video.includes(contentType as (typeof CUSTOM_UPLOAD_TYPES.video)[number])
+  return CUSTOM_UPLOAD_TYPES.video.includes(
+    contentType as (typeof CUSTOM_UPLOAD_TYPES.video)[number],
+  )
     ? "video"
     : null
 }

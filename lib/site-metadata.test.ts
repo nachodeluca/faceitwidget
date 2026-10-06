@@ -3,15 +3,15 @@ import { describe, expect, it } from "vitest"
 import { WIDGET_PRESET_IDS } from "@/lib/widget/types"
 
 import {
-  absoluteSiteUrl,
   APP_PATHS,
+  absoluteSiteUrl,
   createLandingMetadata,
   INDEXABLE_PATHS,
   PRESET_PATHS,
-  SOCIAL_IMAGE,
+  presetPath,
   SITE_LAST_MODIFIED,
   SITE_PATHS,
-  presetPath,
+  SOCIAL_IMAGE,
 } from "./site-metadata"
 
 describe("indexable routes", () => {

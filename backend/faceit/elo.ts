@@ -19,6 +19,9 @@ export function rememberElo(
   history: readonly EloObservation[] | undefined,
   observation: EloObservation,
 ) {
+  // A hidden placement ELO ends the preceding ranked tracking period.
+  if (!Number.isFinite(observation.elo) || observation.elo <= 0) return []
+
   const cutoff = observation.observedAt - HISTORY_WINDOW_MS
 
   return [...(history ?? []), observation]
@@ -32,9 +35,15 @@ export function dailyEloChange(
   now: number,
   timezone: string,
 ) {
+  if (!Number.isFinite(currentElo) || currentElo <= 0) return undefined
+
   const today = calendarDay(now, timezone)
-  const observations = [...(history ?? []), { observedAt: now, elo: currentElo }]
-    .sort((left, right) => left.observedAt - right.observedAt)
+  const sorted = [...(history ?? []), { observedAt: now, elo: currentElo }].sort(
+    (left, right) => left.observedAt - right.observedAt,
+  )
+  // Discard earlier seasons in histories saved before Unranked was supported.
+  const lastHiddenIndex = sorted.findLastIndex(({ elo }) => !Number.isFinite(elo) || elo <= 0)
+  const observations = sorted.slice(lastHiddenIndex + 1)
   const todayObservations = observations.filter(
     (observation) => calendarDay(observation.observedAt, timezone) === today,
   )

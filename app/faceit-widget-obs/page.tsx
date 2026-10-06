@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { GuideImage, GUIDE_IMAGES } from "@/components/guides/guide-image"
+import { GUIDE_IMAGES, GuideImage } from "@/components/guides/guide-image"
 import { GuidePage } from "@/components/guides/guide-page"
 import { createLandingMetadata, SITE_PATHS } from "@/lib/site-metadata"
 
@@ -40,8 +40,8 @@ export default function FaceitWidgetObsGuide() {
 
       <h3>Step 3: Set a transparent background</h3>
       <p>
-        Select <strong>Transparent</strong> to keep the game visible behind the stats. The border and shadow stay
-        disabled, so you do not need custom CSS in OBS or Streamlabs.
+        Select <strong>Transparent</strong> to keep the game visible behind the stats. The border
+        and shadow stay disabled, so you do not need custom CSS in OBS or Streamlabs.
       </p>
       <GuideImage
         image={GUIDE_IMAGES.widgetOverlay}
@@ -50,7 +50,9 @@ export default function FaceitWidgetObsGuide() {
       />
 
       <h3>Step 4: Copy the widget URL</h3>
-      <p>When the preview is ready, select <strong>Copy URL</strong>.</p>
+      <p>
+        When the preview is ready, select <strong>Copy URL</strong>.
+      </p>
       <GuideImage
         image={GUIDE_IMAGES.copyUrl}
         alt="The Copy URL dialog showing the generated browser source link"
@@ -59,9 +61,9 @@ export default function FaceitWidgetObsGuide() {
 
       <h3>Step 5: Add a Browser source in OBS or Streamlabs</h3>
       <p>
-        In OBS Studio, add a <strong>Browser</strong> source to the scene. In Streamlabs Desktop, open the Sources
-        panel in the editor and click <strong>+</strong>. Choose <strong>Browser Source</strong>, name it, and click{" "}
-        <strong>Add Source</strong>.
+        In OBS Studio, add a <strong>Browser</strong> source to the scene. In Streamlabs Desktop,
+        open the Sources panel in the editor and click <strong>+</strong>. Choose{" "}
+        <strong>Browser Source</strong>, name it, and click <strong>Add Source</strong>.
       </p>
       <GuideImage
         image={GUIDE_IMAGES.addBrowserSource}
@@ -71,8 +73,8 @@ export default function FaceitWidgetObsGuide() {
 
       <h3>Step 6: Paste the URL and set the source size</h3>
       <p>
-        Paste the copied URL and start with a width of 800 and a height of 300. Adjust the size or crop empty space if
-        needed.
+        Paste the copied URL and start with a width of 800 and a height of 300. Adjust the size or
+        crop empty space if needed.
       </p>
       <GuideImage
         image={GUIDE_IMAGES.browserSettings}
@@ -82,12 +84,12 @@ export default function FaceitWidgetObsGuide() {
 
       <h3>Step 7: Position the overlay</h3>
       <p>
-        Move the source into place and scale it without stretching. Keep the Browser source active if you want its values
-        to update outside the current scene.
+        Move the source into place and scale it without stretching. Keep the Browser source active
+        if you want its values to update outside the current scene.
       </p>
       <p>
-        Read the <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> to see what appears after a match.
-        Prefer Streamlabs Desktop? Follow the{" "}
+        Read the <Link href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</Link> to see what
+        appears after a match. Prefer Streamlabs Desktop? Follow the{" "}
         <Link href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup guide</Link>.
       </p>
 

@@ -1,38 +1,33 @@
+import { Check, ImageDown, LoaderCircle, Map as MapIcon, Minus, Plus, Share2 } from "lucide-react"
 import Image from "next/image"
 import type { CSSProperties, RefObject } from "react"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import {
-  Check,
-  ImageDown,
-  LoaderCircle,
-  Map as MapIcon,
-  Minus,
-  Plus,
-  Share2,
-} from "lucide-react"
-
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
 import {
   createDefaultConfig,
-  WIDGET_MAPS,
-  WIDGET_PRESETS,
-  WIDGET_PRESET_MAP,
   type PlayerSnapshotState,
+  WIDGET_MAPS,
+  WIDGET_PRESET_MAP,
+  WIDGET_PRESETS,
+  type WidgetBackdropPosition,
   type WidgetConfig,
   type WidgetData,
-  type WidgetBackdropPosition,
   type WidgetMapId,
   type WidgetPresetId,
 } from "@/lib/widget"
-
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
-
-import { PlayerDataBoundary } from "./player-data-boundary"
-import type { ShareStatus } from "./builder-types"
 import { BackdropPosterPreloads } from "./background"
+import type { ShareStatus } from "./builder-types"
 import { MapIconPreloads } from "./map-icon-preloads"
+import { PlayerDataBoundary } from "./player-data-boundary"
 import { PresetSuggestionCard } from "./preset-suggestion-card"
 import { Widget } from "./widget"
 import { WidgetDataStatus, WidgetSkeleton } from "./widget-placeholder"
@@ -53,7 +48,8 @@ const layoutPreviewScales: Record<WidgetPresetId, number> = {
 
 const previewBackgrounds = {
   none: "bg-[#151515] [background-image:linear-gradient(45deg,rgb(255_255_255_/_4%)_25%,transparent_25%),linear-gradient(-45deg,rgb(255_255_255_/_4%)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,rgb(255_255_255_/_4%)_75%),linear-gradient(-45deg,transparent_75%,rgb(255_255_255_/_4%)_75%)] [background-position:0_0,0_8px,8px_-8px,-8px_0] [background-size:16px_16px]",
-  solid: "bg-surface [background-image:radial-gradient(rgb(255_255_255_/_5%)_1px,transparent_1px)] [background-size:16px_16px]",
+  solid:
+    "bg-surface [background-image:radial-gradient(rgb(255_255_255_/_5%)_1px,transparent_1px)] [background-size:16px_16px]",
 } as const
 
 function MapPreviewIcon({
@@ -78,7 +74,13 @@ function MapPreviewIcon({
   )
 }
 
-function LayoutPreview({ state, presetId }: { state: PlayerSnapshotState; presetId: WidgetPresetId }) {
+function LayoutPreview({
+  state,
+  presetId,
+}: {
+  state: PlayerSnapshotState
+  presetId: WidgetPresetId
+}) {
   const placeholder = <WidgetSkeleton size={WIDGET_PRESET_MAP[presetId].previewSize} />
 
   return (
@@ -184,10 +186,20 @@ function PreviewStage({
 
 type PreviewActionProps = Pick<
   PreviewStageProps,
-  "previewData" | "previewScale" | "exportingImage" | "shareStatus" | "onPreviewScaleChange" | "onDownload" | "onShare"
+  | "previewData"
+  | "previewScale"
+  | "exportingImage"
+  | "shareStatus"
+  | "onPreviewScaleChange"
+  | "onDownload"
+  | "onShare"
 >
 
-function ExportButton({ previewData, exportingImage, onDownload }: Pick<PreviewActionProps, "previewData" | "exportingImage" | "onDownload">) {
+function ExportButton({
+  previewData,
+  exportingImage,
+  onDownload,
+}: Pick<PreviewActionProps, "previewData" | "exportingImage" | "onDownload">) {
   return (
     <Tooltip>
       <TooltipTrigger
@@ -195,7 +207,13 @@ function ExportButton({ previewData, exportingImage, onDownload }: Pick<PreviewA
           <Button
             variant="ghost"
             size="icon-sm"
-            icon={exportingImage ? <LoaderCircle className="animate-spin motion-reduce:animate-none" /> : <ImageDown />}
+            icon={
+              exportingImage ? (
+                <LoaderCircle className="animate-spin motion-reduce:animate-none" />
+              ) : (
+                <ImageDown />
+              )
+            }
             onClick={onDownload}
             disabled={!previewData || exportingImage}
             aria-label={DOWNLOAD_WIDGET_LABEL}
@@ -207,7 +225,11 @@ function ExportButton({ previewData, exportingImage, onDownload }: Pick<PreviewA
   )
 }
 
-function ShareButton({ previewData, shareStatus, onShare }: Pick<PreviewActionProps, "previewData" | "shareStatus" | "onShare">) {
+function ShareButton({
+  previewData,
+  shareStatus,
+  onShare,
+}: Pick<PreviewActionProps, "previewData" | "shareStatus" | "onShare">) {
   const icon =
     shareStatus === "preparing" ? (
       <LoaderCircle className="animate-spin motion-reduce:animate-none" />
@@ -236,7 +258,10 @@ function ShareButton({ previewData, shareStatus, onShare }: Pick<PreviewActionPr
   )
 }
 
-function ScaleControls({ previewScale, onPreviewScaleChange }: Pick<PreviewActionProps, "previewScale" | "onPreviewScaleChange">) {
+function ScaleControls({
+  previewScale,
+  onPreviewScaleChange,
+}: Pick<PreviewActionProps, "previewScale" | "onPreviewScaleChange">) {
   return (
     <>
       <Button
@@ -275,7 +300,11 @@ function PreviewActions({
 }: PreviewActionProps) {
   return (
     <div className="absolute right-3 top-3 z-10 flex items-center gap-0.5 rounded-lg border border-border/80 bg-surface/90 p-1 shadow-[0_8px_24px_rgb(0_0_0_/_24%)] backdrop-blur-sm">
-      <ExportButton previewData={previewData} exportingImage={exportingImage} onDownload={onDownload} />
+      <ExportButton
+        previewData={previewData}
+        exportingImage={exportingImage}
+        onDownload={onDownload}
+      />
       <ShareButton previewData={previewData} shareStatus={shareStatus} onShare={onShare} />
       <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
       <ScaleControls previewScale={previewScale} onPreviewScaleChange={onPreviewScaleChange} />
@@ -407,7 +436,8 @@ export function BuilderPreview({
   onPresetChange,
 }: BuilderPreviewProps) {
   const activeMap = WIDGET_MAPS.find((map) => map.id === selectedMap) ?? WIDGET_MAPS[0]
-  const activePreset = WIDGET_PRESETS.find((preset) => preset.id === config.preset) ?? WIDGET_PRESETS[0]
+  const activePreset =
+    WIDGET_PRESETS.find((preset) => preset.id === config.preset) ?? WIDGET_PRESETS[0]
 
   return (
     <section className="min-w-0 flex-1 bg-background">
@@ -439,7 +469,11 @@ export function BuilderPreview({
         <div className="mt-5 flex items-center justify-between border-b border-border/70 pb-2">
           <p className="text-label-sm text-tertiary">LAYOUTS ({WIDGET_PRESETS.length} presets)</p>
         </div>
-        <LayoutGrid state={playerSnapshot} selectedPreset={config.preset} onPresetChange={onPresetChange} />
+        <LayoutGrid
+          state={playerSnapshot}
+          selectedPreset={config.preset}
+          onPresetChange={onPresetChange}
+        />
       </div>
     </section>
   )

@@ -1,11 +1,10 @@
 import { isRecord } from "../../utils"
 import { isCustomBackdropId } from "../backgrounds/custom-contract"
 import { isWidgetBackdropId } from "../backgrounds/registry"
-import { getRotationFields, supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
 import {
   isWidgetPresetId,
-  type WidgetBackground,
   type WidgetBackdropConfig,
+  type WidgetBackground,
   type WidgetConfig,
   type WidgetDensity,
   type WidgetFontId,
@@ -15,6 +14,7 @@ import {
   type WidgetVisibility,
   type WidgetVisibilityKey,
 } from "../types"
+import { getRotationFields, supportsWidgetRotation, WIDGET_PRESET_MAP } from "./presets"
 
 export { CHALLENGER_RANK_COLORS } from "../rank"
 
@@ -174,9 +174,10 @@ function normalizeBackdrop(
 ): WidgetBackdropConfig {
   const position = asRecord(value.position)
   const id = isWidgetBackdropId(value.id) ? value.id : defaults.id
-  const media = isCustomBackdropId(id) && (value.media === "image" || value.media === "video")
-    ? value.media
-    : undefined
+  const media =
+    isCustomBackdropId(id) && (value.media === "image" || value.media === "video")
+      ? value.media
+      : undefined
 
   return {
     id,
@@ -237,9 +238,7 @@ export function createDefaultConfig(preset: WidgetConfig["preset"] = "elo-pill")
     rotation: {
       ...DEFAULT_WIDGET_CONFIG.rotation,
       enabled: selectedPreset.supportsRotation,
-      fields: [
-        ...(selectedPreset.defaultRotationFields ?? DEFAULT_WIDGET_CONFIG.rotation.fields),
-      ],
+      fields: [...(selectedPreset.defaultRotationFields ?? DEFAULT_WIDGET_CONFIG.rotation.fields)],
     },
     backdrop: {
       ...DEFAULT_WIDGET_CONFIG.backdrop,
@@ -254,12 +253,13 @@ export function updateVisibilityConfig(
   value: boolean,
 ) {
   const rotationField = ROTATION_VISIBILITY_FIELDS[key]
-  const rotation = rotationField && supportsWidgetRotation(config.preset)
-    ? {
-        ...config.rotation,
-        fields: toggleRotationField(config.rotation.fields, rotationField, value),
-      }
-    : config.rotation
+  const rotation =
+    rotationField && supportsWidgetRotation(config.preset)
+      ? {
+          ...config.rotation,
+          fields: toggleRotationField(config.rotation.fields, rotationField, value),
+        }
+      : config.rotation
 
   return normalizeConfig({
     ...config,

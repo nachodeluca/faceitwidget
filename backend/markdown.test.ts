@@ -10,9 +10,10 @@ import {
 } from "./markdown"
 
 const assets = {
-  fetch: async () => new Response("<html>page</html>", {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  }),
+  fetch: async () =>
+    new Response("<html>page</html>", {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    }),
 }
 
 describe("markdown negotiation", () => {

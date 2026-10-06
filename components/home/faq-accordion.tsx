@@ -3,9 +3,8 @@
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-
-import { SITE_PATHS } from "@/lib/site-metadata"
 import { SITE_LINKS } from "@/lib/site-links"
+import { SITE_PATHS } from "@/lib/site-metadata"
 import { cn } from "@/lib/utils"
 
 const FAQS = [
@@ -14,12 +13,19 @@ const FAQS = [
     question: "Does it work with OBS and Streamlabs?",
     answer: (
       <>
-        Yes. The generated page is intended for a Browser source, so it works in OBS Studio and Streamlabs Desktop without installing a separate plugin. Follow the{" "}
-        <Link className="text-foreground underline underline-offset-4" href={SITE_PATHS.faceitWidgetObsGuide}>
+        Yes. The generated page is intended for a Browser source, so it works in OBS Studio and
+        Streamlabs Desktop without installing a separate plugin. Follow the{" "}
+        <Link
+          className="text-foreground underline underline-offset-4"
+          href={SITE_PATHS.faceitWidgetObsGuide}
+        >
           OBS setup guide
         </Link>{" "}
         or the{" "}
-        <Link className="text-foreground underline underline-offset-4" href={SITE_PATHS.faceitWidgetStreamlabsGuide}>
+        <Link
+          className="text-foreground underline underline-offset-4"
+          href={SITE_PATHS.faceitWidgetStreamlabsGuide}
+        >
           Streamlabs setup guide
         </Link>{" "}
         for the recommended source settings.
@@ -37,8 +43,14 @@ const FAQS = [
     question: "Is FACEIT Widget open source?",
     answer: (
       <>
-        Yes. FACEIT Widget is an independent open-source community project. You can inspect the source code, report bugs, suggest improvements, and propose changes in the{" "}
-        <a target="_blank" rel="noreferrer" className="text-foreground underline underline-offset-4" href={SITE_LINKS.github}>
+        Yes. FACEIT Widget is an independent open-source community project. You can inspect the
+        source code, report bugs, suggest improvements, and propose changes in the{" "}
+        <a
+          target="_blank"
+          rel="noreferrer"
+          className="text-foreground underline underline-offset-4"
+          href={SITE_LINKS.github}
+        >
           public GitHub repository
         </a>
         . It is not affiliated with FACEIT.

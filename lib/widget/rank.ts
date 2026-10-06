@@ -58,17 +58,38 @@ export function hasEloChange(value: number | undefined): value is number {
   return value !== undefined && Number.isFinite(value) && value !== 0
 }
 
+export function isUnrankedRank(rank: WidgetData["rank"]) {
+  return (
+    rank.status === "unranked" || (rank.status === undefined && rank.level === 0 && rank.elo === 0)
+  )
+}
+
 export function isChallengerRank(rank: WidgetData["rank"]) {
   const rankPosition = rank.regionRank
 
-  return rank.level === 10
-    && rankPosition !== undefined
-    && rankPosition >= 1
-    && rankPosition <= CHALLENGER_RANK_LIMIT
+  return (
+    !isUnrankedRank(rank) &&
+    rank.level === 10 &&
+    rankPosition !== undefined &&
+    rankPosition >= 1 &&
+    rankPosition <= CHALLENGER_RANK_LIMIT
+  )
 }
 
 export function getRankProgress(rank: WidgetData["rank"]): RankProgress {
-  const level = Math.min(10, Math.max(1, Math.round(rank.level || 1))) as keyof typeof FACEIT_LEVEL_RANGES
+  if (isUnrankedRank(rank)) {
+    const placements = rank.placements
+    return {
+      percentage: placements ? (placements.played / placements.total) * 100 : 0,
+      color: FACEIT_LEVEL_COLORS[1],
+      label: placements ? `${placements.played}/${placements.total} placements` : "Unranked",
+    }
+  }
+
+  const level = Math.min(
+    10,
+    Math.max(1, Math.round(rank.level || 1)),
+  ) as keyof typeof FACEIT_LEVEL_RANGES
 
   if (isChallengerRank(rank)) {
     return {

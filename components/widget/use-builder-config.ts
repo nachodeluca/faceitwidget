@@ -7,8 +7,8 @@ import {
   normalizeConfig,
   supportsWidgetRotation,
   updateVisibilityConfig,
-  type WidgetConfig,
   type WidgetBackdropConfig,
+  type WidgetConfig,
   type WidgetMapId,
   type WidgetPresetId,
   type WidgetStyle,
@@ -23,7 +23,9 @@ export function useBuilderConfig(initialConfig: WidgetConfig, initialNickname: s
   const [resetAnimationKey, setResetAnimationKey] = useState(0)
 
   function updatePreviewScale(delta: number) {
-    setPreviewScale((current) => Math.min(1.35, Math.max(0.7, Number((current + delta).toFixed(2)))))
+    setPreviewScale((current) =>
+      Math.min(1.35, Math.max(0.7, Number((current + delta).toFixed(2)))),
+    )
   }
 
   function updateVisibility(key: WidgetVisibilityKey, value: boolean) {
@@ -55,7 +57,9 @@ export function useBuilderConfig(initialConfig: WidgetConfig, initialNickname: s
   }
 
   function selectPreset(preset: WidgetPresetId) {
-    setConfig((current) => normalizeConfig({ ...createDefaultConfig(preset), backdrop: current.backdrop }))
+    setConfig((current) =>
+      normalizeConfig({ ...createDefaultConfig(preset), backdrop: current.backdrop }),
+    )
   }
 
   function resetConfig() {

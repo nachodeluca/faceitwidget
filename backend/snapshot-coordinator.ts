@@ -1,17 +1,18 @@
 import { DurableObject } from "cloudflare:workers"
 
 import { isValidTimezone, parsePlayerLookup } from "../lib/widget/data/player-lookup"
+import { isUnrankedRank } from "../lib/widget/rank"
 import type { PlayerLookup, WidgetSnapshot } from "../lib/widget/types"
+import type { WorkerEnv } from "./env"
 import { ApiError, errorResponse } from "./errors"
+import { type EloObservation, rememberElo } from "./faceit/elo"
 import { FaceitGateway } from "./faceit/gateway"
-import { rememberElo, type EloObservation } from "./faceit/elo"
 import {
   createWidgetSnapshot,
   fetchLatestMatchId,
   fetchPlayerFacts,
   type PlayerFacts,
 } from "./faceit/normalize"
-import type { WorkerEnv } from "./env"
 
 const STATE_VERSION = 3
 const STATE_KEY = `player-state-v${STATE_VERSION}`
@@ -57,9 +58,7 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
 
   private refreshInterval() {
     const configured = Number(this.env.PLAYER_REFRESH_INTERVAL_MS)
-    return Number.isFinite(configured)
-      ? Math.min(300_000, Math.max(60_000, configured))
-      : 120_000
+    return Number.isFinite(configured) ? Math.min(300_000, Math.max(60_000, configured)) : 120_000
   }
 
   private async storedState() {
@@ -92,10 +91,13 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
           fullFetchedAt: Date.now(),
           historyCheckedAt: Date.now(),
           stale: false,
-          eloHistory: rememberElo(previous?.eloHistory, {
-            observedAt,
-            elo: facts.baseData.rank.elo,
-          }),
+          eloHistory: rememberElo(
+            previous && isUnrankedRank(previous.facts.baseData.rank) ? [] : previous?.eloHistory,
+            {
+              observedAt,
+              elo: isUnrankedRank(facts.baseData.rank) ? 0 : facts.baseData.rank.elo,
+            },
+          ),
         })
       } catch (error) {
         if (!previous) throw error
@@ -112,9 +114,7 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
         ...state,
         historyCheckedAt: Date.now(),
         stale: false,
-        pendingMatch: changed
-          ? { matchId: latestMatchId, retryIndex: 0 }
-          : state.pendingMatch,
+        pendingMatch: changed ? { matchId: latestMatchId, retryIndex: 0 } : state.pendingMatch,
       }
       await this.saveState(nextState)
       if (changed) await this.ctx.storage.setAlarm(Date.now() + 10_000)
@@ -210,9 +210,25 @@ export class PlayerSnapshotCoordinator extends DurableObject<WorkerEnv> {
 
     const pendingMatch = state.pendingMatch
     const refreshed = await this.refresh(state.lookup, state)
-    const statsReady = refreshed.facts.matches.some((match) => match.matchId === pendingMatch.matchId)
+    const statsReady = refreshed.facts.matches.some(
+      (match) => match.matchId === pendingMatch.matchId,
+    )
 
-    if (statsReady) return
+    const rank = refreshed.facts.baseData.rank
+    const placements = rank.placements
+    const previousPlacements = state.facts.baseData.rank.placements
+    const awaitingRank =
+      isUnrankedRank(rank) &&
+      placements !== undefined &&
+      (placements.played === placements.total ||
+        (previousPlacements?.total === placements.total &&
+          previousPlacements.played === placements.total - 1 &&
+          placements.played === previousPlacements.played))
+
+    if (statsReady && !awaitingRank && !refreshed.stale) {
+      await this.saveState({ ...refreshed, pendingMatch: undefined })
+      return
+    }
 
     const retryDelay = RETRY_DELAYS_MS[pendingMatch.retryIndex]
     if (retryDelay === undefined) {

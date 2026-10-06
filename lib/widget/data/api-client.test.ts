@@ -17,6 +17,32 @@ const snapshot = {
 }
 
 describe("WidgetApiClient", () => {
+  it("preserves Unranked and the placement progress from the backend", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        Response.json({
+          ...snapshot,
+          data: {
+            ...snapshot.data,
+            rank: {
+              level: 0,
+              elo: 0,
+              status: "unranked",
+              placements: { played: 6, total: 10 },
+            },
+          },
+        }),
+      ),
+    )
+    vi.stubGlobal("window", { location: { origin: "https://faceitwidget.com" } })
+    const result = await new WidgetApiClient().getPlayerSnapshot("nexoonszx090")
+    expect(result.data.rank).toMatchObject({
+      status: "unranked",
+      placements: { played: 6, total: 10 },
+    })
+  })
+
   afterEach(() => {
     vi.unstubAllGlobals()
   })
@@ -46,7 +72,10 @@ describe("WidgetApiClient", () => {
         profile: { nickname: "nachete", verifiedBadge: "verified" },
       },
     }
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(verifiedSnapshot))))
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(JSON.stringify(verifiedSnapshot))),
+    )
     vi.stubGlobal("window", { location: { origin: "https://faceitwidget.com" } })
 
     const result = await new WidgetApiClient().getPlayerSnapshot("nachete", { timezone: "UTC" })
@@ -63,7 +92,10 @@ describe("WidgetApiClient", () => {
     vi.stubGlobal("fetch", fetcher)
     vi.stubGlobal("window", { location: { origin: "https://faceitwidget.com" } })
 
-    await new WidgetApiClient().getPlayerSnapshot("Carbonero20050", { timezone: "UTC", telemetry: true })
+    await new WidgetApiClient().getPlayerSnapshot("Carbonero20050", {
+      timezone: "UTC",
+      telemetry: true,
+    })
 
     const headers = fetcher.mock.calls[0]?.[1]?.headers as Headers
     expect(headers.get("X-Widget-Usage")).toBe("widget")

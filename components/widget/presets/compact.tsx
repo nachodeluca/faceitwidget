@@ -1,5 +1,11 @@
-import { AnimatedNumber } from "../animated-number"
-import { CountryRank, EloIcon, LastFiveResults, LevelMark, PlayerNickname, RegionRank } from "../parts"
+import {
+  CountryRank,
+  EloValue,
+  LastFiveResults,
+  LevelMark,
+  PlayerNickname,
+  RegionRank,
+} from "../parts"
 import { PerformanceMetric, type PerformanceMetricProps } from "./shared/performance-metric"
 import type { PresetViewProps } from "./types"
 
@@ -45,12 +51,11 @@ export function CompactPreset({ data, config }: PresetViewProps) {
                 showVerifiedBadge={config.visibility.verifiedBadge}
               />
             ) : null}
-            {config.visibility.elo ? (
-              <span className="inline-flex items-center gap-1 whitespace-nowrap text-[24px] font-extrabold leading-none tracking-[-0.035em] text-[color:var(--widget-text)] tabular-nums">
-                {config.visibility.eloIcon ? <EloIcon /> : null}
-                <AnimatedNumber value={data.rank.elo} />
-              </span>
-            ) : null}
+            <EloValue
+              data={data}
+              visibility={config.visibility}
+              valueClassName="text-[24px] tracking-[-0.035em]"
+            />
           </div>
         </div>
         {config.visibility.last30Stats ? <CompactLast30Metrics data={data} /> : null}
@@ -79,7 +84,11 @@ export function CompactPreset({ data, config }: PresetViewProps) {
             ) : null}
           </div>
           {config.visibility.last5Results ? (
-            <LastFiveResults data={data} className="mr-2 gap-[5px]" resultClassName="text-[20px] tracking-wide" />
+            <LastFiveResults
+              data={data}
+              className="mr-2 gap-[5px]"
+              resultClassName="text-[20px] tracking-wide"
+            />
           ) : null}
         </div>
       ) : null}

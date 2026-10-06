@@ -1,10 +1,6 @@
-import {
-  CUSTOM_UPLOAD_LIMITS,
-  uploadMediaForType,
-  type CustomUploadMedia,
-} from "./upload-contract"
-import { isCustomBackdropRecord, type CustomBackdropRecord } from "./custom"
 import { getWidgetInstanceId } from "../data/widget-instance"
+import { type CustomBackdropRecord, isCustomBackdropRecord } from "./custom"
+import { CUSTOM_UPLOAD_LIMITS, type CustomUploadMedia, uploadMediaForType } from "./upload-contract"
 
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 type SignedUpload = { url: string; headers: Record<string, string> }
@@ -21,9 +17,10 @@ function uploadError(message: string) {
 async function responseJson<T>(response: Response): Promise<T> {
   const body: unknown = await response.json().catch(() => null)
   if (!response.ok) {
-    const message = body && typeof body === "object" && "error" in body
-      ? String(body.error)
-      : "The background upload could not be completed."
+    const message =
+      body && typeof body === "object" && "error" in body
+        ? String(body.error)
+        : "The background upload could not be completed."
     throw uploadError(message)
   }
   return body as T
@@ -60,10 +57,14 @@ export function createVideoPoster(file: File): Promise<Blob> {
       canvas.width = Math.max(1, Math.round(video.videoWidth * scale))
       canvas.height = Math.max(1, Math.round(video.videoHeight * scale))
       canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height)
-      canvas.toBlob((blob) => {
-        if (!blob || blob.size > CUSTOM_UPLOAD_LIMITS.poster) return fail()
-        finish(() => resolve(blob))
-      }, "image/webp", 0.82)
+      canvas.toBlob(
+        (blob) => {
+          if (!blob || blob.size > CUSTOM_UPLOAD_LIMITS.poster) return fail()
+          finish(() => resolve(blob))
+        },
+        "image/webp",
+        0.82,
+      )
     }
     const timeout = window.setTimeout(fail, 10_000)
 
@@ -81,11 +82,22 @@ async function putObject(fetcher: Fetcher, upload: SignedUpload, body: BodyInit)
   if (!response.ok) throw uploadError("R2 rejected the background upload.")
 }
 
-async function createIntent(fetcher: Fetcher, file: File, media: CustomUploadMedia, nickname?: string): Promise<IntentResponse> {
+async function createIntent(
+  fetcher: Fetcher,
+  file: File,
+  media: CustomUploadMedia,
+  nickname?: string,
+): Promise<IntentResponse> {
   const response = await fetcher("/api/v1/backgrounds/intents", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ media, contentType: file.type, size: file.size, nickname, widgetInstanceId: getWidgetInstanceId() }),
+    body: JSON.stringify({
+      media,
+      contentType: file.type,
+      size: file.size,
+      nickname,
+      widgetInstanceId: getWidgetInstanceId(),
+    }),
   })
   return responseJson<IntentResponse>(response)
 }
@@ -97,7 +109,8 @@ async function completeUpload(fetcher: Fetcher, asset: CustomBackdropRecord) {
     body: JSON.stringify({ id: asset.id, media: asset.media }),
   })
   const result = await responseJson<{ asset: CustomBackdropRecord }>(response)
-  if (!isCustomBackdropRecord(result.asset)) throw uploadError("The uploaded background is invalid.")
+  if (!isCustomBackdropRecord(result.asset))
+    throw uploadError("The uploaded background is invalid.")
   return result.asset
 }
 

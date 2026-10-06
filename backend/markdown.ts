@@ -134,10 +134,16 @@ const MARKDOWN_MEDIA_TYPE = "text/markdown; charset=utf-8"
 type AssetFetcher = Pick<Fetcher, "fetch">
 
 function parseQuality(value: string, mediaType: string) {
-  const match = value.split(",").find((part) => part.trim().split(";")[0].toLowerCase() === mediaType)
+  const match = value
+    .split(",")
+    .find((part) => part.trim().split(";")[0].toLowerCase() === mediaType)
   if (!match) return 0
 
-  const quality = match.split(";").find((part) => part.trim().startsWith("q="))?.trim().slice(2)
+  const quality = match
+    .split(";")
+    .find((part) => part.trim().startsWith("q="))
+    ?.trim()
+    .slice(2)
   const parsed = quality === undefined ? 1 : Number(quality)
   return Number.isFinite(parsed) ? Math.max(0, parsed) : 0
 }
@@ -152,8 +158,14 @@ export function prefersMarkdown(accept: string | null) {
 
 function withHeaders(response: Response, updates: Record<string, string>) {
   const headers = new Headers(response.headers)
-  Object.entries(updates).forEach(([name, value]) => headers.set(name, value))
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
+  Object.entries(updates).forEach(([name, value]) => {
+    headers.set(name, value)
+  })
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
 }
 
 export function withDocumentVary(response: Response) {

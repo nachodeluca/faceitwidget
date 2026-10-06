@@ -1,31 +1,38 @@
-import { errorResponse, ApiError } from "./errors"
+import {
+  isValidTimezone,
+  parsePlayerLookup,
+  playerLookupKey,
+} from "../lib/widget/data/player-lookup"
 import { backgroundRequest, isBackgroundRoute } from "./background-routes"
-import { isValidTimezone, parsePlayerLookup, playerLookupKey } from "../lib/widget/data/player-lookup"
 import type { WorkerEnv } from "./env"
-import { canonicalPageRedirect, staticRscAssetRequest } from "./page-routing"
+import { ApiError, errorResponse } from "./errors"
 import { serveAgentDocument, serveNotFound } from "./markdown"
+import { canonicalPageRedirect, staticRscAssetRequest } from "./page-routing"
 import { createSharedWidget, sharedWidgetPage } from "./share-routes"
 
-export { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
 export { SharedWidgetCard } from "./shared-widget-card"
+export { PlayerSnapshotCoordinator } from "./snapshot-coordinator"
 
 const PLAYER_ROUTE = /^\/api\/v1\/players\/([^/]+)\/snapshot\/?$/
 
 async function enforceRateLimits(request: Request, env: WorkerEnv, lookupKey?: string) {
   const ip = request.headers.get("CF-Connecting-IP") ?? "local"
   const apiLimit = await env.API_RATE_LIMIT.limit({ key: ip })
-  if (!apiLimit.success) throw new ApiError(429, "Too many requests. Try again in a minute.", 60_000)
+  if (!apiLimit.success)
+    throw new ApiError(429, "Too many requests. Try again in a minute.", 60_000)
 
   if (lookupKey) {
     const playerLimit = await env.PLAYER_RATE_LIMIT.limit({ key: `${ip}:${lookupKey}` })
-    if (!playerLimit.success) throw new ApiError(429, "This player is being refreshed too often.", 60_000)
+    if (!playerLimit.success)
+      throw new ApiError(429, "This player is being refreshed too often.", 60_000)
   }
 }
 
 async function sharedWidgetRequest(request: Request, env: WorkerEnv) {
   const ip = request.headers.get("CF-Connecting-IP") ?? "local"
   const rateLimit = await env.SHARE_RATE_LIMIT.limit({ key: ip })
-  if (!rateLimit.success) throw new ApiError(429, "Too many widget images. Try again in a minute.", 60_000)
+  if (!rateLimit.success)
+    throw new ApiError(429, "Too many widget images. Try again in a minute.", 60_000)
   return createSharedWidget(request, env)
 }
 
@@ -50,10 +57,12 @@ async function playerRequest(request: Request, env: WorkerEnv, match: RegExpMatc
   internalUrl.searchParams.set("lookup", lookup.value)
   internalUrl.searchParams.set("tz", timezone)
 
-  return stub.fetch(new Request(internalUrl, {
-    method: request.method,
-    headers: request.headers,
-  }))
+  return stub.fetch(
+    new Request(internalUrl, {
+      method: request.method,
+      headers: request.headers,
+    }),
+  )
 }
 
 export default {

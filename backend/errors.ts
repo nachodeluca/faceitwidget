@@ -29,8 +29,5 @@ export function errorResponse(error: unknown) {
     headers.set("Retry-After", String(Math.ceil(apiError.retryAfterMs / 1000)))
   }
 
-  return Response.json(
-    { error: apiError.message },
-    { status: apiError.status, headers },
-  )
+  return Response.json({ error: apiError.message }, { status: apiError.status, headers })
 }

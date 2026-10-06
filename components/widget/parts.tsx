@@ -1,25 +1,27 @@
-import type { CSSProperties, ReactNode } from "react"
 import Image from "next/image"
-
+import type { CSSProperties, ReactNode } from "react"
+import { formatNumber, formatRankNumber } from "@/lib/format"
+import { cn } from "@/lib/utils"
 import {
   getChallengerRankColor,
   hasEloChange,
   isChallengerRank,
+  isUnrankedRank,
   type WidgetData,
   type WidgetVisibility,
 } from "@/lib/widget"
-import { formatNumber, formatRankNumber } from "@/lib/format"
-import { cn } from "@/lib/utils"
 
 import { AnimatedNumber } from "./animated-number"
 import { ChallengerMark } from "./challenger-mark"
+import { RegionLogo } from "./region-logo"
 import { getWinRateTone } from "./stat-tone"
 import { VerificationBadge } from "./verification-badge"
-import { RegionLogo } from "./region-logo"
 
 export { ChallengerMark } from "./challenger-mark"
 
 const levelAsset = (data: WidgetData) => {
+  if (isUnrankedRank(data.rank)) return "/levels/unranked.svg"
+
   const level = Math.min(10, Math.max(1, Math.round(data.rank.level || 1)))
   return `/levels/${String(level).padStart(2, "0")}.svg`
 }
@@ -59,6 +61,7 @@ export function LevelMark({
   className?: string
 }) {
   const challenger = isChallengerRank(data.rank)
+  const unranked = isUnrankedRank(data.rank)
   const showChallenger = challenger && visibility.challenger
   const showLevel = visibility.level && (!challenger || !visibility.challenger)
 
@@ -69,7 +72,9 @@ export function LevelMark({
   return (
     <span
       className={cn("relative inline-flex size-7 shrink-0 items-center justify-center", className)}
-      title={challenger ? "Challenger" : `Level ${data.rank.level}`}
+      title={unranked ? "Unranked" : challenger ? "Challenger" : `Level ${data.rank.level}`}
+      role="img"
+      aria-label={unranked ? "Unranked" : challenger ? "Challenger" : `Level ${data.rank.level}`}
     >
       {showChallenger ? (
         <ChallengerMark
@@ -127,6 +132,8 @@ export function EloValue({
     return null
   }
 
+  const unranked = isUnrankedRank(data.rank)
+
   return (
     <span className={cn("inline-flex flex-col gap-[3px]", className)}>
       <strong
@@ -136,8 +143,14 @@ export function EloValue({
         )}
       >
         <span className="inline-flex items-center gap-1">
-          {visibility.eloIcon ? <EloIcon /> : null}
-          <AnimatedNumber value={data.rank.elo} />
+          {unranked ? (
+            "Unranked"
+          ) : (
+            <>
+              {visibility.eloIcon ? <EloIcon /> : null}
+              <AnimatedNumber value={data.rank.elo} />
+            </>
+          )}
         </span>
       </strong>
     </span>
@@ -159,17 +172,29 @@ export function EloSummary({
     return null
   }
 
-  const eloChange = data.rank.eloChange
+  const unranked = isUnrankedRank(data.rank)
+  const eloChange = unranked ? undefined : data.rank.eloChange
 
   return (
-    <span className={cn("inline-flex min-w-0 items-center gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]", className)}>
+    <span
+      className={cn(
+        "inline-flex min-w-0 items-center gap-[3px] whitespace-nowrap text-[9px] leading-none text-[color:var(--widget-muted)]",
+        className,
+      )}
+    >
       <strong className="inline-flex items-center font-bold leading-none text-[color:var(--widget-text)] tabular-nums">
         <span className="inline-flex items-center gap-[2px] leading-none">
-          {visibility.eloIcon ? <EloIcon small /> : null}
-          <AnimatedNumber value={data.rank.elo} />
+          {unranked ? (
+            "Unranked"
+          ) : (
+            <>
+              {visibility.eloIcon ? <EloIcon small /> : null}
+              <AnimatedNumber value={data.rank.elo} />
+            </>
+          )}
         </span>
       </strong>
-      <span>ELO</span>
+      {!unranked ? <span>ELO</span> : null}
       {showChange && hasEloChange(eloChange) ? (
         <span className={cn("tabular-nums", eloChange > 0 ? "text-[#83dba5]" : "text-[#ff7884]")}>
           (<AnimatedNumber value={eloChange} signed />)
@@ -204,11 +229,13 @@ export function RankValue({
   className,
   valueClassName,
   format = formatNumber,
+  pending = false,
 }: {
   value?: number
   className?: string
   valueClassName?: string
   format?: (value: number | undefined) => string
+  pending?: boolean
 }) {
   return (
     <span className={cn("inline-flex flex-col gap-[3px]", className)}>
@@ -218,7 +245,7 @@ export function RankValue({
           valueClassName,
         )}
       >
-        #{format(value)}
+        #{pending ? "TBD" : format(value)}
       </strong>
     </span>
   )
@@ -255,9 +282,12 @@ export function ChallengerRankBadge({
       style={style}
       title={rankLabel}
       aria-label={rankLabel}
+      role="img"
     >
       {showRankNumber ? (
-        <strong className="font-system text-[13px] font-extrabold text-[#090909] tabular-nums">{label}</strong>
+        <strong className="font-system text-[13px] font-extrabold text-[#090909] tabular-nums">
+          {label}
+        </strong>
       ) : null}
       <ChallengerMark
         className={cn(
@@ -278,6 +308,10 @@ export function LevelRankBadge({
   data: WidgetData
   visibility: WidgetVisibility
 }) {
+  if (isUnrankedRank(data.rank)) {
+    return <LevelMark data={data} visibility={visibility} />
+  }
+
   return (
     <span className="inline-flex min-h-7 shrink-0 items-center gap-[5px] rounded-full border border-[color:var(--widget-border)] bg-[color:var(--widget-surface-muted)] px-2 py-1 leading-none text-[color:var(--widget-text)] shadow-[0_1px_0_rgb(0_0_0_/_28%)]">
       <strong className="font-system text-[13px] font-extrabold tabular-nums">
@@ -290,19 +324,15 @@ export function LevelRankBadge({
 
 function countryName(code: string) {
   try {
-    return new Intl.DisplayNames(["en"], { type: "region" }).of(code.toUpperCase()) ?? code.toUpperCase()
+    return (
+      new Intl.DisplayNames(["en"], { type: "region" }).of(code.toUpperCase()) ?? code.toUpperCase()
+    )
   } catch {
     return code.toUpperCase()
   }
 }
 
-export function CountryFlag({
-  data,
-  className,
-}: {
-  data: WidgetData
-  className?: string
-}) {
+export function CountryFlag({ data, className }: { data: WidgetData; className?: string }) {
   const code = data.profile.countryCode?.toLowerCase().replace(/[^a-z]/g, "")
 
   if (!code) {
@@ -460,13 +490,20 @@ export function TodayStats({ data }: { data: WidgetData }) {
     <StatGrid>
       <span className="grid min-w-16 grid-cols-2 gap-[10px]">
         <Stat label="Wins" value={<AnimatedNumber value={data.today?.wins} />} tone="positive" />
-        <Stat label="Losses" value={<AnimatedNumber value={data.today?.losses} />} tone="negative" />
+        <Stat
+          label="Losses"
+          value={<AnimatedNumber value={data.today?.losses} />}
+          tone="negative"
+        />
       </span>
       <Stat
         label="Avg. Kills / ADR"
         value={<AnimatedMetricPair first={data.today?.avgKills} second={data.today?.adr} />}
       />
-      <Stat label="K/D" value={<AnimatedNumber value={data.today?.avgKD} maximumFractionDigits={2} />} />
+      <Stat
+        label="K/D"
+        value={<AnimatedNumber value={data.today?.avgKD} maximumFractionDigits={2} />}
+      />
     </StatGrid>
   )
 }
@@ -476,7 +513,11 @@ export function Last30Stats({ data }: { data: WidgetData }) {
     <StatGrid>
       <Stat
         label="Win rate"
-        value={<><AnimatedNumber value={data.last30?.winRate} />%</>}
+        value={
+          <>
+            <AnimatedNumber value={data.last30?.winRate} />%
+          </>
+        }
         tone={getWinRateTone(data.last30?.winRate)}
       />
       <Stat
@@ -494,13 +535,26 @@ export function Last30Stats({ data }: { data: WidgetData }) {
 export function PerformanceStats({ data }: { data: WidgetData }) {
   return (
     <StatGrid className="grid-cols-[repeat(4,minmax(0,1fr))]">
-      <Stat label="AVG" value={<AnimatedNumber value={data.lifetime?.avgKills} maximumFractionDigits={2} />} />
+      <Stat
+        label="AVG"
+        value={<AnimatedNumber value={data.lifetime?.avgKills} maximumFractionDigits={2} />}
+      />
       <Stat
         label="HS"
-        value={<><AnimatedNumber value={data.lifetime?.headshotRate} maximumFractionDigits={1} />%</>}
+        value={
+          <>
+            <AnimatedNumber value={data.lifetime?.headshotRate} maximumFractionDigits={1} />%
+          </>
+        }
       />
-      <Stat label="K/D" value={<AnimatedNumber value={data.lifetime?.kdr} maximumFractionDigits={2} />} />
-      <Stat label="K/R" value={<AnimatedNumber value={data.lifetime?.kr} maximumFractionDigits={2} />} />
+      <Stat
+        label="K/D"
+        value={<AnimatedNumber value={data.lifetime?.kdr} maximumFractionDigits={2} />}
+      />
+      <Stat
+        label="K/R"
+        value={<AnimatedNumber value={data.lifetime?.kr} maximumFractionDigits={2} />}
+      />
     </StatGrid>
   )
 }
@@ -524,11 +578,19 @@ export function LastFiveResults({
   if (results.length === 0) return null
 
   return (
-    <div className={cn("flex shrink-0 items-center gap-[3px]", className)} aria-label="Last 5 matches">
+    <div
+      className={cn("flex shrink-0 items-center gap-[3px]", className)}
+      aria-label="Last 5 matches"
+      role="group"
+    >
       {results.map((result, index) => (
         <span
           key={`${result}-${index}`}
-          className={cn("text-[9px] font-extrabold leading-none", resultClassName, matchResultStyles[result])}
+          className={cn(
+            "text-[9px] font-extrabold leading-none",
+            resultClassName,
+            matchResultStyles[result],
+          )}
           title={result === "win" ? "Win" : "Loss"}
         >
           {result === "win" ? "W" : "L"}
@@ -579,6 +641,7 @@ function RankItem({
   className,
   valueClassName,
   format,
+  pending,
 }: {
   label: string
   value?: number
@@ -586,11 +649,18 @@ function RankItem({
   className?: string
   valueClassName?: string
   format?: (value: number | undefined) => string
+  pending?: boolean
 }) {
   return (
     <span className={cn("inline-flex items-center gap-1", className)} title={label}>
       {icon}
-      <RankValue className="gap-0" value={value} valueClassName={valueClassName} format={format} />
+      <RankValue
+        className="gap-0"
+        value={value}
+        valueClassName={valueClassName}
+        format={format}
+        pending={pending}
+      />
     </span>
   )
 }
@@ -626,14 +696,17 @@ export function RegionRank({
 
   return (
     <RankItem
-      label={data.profile.regionCode
-        ? `Regional Ranking (${data.profile.regionCode.toUpperCase()})`
-        : "Regional Ranking"}
+      label={
+        data.profile.regionCode
+          ? `Regional Ranking (${data.profile.regionCode.toUpperCase()})`
+          : "Regional Ranking"
+      }
       value={data.rank.regionRank}
       icon={<RegionLogo region={data.profile.regionCode ?? ""} size={iconSize} />}
       className={className}
       valueClassName={valueClassName}
       format={formatRankNumber}
+      pending={isUnrankedRank(data.rank)}
     />
   )
 }
@@ -658,6 +731,7 @@ export function CountryRank({
     <RankItem
       label="Country rank"
       value={data.rank.countryRank}
+      pending={isUnrankedRank(data.rank)}
       icon={<CountryFlag data={data} className={flagClassName} />}
       className={cn("gap-[5px]", className)}
       valueClassName={valueClassName}

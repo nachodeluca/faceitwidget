@@ -1,4 +1,4 @@
-import { createElement, type ComponentType } from "react"
+import { type ComponentType, createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 
@@ -22,7 +22,11 @@ const nicknamePresets = {
 
 type NicknamePreset = keyof typeof nicknamePresets
 
-function renderPreset(preset: NicknamePreset, overrides: Partial<ReturnType<typeof createDefaultConfig>["visibility"]> = {}, profileData = data) {
+function renderPreset(
+  preset: NicknamePreset,
+  overrides: Partial<ReturnType<typeof createDefaultConfig>["visibility"]> = {},
+  profileData = data,
+) {
   const config = createDefaultConfig(preset as WidgetPresetId)
   config.visibility = { ...config.visibility, verifiedBadge: true, ...overrides }
 
@@ -30,12 +34,17 @@ function renderPreset(preset: NicknamePreset, overrides: Partial<ReturnType<type
 }
 
 describe("verification badge in nickname presets", () => {
-  it.each(Object.keys(nicknamePresets) as NicknamePreset[])("renders when enabled in %s", (preset) => {
-    expect(renderPreset(preset)).toContain('aria-label="FACEIT verified badge"')
-  })
+  it.each(Object.keys(nicknamePresets) as NicknamePreset[])(
+    "renders when enabled in %s",
+    (preset) => {
+      expect(renderPreset(preset)).toContain('aria-label="FACEIT verified badge"')
+    },
+  )
 
   it("does not render when the badge setting is off", () => {
-    expect(renderPreset("profile-card", { verifiedBadge: false })).not.toContain("FACEIT verified badge")
+    expect(renderPreset("profile-card", { verifiedBadge: false })).not.toContain(
+      "FACEIT verified badge",
+    )
   })
 
   it("does not render when the nickname is hidden", () => {
@@ -48,7 +57,9 @@ describe("verification badge in nickname presets", () => {
       profile: { ...data.profile, verifiedBadge: "gold" },
     }
 
-    expect(renderPreset("performance-card", {}, goldData)).toContain('aria-label="FACEIT gold verification badge"')
+    expect(renderPreset("performance-card", {}, goldData)).toContain(
+      'aria-label="FACEIT gold verification badge"',
+    )
   })
 
   it("omits the icon when FACEIT reports no verification badge", () => {

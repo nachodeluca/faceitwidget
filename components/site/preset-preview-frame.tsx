@@ -1,11 +1,11 @@
 "use client"
 
-import { createContext, useContext, type ReactNode } from "react"
+import { createContext, type ReactNode, useContext } from "react"
 
 import { WidgetSkeleton } from "@/components/widget/widget-placeholder"
+import { cn } from "@/lib/utils"
 import { WIDGET_PRESET_MAP } from "@/lib/widget/config/presets"
 import type { WidgetPresetId, WidgetPreviewSize } from "@/lib/widget/types"
-import { cn } from "@/lib/utils"
 
 // Fixed stage heights reserve the preview's space before the client island loads, so the live
 // widget never shifts the server-rendered copy below it. Zoom keeps each layout crisp and
@@ -22,7 +22,13 @@ function previewSize(presetId: WidgetPresetId) {
   return WIDGET_PRESET_MAP[presetId].previewSize
 }
 
-export function PresetPreviewZoom({ presetId, children }: { presetId: WidgetPresetId; children: ReactNode }) {
+export function PresetPreviewZoom({
+  presetId,
+  children,
+}: {
+  presetId: WidgetPresetId
+  children: ReactNode
+}) {
   return <div className={previewLayout[previewSize(presetId)].zoom}>{children}</div>
 }
 
@@ -38,7 +44,13 @@ export function PresetPreviewPlaceholder() {
   )
 }
 
-export function PresetPreviewFrame({ presetId, children }: { presetId: WidgetPresetId; children: ReactNode }) {
+export function PresetPreviewFrame({
+  presetId,
+  children,
+}: {
+  presetId: WidgetPresetId
+  children: ReactNode
+}) {
   return (
     <PresetPreviewContext value={presetId}>
       <div

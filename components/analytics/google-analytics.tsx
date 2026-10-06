@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import Script from "next/script"
 import { usePathname } from "next/navigation"
+import Script from "next/script"
+import { useEffect, useRef, useState } from "react"
 
 import { cleanCampaignParams, trackEvent } from "@/lib/analytics"
 import { APP_PATHS } from "@/lib/site-metadata"

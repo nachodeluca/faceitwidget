@@ -1,13 +1,13 @@
+import { isChallengerRank } from "../rank"
 import type {
+  WidgetData,
   WidgetPresetId,
+  WidgetPreviewSize,
   WidgetRotationField,
   WidgetStyle,
-  WidgetData,
-  WidgetPreviewSize,
-  WidgetVisibilityKey,
   WidgetVisibility,
+  WidgetVisibilityKey,
 } from "../types"
-import { isChallengerRank } from "../rank"
 
 export type WidgetPreset = {
   id: WidgetPresetId
@@ -95,7 +95,15 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       last30Stats: true,
       last5Results: true,
     },
-    editableFields: ["nickname", "verifiedBadge", "elo", "regionRank", "countryRank", "last30Stats", "last5Results"],
+    editableFields: [
+      "nickname",
+      "verifiedBadge",
+      "elo",
+      "regionRank",
+      "countryRank",
+      "last30Stats",
+      "last5Results",
+    ],
     defaultStyle: { density: "comfortable", radius: 8, borderEnabled: false },
   },
   {
@@ -142,7 +150,15 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       todayStats: true,
       last30Stats: true,
     },
-    editableFields: ["regionRank", "countryRank", "challengerRank", "elo", "kdr", "todayStats", "last30Stats"],
+    editableFields: [
+      "regionRank",
+      "countryRank",
+      "challengerRank",
+      "elo",
+      "kdr",
+      "todayStats",
+      "last30Stats",
+    ],
     defaultStyle: { density: "comfortable", radius: 12 },
   },
   {
@@ -161,7 +177,16 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       elo: true,
       todayStats: true,
     },
-    editableFields: ["nickname", "verifiedBadge", "regionRank", "countryRank", "challenger", "challengerRank", "elo", "todayStats"],
+    editableFields: [
+      "nickname",
+      "verifiedBadge",
+      "regionRank",
+      "countryRank",
+      "challenger",
+      "challengerRank",
+      "elo",
+      "todayStats",
+    ],
     defaultStyle: { density: "comfortable", radius: 8 },
   },
   {
@@ -244,17 +269,13 @@ function getUnavailableFields(presetId: WidgetPresetId, rank?: WidgetData["rank"
   return unavailableFields
 }
 
-export function getEditableFields(
-  presetId: WidgetPresetId,
-  rank?: WidgetData["rank"],
-) {
+export function getEditableFields(presetId: WidgetPresetId, rank?: WidgetData["rank"]) {
   const unavailableFields = getUnavailableFields(presetId, rank)
   const presetFields = WIDGET_PRESET_MAP[presetId].editableFields
-  const editableFields: WidgetVisibilityKey[] = presetFields.includes("elo") && !presetFields.includes("eloIcon")
-    ? [...presetFields, "eloIcon"]
-    : presetFields
+  const editableFields: WidgetVisibilityKey[] =
+    presetFields.includes("elo") && !presetFields.includes("eloIcon")
+      ? [...presetFields, "eloIcon"]
+      : presetFields
 
-  return editableFields.filter(
-    (field) => !unavailableFields.has(field),
-  )
+  return editableFields.filter((field) => !unavailableFields.has(field))
 }

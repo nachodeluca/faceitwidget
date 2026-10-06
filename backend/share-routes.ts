@@ -1,12 +1,15 @@
-import { ApiError } from "./errors"
 import type { WorkerEnv } from "./env"
+import { ApiError } from "./errors"
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024
 const SHARE_PAGE_PATTERN = /^\/s\/([a-f0-9]{12})(?:\/(image\.png))?\/?$/
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] as const
 
 function cleanLabel(value: string | null, fallback: string) {
-  const cleaned = value?.trim().replace(/[^a-z0-9_-]/gi, "").slice(0, 32)
+  const cleaned = value
+    ?.trim()
+    .replace(/[^a-z0-9_-]/gi, "")
+    .slice(0, 32)
   return cleaned || fallback
 }
 
@@ -15,13 +18,17 @@ function isPng(bytes: Uint8Array) {
 }
 
 function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#39;",
-  })[character] ?? character)
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character] ?? character,
+  )
 }
 
 function shareStub(env: WorkerEnv, shareId: string) {
@@ -36,7 +43,13 @@ type SharedPageOptions = {
   builderUrl: string
 }
 
-function renderSharedPage({ title, description, pageUrl, imageUrl, builderUrl }: SharedPageOptions) {
+function renderSharedPage({
+  title,
+  description,
+  pageUrl,
+  imageUrl,
+  builderUrl,
+}: SharedPageOptions) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -78,7 +91,11 @@ export async function createSharedWidget(request: Request, env: WorkerEnv) {
   }
 
   const image = await request.arrayBuffer()
-  if (image.byteLength === 0 || image.byteLength > MAX_IMAGE_BYTES || !isPng(new Uint8Array(image))) {
+  if (
+    image.byteLength === 0 ||
+    image.byteLength > MAX_IMAGE_BYTES ||
+    !isPng(new Uint8Array(image))
+  ) {
     throw new ApiError(400, "Upload a valid PNG widget image under 2 MB.")
   }
 
@@ -98,10 +115,13 @@ export async function createSharedWidget(request: Request, env: WorkerEnv) {
   await shareStub(env, shareId).fetch(internalRequest)
 
   const origin = new URL(request.url).origin
-  return Response.json({ shareUrl: `${origin}/s/${shareId}/` }, {
-    status: 201,
-    headers: { "Cache-Control": "no-store" },
-  })
+  return Response.json(
+    { shareUrl: `${origin}/s/${shareId}/` },
+    {
+      status: 201,
+      headers: { "Cache-Control": "no-store" },
+    },
+  )
 }
 
 export async function sharedWidgetPage(request: Request, env: WorkerEnv) {

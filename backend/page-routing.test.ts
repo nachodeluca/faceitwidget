@@ -33,9 +33,7 @@ describe("canonical page routing", () => {
     )
 
     expect(response?.status).toBe(301)
-    expect(response?.headers.get("location")).toBe(
-      `https://faceitwidget.com${target}?source=test`,
-    )
+    expect(response?.headers.get("location")).toBe(`https://faceitwidget.com${target}?source=test`)
   })
 
   it.each(["/", "/builder/", "/api/v1/shares", "/logo.svg", "/unknown"])(
