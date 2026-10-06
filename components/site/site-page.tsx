@@ -13,6 +13,8 @@ type SitePageProps = {
   path: string
   children: ReactNode
   showBuilderCta?: boolean
+  builderHref?: string
+  lead?: ReactNode
   pageType?: "WebPage" | "AboutPage"
 }
 
@@ -22,6 +24,8 @@ export function SitePage({
   path,
   children,
   showBuilderCta = false,
+  builderHref = `${APP_PATHS.builder}?nickname=donk666`,
+  lead,
   pageType = "WebPage",
 }: SitePageProps) {
   const structuredData = {
@@ -65,7 +69,9 @@ export function SitePage({
           {SITE_METADATA.name}
         </Link>
 
-        <header className="mt-12 border-b border-border pb-10">
+        {lead ? <div className="mt-8">{lead}</div> : null}
+
+        <header className={`${lead ? "mt-10" : "mt-12"} border-b border-border pb-10`}>
           <h1 className="text-4xl font-semibold leading-tight tracking-[-0.045em] sm:text-5xl">{title}</h1>
           <p className="mt-5 max-w-[640px] text-base leading-7 text-muted-foreground">{description}</p>
         </header>
@@ -78,7 +84,9 @@ export function SitePage({
           <nav aria-label="Site pages" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.about}>About</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup</Link>
+            <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.liveFaceitStatsGuide}>Live stats</Link>
+            <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.presets}>Presets</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.contact}>Contact</Link>
             <Link className={SITE_NAV_LINK_CLASS} href={SITE_PATHS.privacy}>Privacy</Link>
           </nav>
@@ -87,7 +95,7 @@ export function SitePage({
           </p>
           {showBuilderCta ? (
             <Button
-              render={<Link href={`${APP_PATHS.builder}?nickname=donk666`} />}
+              render={<Link href={builderHref} />}
               nativeButton={false}
               className="mt-5"
               icon={<ArrowRight />}

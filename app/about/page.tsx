@@ -33,7 +33,7 @@ export default function AboutPage() {
         <li>The browser-source page renders the overlay and checks for changed values about every two minutes while it is open.</li>
       </ol>
       <p>
-        A completed match can take a little time to appear because the result must first be published by FACEIT. The <a href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</a> explains what the refresh can update, and the <a href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</a> covers the Browser source configuration.
+        A completed match can take a little time to appear because the result must first be published by FACEIT. The <a href={SITE_PATHS.liveFaceitStatsGuide}>live stats guide</a> explains what the refresh can update. The <a href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup guide</a> and <a href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup guide</a> cover Browser Source configuration, and the <a href={SITE_PATHS.presets}>presets gallery</a> lists the available layouts.
       </p>
 
       <h2>Maintainer and source code</h2>

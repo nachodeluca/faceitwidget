@@ -27,7 +27,9 @@ export default function NotFound() {
           <Link className={recoveryLinkClass} href={SITE_PATHS.home}>Homepage</Link>
           <Link className={recoveryLinkClass} href={APP_PATHS.builder}>Widget builder</Link>
           <Link className={recoveryLinkClass} href={SITE_PATHS.faceitWidgetObsGuide}>OBS setup</Link>
+          <Link className={recoveryLinkClass} href={SITE_PATHS.faceitWidgetStreamlabsGuide}>Streamlabs setup</Link>
           <Link className={recoveryLinkClass} href={SITE_PATHS.liveFaceitStatsGuide}>Live stats</Link>
+          <Link className={recoveryLinkClass} href={SITE_PATHS.presets}>Presets</Link>
           <Link className={recoveryLinkClass} href="/sitemap.xml">Sitemap</Link>
           <Link className={recoveryLinkClass} href="/llms.txt">llms.txt</Link>
         </nav>

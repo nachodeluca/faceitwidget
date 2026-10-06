@@ -10,7 +10,11 @@ export function AnnouncementBar() {
       aria-label="Announcement"
       className="sticky top-0 z-40 border-b border-border/70 bg-secondary/95 text-secondary-foreground backdrop-blur-sm"
     >
-      <div className="mx-auto flex min-h-12 w-full max-w-[1280px] flex-wrap items-center justify-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6 lg:px-10">
+      {/* Keep the bar out of Google snippets. data-nosnippet is only honored on div/span/section, not aside. */}
+      <div
+        data-nosnippet
+        className="mx-auto flex min-h-12 w-full max-w-[1280px] flex-wrap items-center justify-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6 lg:px-10"
+      >
         <Badge
           variant="secondary"
           className="h-5 rounded-full border-emerald-400/30 bg-emerald-400/15 px-1.5 text-[9px] font-bold uppercase tracking-[0.08em] text-emerald-300"

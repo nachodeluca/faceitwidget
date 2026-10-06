@@ -70,6 +70,14 @@ export function Hero({ player }: HeroProps) {
               className="text-text-secondary underline decoration-white/25 underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-foreground hover:decoration-white/70"
             >
               FACEIT widget for OBS
+            </Link>{" "}
+            or{" "}
+            <Link
+              href={SITE_PATHS.faceitWidgetStreamlabsGuide}
+              prefetch={false}
+              className="text-text-secondary underline decoration-white/25 underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-foreground hover:decoration-white/70"
+            >
+              Streamlabs
             </Link>
             . Show live ELO, rank, K/D, and recent matches with one browser-source URL.
           </p>
